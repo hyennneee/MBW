@@ -6,4 +6,174 @@
     android:layout_height="match_parent"
     tools:context=".ShowPathActivity">
 
+    <ImageView
+        android:id="@+id/goBackButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:onClick="onBackClick"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back" />
+
+    <ImageView
+        android:id="@+id/star"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
+        android:onClick="onClickShowPath"
+        app:layout_constraintStart_toEndOf="@+id/destinationText"
+        app:layout_constraintTop_toBottomOf="@+id/swap"
+        app:srcCompat="@drawable/star" />
+
+    <EditText
+        android:id="@+id/departureText"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="현위치"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toEndOf="@+id/goBackButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/destinationText"
+        android:layout_width="230dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="목적지"
+        android:inputType="textPersonName"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departureText" />
+
+    <ImageView
+        android:id="@+id/swap"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:onClick="onClickShowPath"
+        app:layout_constraintStart_toEndOf="@+id/departureText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/swap" />
+
+    <TextView
+        android:id="@+id/showAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="110dp"
+        android:text="전체"
+        android:clickable="true"
+        android:onClick="showPathFragmentHandler"
+        android:textColor="@color/colorMajor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/showBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="33dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginTop="110dp"
+        android:text="버스"
+        android:clickable="true"
+        android:onClick="showPathFragmentHandler"
+        app:layout_constraintStart_toEndOf="@+id/showAll"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/showSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="33dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginTop="110dp"
+        android:text="지하철"
+        android:clickable="true"
+        android:onClick="showPathFragmentHandler"
+        app:layout_constraintStart_toEndOf="@+id/showBus"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/showBusNSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="33dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginTop="110dp"
+        android:clickable="true"
+        android:onClick="showPathFragmentHandler"
+        android:text="버스+지하철"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/showSub"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/allLine"
+        android:layout_width="60dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="140dp"
+        android:background="@color/colorMajor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/busLine"
+        android:layout_width="60dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="140dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintStart_toEndOf="@+id/allLine"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/subLine"
+        android:layout_width="70dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="140dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintStart_toEndOf="@+id/busLine"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/busNSubLine"
+        android:layout_width="100dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="140dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/subLine"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/showPathframe"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/allLine">
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
