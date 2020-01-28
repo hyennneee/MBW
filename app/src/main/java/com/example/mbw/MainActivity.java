@@ -9,6 +9,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.libraries.places.api.Places;
+
+//google api: AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY
 public class MainActivity extends AppCompatActivity {
 
     Intent intent = null;
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         departure = findViewById(R.id.departureText);
         destination = findViewById(R.id.destinationText);
+        Places.initialize(getApplicationContext(), "AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY");
+        //PlacesClient placesClient = Places.createClient(this);
 
         /*toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onExample(View v){
-        intent = new Intent(MainActivity.this, ShowPathActivity.class);
+        intent = new Intent(MainActivity.this, TestActivity.class);
         startActivity(intent);
     }
 }
