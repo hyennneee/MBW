@@ -131,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onExample(View v){
-        intent = new Intent(MainActivity.this, TestActivity.class);
+        intent = new Intent(MainActivity.this, DetailPathActivity.class);
         startActivity(intent);
     }
+
+
 }

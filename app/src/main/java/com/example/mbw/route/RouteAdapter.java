@@ -66,9 +66,12 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             //대충 이해가 갔는데 유동적으로 어떻게 표시하는지 모르겠음
             //긍까 지하철이랑 버스랑 어떻게 될지 모르는 상황. view 틀을 어떻게 만들어두고 어떻게 띄우지?
             super(view);
+            /*
             this.subStation = view.findViewById(R.id.subStation); //stationName
             this.subRemaining = view.findViewById(R.id.subRemaining);
             this.subImage = view.findViewById(R.id.subImage);  //subwayCode
+
+             */
         }
     //오디세이로부터 받아오긴하는데 안드에서 띄워줄 필요는 없는 정보는 어떻게 처리하지
         private void setSubDetails(Route route) {

@@ -185,7 +185,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="372dp"
         android:onClick="onExample"
-        android:text="Button"
+        android:text="DetailPathActivity"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

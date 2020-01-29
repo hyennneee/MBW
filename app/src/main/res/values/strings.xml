@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">mbw</string>
+    <string name="arrow">  \u2192  </string>
 </resources>
