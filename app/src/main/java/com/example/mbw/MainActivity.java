@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.destinationText:
                 FLAG = 2;
-                // Start the autocomplete intent.
+                // Start the autocomplete intent
                 searchResult = destination.getText().toString();
                 searchIntent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.OVERLAY, fields)
