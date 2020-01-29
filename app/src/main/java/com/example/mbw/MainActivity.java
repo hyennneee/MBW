@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     EditText departure, destination;
     TextView toHome, toOffice, exTV, exTV2;
     ImageView profile, swap, home, office, bookmark;
-    int AUTOCOMPLETE_REQUEST_CODE = 1;
+    int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
@@ -90,32 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.departureText:
-                searchResult = departure.getText().toString();
-                exTV2.setText(searchResult);
+                FLAG = 1;
                 searchIntent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.OVERLAY, fields)
                         .build(this);
                 startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
-                //departure.setText(searchResult);
-                /*TMapData tmapdata = new TMapData();
-                //	ArrayList POIItem = tmapdata.findAllPOI("SKT타워");
-                tmapdata.findAllPOI(departure.getText().toString(), new TMapData.FindAllPOIListenerCallback() {
-                    @Override
-                    public void onFindAllPOI(ArrayList poiItem) {
-                        for(int i = 0; i < poiItem.size(); i++) {
-                            TMapPOIItem item = (TMapPOIItem) poiItem.get(i);
-                            Log.d("POI Name: ", item.getPOIName().toString() + ", " +
-                                    "Address: " + item.getPOIAddress().replace("null", "")  + ", " +
-                                    "Point: " + item.getPOIPoint().toString());
-                            exTV.setText(exTV.getText().toString() + "\n" + "POI Name: "+ item.getPOIName().toString() + ", " +
-                                    "Address: " + item.getPOIAddress().replace("null", "")  + ", " +
-                                    "Point: " + item.getPOIPoint().toString());
-                        }
-                    }
-                });*/
-                exTV2.setText(searchResult);
                 break;
             case R.id.destinationText:
+                FLAG = 2;
                 // Start the autocomplete intent.
                 searchResult = destination.getText().toString();
                 searchIntent = new Autocomplete.IntentBuilder(
@@ -133,9 +115,11 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                exTV.setText(place.getName());
-                searchResult = place.getName();
-                //Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+                if(FLAG == 1){
+                    departure.setText(place.getName());
+                }
+                else if(FLAG == 2){
+                    destination.setText(place.getName());}
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
