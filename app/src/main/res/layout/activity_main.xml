@@ -34,35 +34,39 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <EditText
+    <TextView
         android:id="@+id/departureText"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="현위치"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="5dp"
         android:clickable="true"
+        android:ems="10"
         android:onClick="onClickMain"
+        android:text="현위치"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.43"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appName" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <TextView
         android:id="@+id/destinationText"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:clickable="true"
         android:ems="10"
         android:hint="목적지"
-        android:clickable="true"
         android:onClick="onClickMain"
-        android:inputType="textPersonName"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.43"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/departureText" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <ImageView
         android:id="@+id/swap"
@@ -161,10 +165,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="276dp"
-        android:text="TextView"
+        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/exampleTV2"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exampleTV" />
 
     <Button
         android:id="@+id/button"
@@ -189,12 +202,15 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="1dp"
-        android:layout_marginTop="700dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="5dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.081"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/departureText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
