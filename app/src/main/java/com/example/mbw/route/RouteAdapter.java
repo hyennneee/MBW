@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mbw.R;
 
 import java.util.ArrayList;
-//odysay api key: 33jqZEvQcFvq/ALrK9KYzTV9BZUCK4zh3rx9X1vTJoE
 public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{//extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
     private static int TYPE_BUS = 1;
