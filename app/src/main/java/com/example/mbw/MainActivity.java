@@ -26,7 +26,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     Intent intent = null, searchIntent = null;
-    EditText departure, destination;
+    TextView departure, destination;
     TextView toHome, toOffice, exTV, exTV2;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
