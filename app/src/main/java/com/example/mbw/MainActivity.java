@@ -23,19 +23,17 @@ import com.skt.Tmap.TMapTapi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-//google api: AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY
 public class MainActivity extends AppCompatActivity {
 
     Intent intent = null, searchIntent = null;
     EditText departure, destination;
-    TextView toHome, toOffice;
+    TextView toHome, toOffice, exTV, exTV2;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
-    String searchResult = "";
+    static String searchResult = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +41,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         departure = findViewById(R.id.departureText);
         destination = findViewById(R.id.destinationText);
-        //Places.initialize(getApplicationContext(), "AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY");
-        TMapTapi tmaptapi = new TMapTapi(this);
-        tmaptapi.setSKTMapAuthentication ("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
+        exTV = findViewById(R.id.exampleTV);
+        exTV2 = findViewById(R.id.exampleTV2);
+        Places.initialize(getApplicationContext(), "AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY");
+        //TMapTapi tmaptapi = new TMapTapi(this);
+        //tmaptapi.setSKTMapAuthentication ("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
 
         //PlacesClient placesClient = Places.createClient(this);
 
@@ -90,7 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.departureText:
-                TMapData tmapdata = new TMapData();
+                searchResult = departure.getText().toString();
+                exTV2.setText(searchResult);
+                searchIntent = new Autocomplete.IntentBuilder(
+                        AutocompleteActivityMode.OVERLAY, fields)
+                        .build(this);
+                startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
+                //departure.setText(searchResult);
+                /*TMapData tmapdata = new TMapData();
                 //	ArrayList POIItem = tmapdata.findAllPOI("SKT타워");
                 tmapdata.findAllPOI(departure.getText().toString(), new TMapData.FindAllPOIListenerCallback() {
                     @Override
@@ -100,28 +107,33 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("POI Name: ", item.getPOIName().toString() + ", " +
                                     "Address: " + item.getPOIAddress().replace("null", "")  + ", " +
                                     "Point: " + item.getPOIPoint().toString());
+                            exTV.setText(exTV.getText().toString() + "\n" + "POI Name: "+ item.getPOIName().toString() + ", " +
+                                    "Address: " + item.getPOIAddress().replace("null", "")  + ", " +
+                                    "Point: " + item.getPOIPoint().toString());
                         }
                     }
-                });
+                });*/
+                exTV2.setText(searchResult);
                 break;
             case R.id.destinationText:
                 // Start the autocomplete intent.
-                /*searchResult = destination.getText().toString();
+                searchResult = destination.getText().toString();
                 searchIntent = new Autocomplete.IntentBuilder(
                         AutocompleteActivityMode.OVERLAY, fields)
                         .build(this);
                 startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
-                destination.setText(searchResult);*/
+                destination.setText(searchResult);
                 break;
         }
     }
 
-    /*@Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
+                exTV.setText(place.getName());
                 searchResult = place.getName();
                 //Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -132,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 // The user canceled the operation.
             }
         }
-    }*/
+    }
 
     public void onExample(View v){
         intent = new Intent(MainActivity.this, TestActivity.class);
