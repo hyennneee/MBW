@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-//google api: AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY
 public class MainActivity extends AppCompatActivity {
 
     Intent intent = null, searchIntent = null;
@@ -43,9 +42,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         departure = findViewById(R.id.departureText);
         destination = findViewById(R.id.destinationText);
-        //Places.initialize(getApplicationContext(), "AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY");
         TMapTapi tmaptapi = new TMapTapi(this);
-        tmaptapi.setSKTMapAuthentication ("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
+        tmaptapi.setSKTMapAuthentication ("enter your key here");
 
         //PlacesClient placesClient = Places.createClient(this);
 
