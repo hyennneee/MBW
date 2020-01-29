@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
         destination = findViewById(R.id.destinationText);
         exTV = findViewById(R.id.exampleTV);
         exTV2 = findViewById(R.id.exampleTV2);
-        Places.initialize(getApplicationContext(), "AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY");
-        //TMapTapi tmaptapi = new TMapTapi(this);
-        //tmaptapi.setSKTMapAuthentication ("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
+        Places.initialize(getApplicationContext(), "api_key");
 
         //PlacesClient placesClient = Places.createClient(this);
 
