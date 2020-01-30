@@ -1,5 +1,6 @@
 package com.example.mbw;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -14,10 +15,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapPoint;
@@ -25,6 +31,12 @@ import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
 public class DetailPathActivity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback {
+    private static final String TAG = "DetailPathActivity";
+
+
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private int lastSheetState;
+    private boolean userIsChangingSheetState = false;
 
     TMapView tMapView;
     TMapPoint tMapPointStart = new TMapPoint(37.545316, 126.964883); // 숙명여대 37.5463644,126.9626424
@@ -40,22 +52,83 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_path);
 
-        ListView listView = findViewById(R.id.listView);
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,
-                new String[]{"Copy","Paste","Cut","Delete","Convert","Open"}));
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
+        mBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        userIsChangingSheetState = true;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        //setSheetState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+            }
 
+            private void onStateChange(int sheetState)
+            {
+                userIsChangingSheetState = false;
+                mBottomSheetBehavior.setState(sheetState);
+                lastSheetState = sheetState;
+            }
+
+            public void setSheetState(int state) {
+                switch (state) {
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        onStateChange(BottomSheetBehavior.STATE_EXPANDED);
+                        break;
+                    }
+                    case BottomSheetBehavior.STATE_HALF_EXPANDED: {
+                        onStateChange(BottomSheetBehavior.STATE_HALF_EXPANDED);
+                        break;
+                    }
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        onStateChange(BottomSheetBehavior.STATE_COLLAPSED);
+                        break;
+                    }
+                    case BottomSheetBehavior.STATE_HIDDEN: {
+                        onStateChange(BottomSheetBehavior.STATE_HIDDEN);
+                        break;
+                    }
+                    case BottomSheetBehavior.STATE_DRAGGING: {
+                        userIsChangingSheetState = true;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_SETTLING && userIsChangingSheetState)
+                {
+                    if ((slideOffset > 0.5 && lastSheetState == BottomSheetBehavior.STATE_HALF_EXPANDED)
+                            || (slideOffset >= 0.70 && lastSheetState == BottomSheetBehavior.STATE_COLLAPSED)) {
+                        setSheetState(BottomSheetBehavior.STATE_EXPANDED);
+                    } else if ((slideOffset > 0 && lastSheetState == BottomSheetBehavior.STATE_COLLAPSED)
+                            || (slideOffset < 1 && lastSheetState == BottomSheetBehavior.STATE_EXPANDED)) {
+                        setSheetState(BottomSheetBehavior.STATE_HALF_EXPANDED);
+                    } else if ((slideOffset < 0.5 && lastSheetState == BottomSheetBehavior.STATE_HALF_EXPANDED)
+                            || (slideOffset <= 0.40 && lastSheetState == BottomSheetBehavior.STATE_EXPANDED)) {
+                        setSheetState(BottomSheetBehavior.STATE_COLLAPSED);
+                    } else {
+                        setSheetState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                    userIsChangingSheetState = false;
+                }
+            }
+        });
 
         //지도 부분
         LinearLayout linearLayoutTmap = findViewById(R.id.linearLayoutTmap);
         tMapView = new TMapView(this);
-        tMapView.setSKTMapApiKey("TMap API Key");
+        tMapView.setSKTMapApiKey("Tmap api key");
         linearLayoutTmap.addView( tMapView );
 
         tMapView.setIconVisibility(true);//현재위치로 표시될 아이콘을 표시할지 여부를 설정합니다.
 
         setGps();
-
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -129,4 +202,6 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
             tMapView.addTMapPolyLine("Line1", tMapPolyLine);
         }
     }
+
+
 }

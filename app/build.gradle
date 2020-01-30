@@ -30,9 +30,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':SDK_release_v2.0.0')
     implementation files('libs/com.skt.Tmap_1.63.jar')
-
-
-    implementation 'com.sothree.slidinguppanel:library:3.4.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
 
 
 
