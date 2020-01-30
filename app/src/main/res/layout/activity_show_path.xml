@@ -30,33 +30,52 @@
         app:layout_constraintTop_toBottomOf="@+id/swap"
         app:srcCompat="@drawable/star" />
 
-    <EditText
+    <TextView
         android:id="@+id/departureText"
         android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
-        android:layout_marginLeft="35dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="5dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:text="현위치"
+        android:clickable="true"
+        android:onClick="onClickShowPath"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintStart_toEndOf="@+id/goBackButton"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/goBackButton"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <View
+        android:id="@+id/view"
+        android:layout_width="250dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.081"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departureText" />
+
+    <TextView
         android:id="@+id/destinationText"
         android:layout_width="230dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="65dp"
-        android:layout_marginLeft="65dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="목적지"
-        android:inputType="textPersonName"
+        android:clickable="true"
+        android:onClick="onClickShowPath"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/departureText" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <ImageView
         android:id="@+id/swap"

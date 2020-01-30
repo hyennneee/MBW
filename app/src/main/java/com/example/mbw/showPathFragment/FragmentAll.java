@@ -19,8 +19,6 @@ import com.example.mbw.R;
 import org.json.JSONException;
 
 public class FragmentAll extends Fragment {
-    //지금 할 일: 오디세이에 좌표 주고 경로 받아오기
-    //즉 api만 호출할줄 알면 된다
     private ODsayService odsayService;
 
     @Nullable
@@ -40,6 +38,10 @@ public class FragmentAll extends Fragment {
         recyclerView2에는 item1, 2, a가 있음(몇까지 있을지는 알 수 없음)
         각 item에 알맞은 데이터 입력해야됨(ex 버스, 지하철에 따라 입력 값 달라져 - RouteAdapter이용)
         데이터는 odsay에서 불러옴 -> 그럼 어디서 odsay를 호출해야될까? (MainActivity? RouteAdapter? Route? 각 Fragment?)
+
+        1. odsay api 호출
+        2. recycler view 정리
+        3. route
         * */
 
 

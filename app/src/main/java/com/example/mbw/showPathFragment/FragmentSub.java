@@ -50,7 +50,6 @@ public class FragmentSub extends Fragment {
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 
-
         Button buttonInsert = (Button) getView().findViewById(R.id.button_main_insert);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override

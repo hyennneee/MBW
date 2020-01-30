@@ -114,17 +114,34 @@ public class MainActivity extends AppCompatActivity {
                 //null이면 회사 저장해달라는 메세지 띄우기
                 break;
             case R.id.swap:
-                //swap 버튼 누르면 departure랑 destination "내용" 바뀌게
-                String deptTmp = departure.getText().toString();
-                String destTmp = destination.getText().toString();
-                departure.setText(destTmp);
-                destination.setText(deptTmp);
+                if(destination.getText().toString() != "") {
+                    //swap 버튼 누르면 departure랑 destination "내용" 바뀌게
+                    String deptTmp = departure.getText().toString();
+                    String destTmp = destination.getText().toString();
+                    departure.setText(destTmp);
+                    destination.setText(deptTmp);
 
-                //위도 경도도 바뀌게
-                double lt, lg;
-                lt = latitude[0]; lg = longitude[0];
-                latitude[0] = latitude[1]; longitude[0] = longitude[1];
-                latitude[1] = lt; longitude[1] = lg;
+                    //위도 경도도 바뀌게
+                    double lt, lg;
+                    lt = latitude[0];
+                    lg = longitude[0];
+                    latitude[0] = latitude[1];
+                    longitude[0] = longitude[1];
+                    latitude[1] = lt;
+                    longitude[1] = lg;
+
+                    String[] str = new String[6];
+                    str[0] = new Double(latitude[0]).toString();
+                    str[1] = new Double(latitude[1]).toString();
+                    str[2] = new Double(longitude[0]).toString();
+                    str[3] = new Double(longitude[1]).toString();
+                    str[4] = departure.getText().toString();
+                    str[5] = destination.getText().toString();
+
+                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
+                    intent.putExtra("LOC_DATA", str);
+                    startActivity(intent);
+                }
                 break;
             case R.id.profileView:
                 //profile사진 누르면 myPage로 이동
@@ -173,10 +190,19 @@ public class MainActivity extends AppCompatActivity {
                 else if(FLAG == 2){
                     destination.setText(place.getName());}
                 //길찾기 실행
+
+                String[] str = new String[6];
+                str[0] = new Double(latitude[0]).toString();
+                str[1] = new Double(latitude[1]).toString();
+                str[2] = new Double(longitude[0]).toString();
+                str[3] = new Double(longitude[1]).toString();
+                str[4] = departure.getText().toString();
+                str[5] = destination.getText().toString();
+
                 intent = new Intent(MainActivity.this, ShowPathActivity.class);
+                intent.putExtra("LOC_DATA", str);
                 startActivity(intent);
 
-                //exTV.setText("lat: " + latitude[FLAG-1] + "\nlong: " + longitude[FLAG - 1]);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 Status status = Autocomplete.getStatusFromIntent(data);
