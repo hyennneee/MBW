@@ -1,13 +1,16 @@
 package com.example.mbw.route;
 
 public class Route {
-    private String busStation, busNum, subStation;
+    private String busStation, busNum, busID, subStation;
     private Integer remainingTime, busType, stationId, subCode;
     private boolean non_step;
+    //localStationID: 공공데이터 포털에 입력할 정류장 id
+    //idx = ord
 
-    public Route(String busStation, String busNum, String subStation, Integer remainingTime, Integer busType, Integer stationId, Integer subCode, boolean non_step) {
+    public Route(String busStation, String busNum, String busID, String subStation, Integer remainingTime, Integer busType, Integer stationId, Integer subCode, boolean non_step) {
         this.busStation = busStation;
         this.busNum = busNum;
+        this.busID = busID; //localBusID
         this.subStation = subStation;
         this.remainingTime = remainingTime;
         this.busType = busType;
@@ -27,6 +30,14 @@ public class Route {
 
     public String getBusNum() {
         return busNum;
+    }
+
+    public String getBusID() {
+        return busID;
+    }
+
+    public void setBusID(String busID) {
+        this.busID = busID;
     }
 
     public void setBusNum(String busNum) {
