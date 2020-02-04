@@ -34,7 +34,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
     private static final String TAG = "DetailPathActivity";
 
 
-    private BottomSheetBehavior mBottomSheetBehavior;
+    private CustomSheetBehavior mBottomSheetBehavior;
     private int lastSheetState;
     private boolean userIsChangingSheetState = false;
 
@@ -53,77 +53,12 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         setContentView(R.layout.activity_detail_path);
 
         View bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-        mBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        userIsChangingSheetState = true;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        //setSheetState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-            }
-
-            private void onStateChange(int sheetState)
-            {
-                userIsChangingSheetState = false;
-                mBottomSheetBehavior.setState(sheetState);
-                lastSheetState = sheetState;
-            }
-
-            public void setSheetState(int state) {
-                switch (state) {
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        onStateChange(BottomSheetBehavior.STATE_EXPANDED);
-                        break;
-                    }
-                    case BottomSheetBehavior.STATE_HALF_EXPANDED: {
-                        onStateChange(BottomSheetBehavior.STATE_HALF_EXPANDED);
-                        break;
-                    }
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        onStateChange(BottomSheetBehavior.STATE_COLLAPSED);
-                        break;
-                    }
-                    case BottomSheetBehavior.STATE_HIDDEN: {
-                        onStateChange(BottomSheetBehavior.STATE_HIDDEN);
-                        break;
-                    }
-                    case BottomSheetBehavior.STATE_DRAGGING: {
-                        userIsChangingSheetState = true;
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-                if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_SETTLING && userIsChangingSheetState)
-                {
-                    if ((slideOffset > 0.5 && lastSheetState == BottomSheetBehavior.STATE_HALF_EXPANDED)
-                            || (slideOffset >= 0.70 && lastSheetState == BottomSheetBehavior.STATE_COLLAPSED)) {
-                        setSheetState(BottomSheetBehavior.STATE_EXPANDED);
-                    } else if ((slideOffset > 0 && lastSheetState == BottomSheetBehavior.STATE_COLLAPSED)
-                            || (slideOffset < 1 && lastSheetState == BottomSheetBehavior.STATE_EXPANDED)) {
-                        setSheetState(BottomSheetBehavior.STATE_HALF_EXPANDED);
-                    } else if ((slideOffset < 0.5 && lastSheetState == BottomSheetBehavior.STATE_HALF_EXPANDED)
-                            || (slideOffset <= 0.40 && lastSheetState == BottomSheetBehavior.STATE_EXPANDED)) {
-                        setSheetState(BottomSheetBehavior.STATE_COLLAPSED);
-                    } else {
-                        setSheetState(BottomSheetBehavior.STATE_COLLAPSED);
-                    }
-                    userIsChangingSheetState = false;
-                }
-            }
-        });
+        mBottomSheetBehavior = new CustomSheetBehavior(bottomSheet, this);
 
         //지도 부분
         LinearLayout linearLayoutTmap = findViewById(R.id.linearLayoutTmap);
         tMapView = new TMapView(this);
-        tMapView.setSKTMapApiKey("Tmap api key");
+        tMapView.setSKTMapApiKey("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
         linearLayoutTmap.addView( tMapView );
 
         tMapView.setIconVisibility(true);//현재위치로 표시될 아이콘을 표시할지 여부를 설정합니다.
@@ -144,8 +79,13 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
 
         //경로 부분
         TMapPolyLine polyLine = new TMapPolyLine();
-        PathAsync pathAsync = new PathAsync();
-        pathAsync.execute(polyLine);
+        PathAsync pathAsync = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
+            pathAsync = new PathAsync();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+            pathAsync.execute(polyLine);
+        }
     }
 
     private final LocationListener mLocationListener = new LocationListener() {
