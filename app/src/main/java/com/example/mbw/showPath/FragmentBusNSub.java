@@ -1,4 +1,4 @@
-package com.example.mbw.showPathFragment;
+package com.example.mbw.showPath;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

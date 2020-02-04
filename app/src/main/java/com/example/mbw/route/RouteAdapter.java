@@ -4,20 +4,25 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mbw.R;
 
 import java.util.ArrayList;
-public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{//extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
-    private static int TYPE_BUS = 1;
-    private static int TYPE_SUB = 2;
+//Item => Route, SubItem=> Item
+public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
+    private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
+    private ArrayList<Route> routeList;
+
+
+    public RouteAdapter(ArrayList<Route> routeList) {
+        this.routeList = routeList;
 
     public class BusViewHolder extends RecyclerView.ViewHolder {
 
@@ -109,51 +114,53 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private ArrayList<Route> data;  //adapter는 viewholder로 변경할 data를 가지고 있는다
 
-    public RouteAdapter(ArrayList<Route> list) {
-        this.data = list;
-    }
+    
 
-
-
-    @Override   //adapter는 아이템마다 viewholder를 만드는 방법을 정의해야 한다
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View view;
-        if (viewType == TYPE_BUS) { // for bus layout
-        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bus, viewGroup, false);
-        return new BusViewHolder(view);
-
-    } else { // for subway layout
-        view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_sub, viewGroup, false);
-        return new SubViewHolder(view);
-    }
+    @NonNull
+    @Override
+    public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.main_recycler_view, viewGroup, false);
+        return new RouteViewHolder(view);
     }
 
     @Override
-    public int getItemCount() { //전체 아이템 개수
-        return (null != data ? data.size() : 0);
+    public void onBindViewHolder(@NonNull RouteViewHolder routeViewHolder, int i) {
+        Route route = routeList.get(i);
+        routeViewHolder.totalTime.setText(route.getTotalTime() + "분");
+        routeViewHolder.walkingTime.setText("도보 " + route.getWalkingTime() + "분");
+        routeViewHolder.cost.setText(route.getCost() + " 원");
+
+        // Create layout manager with initial prefetch item count
+        LinearLayoutManager layoutManager = new LinearLayoutManager(
+                routeViewHolder.rvItem.getContext(),
+                LinearLayoutManager.VERTICAL,
+                false
+        );
+        layoutManager.setInitialPrefetchItemCount(route.getItemList().size());
+
+        // Create sub item view adapter
+        ItemAdapter itemAdapter = new ItemAdapter(route.getItemList());
+
+        routeViewHolder.rvItem.setLayoutManager(layoutManager);
+        routeViewHolder.rvItem.setAdapter(itemAdapter);
+        routeViewHolder.rvItem.setRecycledViewPool(viewPool);
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (TextUtils.isEmpty(data.get(position).getSubStation())) {
-            return TYPE_BUS;
-
-        } else {
-            return TYPE_SUB;
-        }
+    public int getItemCount() {
+        return routeList.size();
     }
 
-    @Override   //adapter는 viewholder에 data를 전달해 주어야 한다.
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    class RouteViewHolder extends RecyclerView.ViewHolder {
+        private TextView totalTime, walkingTime, cost;
+        private RecyclerView rvItem;
 
-
-        if (getItemViewType(position) == TYPE_BUS) {
-            ((BusViewHolder) viewHolder).setBusDetails(data.get(position));
-        } else {
-            ((SubViewHolder) viewHolder).setSubDetails(data.get(position));
+        RouteViewHolder(View itemView) {    //layout에 보여주기
+            super(itemView);
+            rvItem = itemView.findViewById(R.id.rv_sub_item);
+            totalTime = itemView.findViewById(R.id.totalTimeView);
+            walkingTime = itemView.findViewById(R.id.walkingTimeView);
+            cost = itemView.findViewById(R.id.costView);
         }
     }
-
-
-
 }
