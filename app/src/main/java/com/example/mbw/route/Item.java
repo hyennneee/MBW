@@ -1,21 +1,19 @@
 package com.example.mbw.route;
 
 public class Item {
-    private String stationName, remainingTime,  busNum, stationNo, finalStation;
+    private String stationName, remainingTime, busNum, arsID, non_step;
     private int subLine, busType;
-    private boolean non_step;
     //오디세이 parameter: busID
     //공공데이터 포털 parameter: idx(=ord), localStationID(=stationID)
     //공통: 남은 시간, 역 이름; 지하철: 노선번호이미지, 버스: 버스번호, 버스타입, 저상여부, 정류장 번호
 
 
-    public Item(String stationName, String remainingTime, String busNum, String stationNo, String finalStation, int subLine, int busType, boolean non_step) {
+    public Item(String stationName, String remainingTime, String busNum, String arsID, int subLine, int busType, String non_step) {
         this.stationName = stationName;
         this.remainingTime = remainingTime;
         this.busNum = busNum;
-        this.stationNo = stationNo;
-        this.finalStation = finalStation;
-        this.subLine = subLine;   //subwayCode
+        this.arsID = arsID;
+        this.subLine = subLine;
         this.busType = busType;
         this.non_step = non_step;
     }
@@ -36,12 +34,12 @@ public class Item {
         this.remainingTime = remainingTime;
     }
 
-    public int getSubLineImage() {
+    public int getSubLine() {
         return subLine;
     }
 
-    public void setSubLineImage(int subLineImage) {
-        this.subLine = subLineImage;
+    public void setSubLine(int subLine) {
+        this.subLine = subLine;
     }
 
     public String getBusNum() {
@@ -54,33 +52,25 @@ public class Item {
 
     public int getBusType() {
         return busType;
-    }
+    }   //저상버스 말고 마을, 간선, 지선 등
 
     public void setBusType(int busType) {
         this.busType = busType;
     }
 
-    public String getStationNo() {
-        return stationNo;
+    public String getArsID() {
+        return arsID;
     }
 
-    public void setStationNo(String stationNo) {
-        this.stationNo = stationNo;
+    public void setArsID(String arsID) {
+        this.arsID = arsID;
     }
 
-    public boolean isNon_step() {
+    public String getNon_step() {
         return non_step;
     }
 
-    public void setNon_step(boolean non_step) {
+    public void setNon_step(String non_step) {
         this.non_step = non_step;
-    }
-
-    public String getFinalStation() {
-        return finalStation;
-    }
-
-    public void setFinalStation(String finalStation) {
-        this.finalStation = finalStation;
     }
 }

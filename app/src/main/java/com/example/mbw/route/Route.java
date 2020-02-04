@@ -3,6 +3,7 @@ package com.example.mbw.route;
 import java.util.ArrayList;
 
 public class Route {
+    //승차 정류장, 하차 정류장 정보는 여기서 처리해야될듯
     private int totalTime, walkingTime, cost;
     private ArrayList<Item> itemList;
 

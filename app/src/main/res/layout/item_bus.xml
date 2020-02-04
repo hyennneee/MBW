@@ -37,6 +37,21 @@
         app:layout_constraintStart_toEndOf="@+id/busType"
         app:layout_constraintTop_toBottomOf="@+id/busStationText" />
 
+    <TextView
+        android:id="@+id/busRemaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:text=""
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/busNum"
+        app:layout_constraintTop_toBottomOf="@+id/busStationText"
+        app:layout_constraintVertical_bias="1.0" />
+
     <ImageView
         android:id="@+id/busType"
         android:layout_width="30dp"
@@ -58,21 +73,6 @@
         android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@+id/busStationText"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/busRemaining"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:text=""
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="0sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/busNum"
-        app:layout_constraintTop_toBottomOf="@+id/busStationText"
-        app:layout_constraintVertical_bias="1.0" />
 
     <View
         android:id="@+id/view3"
