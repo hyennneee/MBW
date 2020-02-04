@@ -50,7 +50,6 @@ public class FragmentSub extends Fragment {
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
 
-
         Button buttonInsert = (Button) getView().findViewById(R.id.button_main_insert);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +57,7 @@ public class FragmentSub extends Fragment {
 
                 count++;
 
-                Route data = new Route("정류장 번호", "노선번호", "지하철역이름", 7, 1, 102000139, 4, true);// = new Route(count+"전체", count, "환승횟수" + count, "카드", "정류장", "버스번호", "역", count);
+                Route data = new Route("정류장 번호", "버스번호", "노선번호","지하철역이름", 7, 1, 102000139, 4, true);// = new Route(count+"전체", count, "환승횟수" + count, "카드", "정류장", "버스번호", "역", count);
 
                 //mArrayList.add(0, dict); //RecyclerView의 첫 줄에 삽입
                 mArrayList.add(data); // RecyclerView의 마지막 줄에 삽입

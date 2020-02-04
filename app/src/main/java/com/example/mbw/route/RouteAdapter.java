@@ -74,6 +74,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
              */
         }
     //오디세이로부터 받아오긴하는데 안드에서 띄워줄 필요는 없는 정보는 어떻게 처리하지
+        //일단 Route가 갖고있어야는되지 않나
         private void setSubDetails(Route route) {
             subStation.setText(route.getSubStation());
             subRemaining.setText(route.getRemainingTime());
@@ -152,5 +153,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             ((SubViewHolder) viewHolder).setSubDetails(data.get(position));
         }
     }
+
+
 
 }
