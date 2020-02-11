@@ -57,7 +57,7 @@ public class ShowPathActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
-    private TextView all, bus, sub, busNsub, exTV;
+    private TextView all, bus, sub, busNsub;
     private View first, second, third, fourth;
     public JSONObject jsonObject, jsonObjectBus;
 
@@ -77,6 +77,7 @@ public class ShowPathActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_path);
         departure = findViewById(R.id.departureText);
         destination = findViewById(R.id.destinationText);
+        destination.setTextColor(getResources().getColor(android.R.color.black));
 
         fragmentAll = new FragmentAll();
         fragmentBus = new FragmentBus();
@@ -185,7 +186,7 @@ public class ShowPathActivity extends AppCompatActivity {
         switch (v.getId()) {
             case R.id.showAll:
                 searchType = 0;
-                //transaction.replace(R.id.showPathframe, fragmentAll).commitAllowingStateLoss();
+                transaction.replace(R.id.showPathframe, fragmentAll).commitAllowingStateLoss();
                 all.setTextColor(Color.parseColor("#1ABC9C"));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -198,7 +199,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 break;
             case R.id.showBus:
                 searchType = 2;
-                //transaction.replace(R.id.showPathframe, fragmentBus).commitAllowingStateLoss();
+                transaction.replace(R.id.showPathframe, fragmentBus).commitAllowingStateLoss();
 
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(Color.parseColor("#1abc9c"));
@@ -212,7 +213,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 break;
             case R.id.showSub:
                 searchType = 1;
-                //transaction.replace(R.id.showPathframe, fragmentSub).commitAllowingStateLoss();
+                transaction.replace(R.id.showPathframe, fragmentSub).commitAllowingStateLoss();
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(Color.parseColor("#1abc9c"));
@@ -226,7 +227,7 @@ public class ShowPathActivity extends AppCompatActivity {
 
             case R.id.showBusNSub:
                 searchType = 3;
-                //transaction.replace(R.id.showPathframe, fragmentBusNSub).commitAllowingStateLoss();
+                transaction.replace(R.id.showPathframe, fragmentBusNSub).commitAllowingStateLoss();
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));

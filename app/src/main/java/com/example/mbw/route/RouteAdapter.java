@@ -29,7 +29,6 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     @Override
     public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-        //View v = inflater.inflate(R.layout.fragment_all, container, false);
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.route_recycler_view, viewGroup, false);
         return new RouteViewHolder(view);
     }
@@ -69,7 +68,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
         RouteViewHolder(View itemView) {    //layout에 보여주기
             super(itemView);
-            //rvItem = itemView.findViewById(R.id.rv_sub_item);
+            rvItem = itemView.findViewById(R.id.rv_sub_item);
             totalTime = itemView.findViewById(R.id.totalTimeView);
             walkingTime = itemView.findViewById(R.id.walkingTimeView);
             cost = itemView.findViewById(R.id.costView);
