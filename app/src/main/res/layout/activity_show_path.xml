@@ -184,17 +184,7 @@
         app:layout_constraintStart_toEndOf="@+id/subLine"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--
-    <include
-        android:id="@+id/includedLayout"
-        layout="@layout/fragment_all"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subLine" />
-    -->
+
     <FrameLayout
         android:id="@+id/showPathframe"
         android:layout_width="0dp"

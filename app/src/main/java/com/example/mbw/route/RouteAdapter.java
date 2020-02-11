@@ -32,7 +32,6 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     @Override
     public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-        //View v = inflater.inflate(R.layout.fragment_all, container, false);
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.route_recycler_view, viewGroup, false);
         return new RouteViewHolder(view);
     }
