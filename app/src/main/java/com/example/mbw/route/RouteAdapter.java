@@ -36,9 +36,19 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     public void onBindViewHolder(@NonNull RouteViewHolder routeViewHolder, int i) {
         Route route = routeList.get(i);
         //routeViewHolder가 Null이라고 함
-        routeViewHolder.totalTime.setText(route.getTotalTime() + "분");
+        int time, h, m;
+        time = route.getTotalTime();
+        String total = "";
+        h = time / 60;
+        m = time % 60;
+
+        if(h != 0){
+            total = "" + h + " 시간 ";
+        }
+        total += "" + m + "분";
+        routeViewHolder.totalTime.setText(total);
         routeViewHolder.walkingTime.setText("도보 " + route.getWalkingTime() + "분");
-        routeViewHolder.cost.setText(route.getCost() + " 원");
+        routeViewHolder.cost.setText(route.getCost() + "원");
 
         // Create layout manager with initial prefetch item count
         LinearLayoutManager layoutManager = new LinearLayoutManager(

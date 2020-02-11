@@ -1,7 +1,5 @@
 package com.example.mbw.route;
 
-import android.content.Context;
-import android.graphics.Point;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,7 +136,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         public ViewHolderBus(@NonNull final View itemView) {
             super(itemView);
-            busStation = itemView.findViewById(R.id.busStation);
+            busStation = itemView.findViewById(R.id.busStationText);
             endStop = itemView.findViewById(R.id.endStop);
             busNum = itemView.findViewById(R.id.busNum);
             stationId = itemView.findViewById(R.id.stationId);

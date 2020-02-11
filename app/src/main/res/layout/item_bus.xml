@@ -10,7 +10,7 @@
 
 
     <TextView
-        android:id="@+id/busStation"
+        android:id="@+id/busStationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -33,7 +33,7 @@
         android:textColor="@android:color/black"
         android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@+id/busType"
-        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+        app:layout_constraintTop_toBottomOf="@+id/busStationText" />
 
     <TextView
         android:id="@+id/busRemaining"
@@ -47,19 +47,19 @@
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/busNum"
-        app:layout_constraintTop_toBottomOf="@+id/busStation"
+        app:layout_constraintTop_toBottomOf="@+id/busStationText"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/busType"
         android:layout_width="30dp"
         android:layout_height="18dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/blue_bus"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+        app:layout_constraintStart_toEndOf="@+id/view3"
+        app:layout_constraintTop_toBottomOf="@+id/busStationText" />
 
     <TextView
         android:id="@+id/stationId"
@@ -69,15 +69,15 @@
         android:layout_marginLeft="5dp"
         android:text="13210"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@+id/busStation"
+        app:layout_constraintStart_toEndOf="@+id/busStationText"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view3"
-        android:layout_width="1dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +88,8 @@
         android:id="@+id/busImage"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:background="@drawable/bus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

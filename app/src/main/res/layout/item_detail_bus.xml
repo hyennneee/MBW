@@ -12,7 +12,7 @@
 
 
     <TextView
-        android:id="@+id/busStation"
+        android:id="@+id/busStationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -35,7 +35,7 @@
         android:textColor="@android:color/black"
         android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@+id/busType"
-        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+        app:layout_constraintTop_toBottomOf="@+id/busStationText" />
 
     <ImageView
         android:id="@+id/busType"
@@ -46,7 +46,7 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/blue_bus"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+        app:layout_constraintTop_toBottomOf="@+id/busStationText" />
 
     <TextView
         android:id="@+id/stationId"
@@ -56,7 +56,7 @@
         android:layout_marginLeft="5dp"
         android:text="13210"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@+id/busStation"
+        app:layout_constraintStart_toEndOf="@+id/busStationText"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
