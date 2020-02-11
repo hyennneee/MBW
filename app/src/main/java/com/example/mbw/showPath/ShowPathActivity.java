@@ -61,14 +61,14 @@ public class ShowPathActivity extends AppCompatActivity {
     private View first, second, third, fourth;
     public JSONObject jsonObject, jsonObjectBus;
 
-    private int searchType, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1, totalTime, totalWalk, cost;
+    private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1, totalWalk, cost, totalTime;
     private double longitude[] = new double[2], latitude[] = new double[2];
     String busStationInfo[] = new String[5], busNum;
     private Intent searchIntent = null;
     Document doc;
 
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
-    static ArrayList<Route> routeArrayList;
+    static ArrayList<Route> routeArrayList = new ArrayList<>();
 
 
     @Override
@@ -93,11 +93,9 @@ public class ShowPathActivity extends AppCompatActivity {
         third = findViewById(R.id.subLine);
         fourth = findViewById(R.id.busNSubLine);
 
-        exTV = findViewById(R.id.fragA);
-
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.showPathframe, fragmentAll).commitAllowingStateLoss();
+        //이 부분 수정!!
         String[] strings;
         strings = getIntent().getStringArrayExtra("LOC_DATA");
         latitude[0] = Double.parseDouble(strings[0]);
@@ -186,7 +184,8 @@ public class ShowPathActivity extends AppCompatActivity {
 
         switch (v.getId()) {
             case R.id.showAll:
-                transaction.replace(R.id.showPathframe, fragmentAll).commitAllowingStateLoss();
+                searchType = 0;
+                //transaction.replace(R.id.showPathframe, fragmentAll).commitAllowingStateLoss();
                 all.setTextColor(Color.parseColor("#1ABC9C"));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -198,7 +197,8 @@ public class ShowPathActivity extends AppCompatActivity {
                 fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 break;
             case R.id.showBus:
-                transaction.replace(R.id.showPathframe, fragmentBus).commitAllowingStateLoss();
+                searchType = 2;
+                //transaction.replace(R.id.showPathframe, fragmentBus).commitAllowingStateLoss();
 
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(Color.parseColor("#1abc9c"));
@@ -211,7 +211,8 @@ public class ShowPathActivity extends AppCompatActivity {
                 fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 break;
             case R.id.showSub:
-                transaction.replace(R.id.showPathframe, fragmentSub).commitAllowingStateLoss();
+                searchType = 1;
+                //transaction.replace(R.id.showPathframe, fragmentSub).commitAllowingStateLoss();
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(Color.parseColor("#1abc9c"));
@@ -224,7 +225,8 @@ public class ShowPathActivity extends AppCompatActivity {
                 break;
 
             case R.id.showBusNSub:
-                transaction.replace(R.id.showPathframe, fragmentBusNSub).commitAllowingStateLoss();
+                searchType = 3;
+                //transaction.replace(R.id.showPathframe, fragmentBusNSub).commitAllowingStateLoss();
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -246,7 +248,7 @@ public class ShowPathActivity extends AppCompatActivity {
         searchType = i; // 이동방법: 0 모두(all, subNbus) 1 지하철(sub) 2 버스(bus)
         String type = new Integer(i).toString();
         ODsayService odsayService;
-        odsayService = ODsayService.init(getApplicationContext(), Resources.getSystem().getString(R.string.odsay_key));
+        odsayService = ODsayService.init(getApplicationContext(), getString(R.string.odsay_key));
         odsayService.setReadTimeout(5000);
         odsayService.setConnectionTimeout(5000);
 // 서버 통신
@@ -255,7 +257,7 @@ public class ShowPathActivity extends AppCompatActivity {
 
     public void OdsayAPi(int stationID) {
         ODsayService odsayService;
-        odsayService = ODsayService.init(getApplicationContext(), Resources.getSystem().getString(R.string.odsay_key));
+        odsayService = ODsayService.init(getApplicationContext(), getString(R.string.odsay_key));
         odsayService.setReadTimeout(5000);
         odsayService.setConnectionTimeout(5000);
 // 서버 통신
@@ -303,12 +305,11 @@ public class ShowPathActivity extends AppCompatActivity {
                 ArrayList<Item> itemArrayList = new ArrayList<Item>();
 // 경로 타입 1 지하철 2 버스 3도보
                 int pathType = pathArrayDetailOBJ.getInt("pathType");
-                if (pathType == 1) { //지하철
+                if (searchType ==  pathType || searchType == 0) { //지하철
                     JSONObject infoOBJ = pathArrayDetailOBJ.getJSONObject("info");
                     totalWalk = infoOBJ.getInt("totalWalk"); // 총 도보 이동거리
                     cost = infoOBJ.getInt("payment"); // 요금
                     totalTime = infoOBJ.getInt("totalTime"); // 소요시간
-                    String mapObj = infoOBJ.getString("mapObj"); // 경로 디테일 조회 아이디
                     String firstStartStation = infoOBJ.getString("firstStartStation"); // 출발 정거장
                     finalStation = infoOBJ.getString("lastEndStation"); // 도착 정거장
 
@@ -329,7 +330,7 @@ public class ShowPathActivity extends AppCompatActivity {
                             JSONArray laneObj = subPathOBJ.getJSONArray("lane");
                             if (Type == 1) { // 지하철
                                 subLine = laneObj.getJSONObject(0).getInt("subwayCode"); // 지하철 정보(몇호선)
-                                busNum = "NULL";
+                                busNum = "";
                                 arsID = "";
                                 busType = -1;
                                 non_step1 = "";
@@ -341,8 +342,7 @@ public class ShowPathActivity extends AppCompatActivity {
                                 }
                             } else { // 버스
                                 busNum = laneObj.getJSONObject(0).getString("busNo"); // 버스번호정보
-                                stationName = laneObj.getJSONObject(0).getString("startName");//startName
-                                stationID = laneObj.getJSONObject(0).getInt("startID"); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
+                                stationID = subPathOBJ.getInt("startID"); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
                                 busType = laneObj.getJSONObject(0).getInt("type");
                                 OdsayAPi(stationID);
                                 arsID = "버스노선상세조회에서 가져오기";
@@ -371,26 +371,17 @@ public class ShowPathActivity extends AppCompatActivity {
                 Route route = new Route(totalTime, totalWalk, cost, itemArrayList);
                 routeArrayList.add(route);
             }
+            transaction.replace(R.id.showPathframe, fragmentAll).commitAllowingStateLoss();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     private void getStationInfo(JSONObject jsonObjectBus) {
-        String asrID, remainingTime1, remainingTime2, non_step;
+        String asrID;
         //busStationInfo
         try {
-            String localBusID; //busLocalBlID
             JSONObject result = jsonObjectBus.getJSONObject("result");
-            JSONArray laneArray = result.getJSONArray("lane");
-            //busLocalBlID
-            for (int i = 0; i < laneArray.length(); i++) {
-                JSONObject laneArrayJSONObject = laneArray.getJSONObject(i);
-                String jsonBusNo = laneArrayJSONObject.getString("busNo");
-                if(busNum == jsonBusNo){
-                    localBusID = laneArrayJSONObject.getString("busLocalBlID");
-                }
-            }
             asrID = result.getString("arsID");
             //'-' 빼야돼
             String[] array = asrID.split("-");
@@ -439,8 +430,6 @@ public class ShowPathActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Document doc) {
 
-            // Download 된 XML 파일을 parsing하여 필요한 항목들로 출력  String을 만듬
-            //hour시:, 온도 = temp, 날씨 = wfKor, 풍속 = ws m/s, 풍향 = wdKor
             NodeList nodeList = doc.getElementsByTagName("itemList");
             for(int i = 0; i < nodeList.getLength(); i++){
                 Node node = nodeList.item(i);
@@ -450,7 +439,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 Element rtNmElement = (Element) rtNmList.item(0);
                 rtNmList = rtNmElement.getChildNodes();
                 String rtNm = ((Node) rtNmList.item(0)).getNodeValue();
-                if(rtNm == busNum){
+                if(rtNm.equals(busNum)){
                     NodeList busType1List = fstElmnt.getElementsByTagName("busType1");
                     Element busType1Element = (Element) busType1List.item(0);
                     busType1List = busType1Element.getChildNodes();
