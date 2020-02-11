@@ -1,5 +1,4 @@
 package com.example.mbw.route;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         public BusViewHolder(@NonNull View view) {//constructor임
             super(view);
-            this.stationName = view.findViewById(R.id.busStationText);  //
+            this.stationName = view.findViewById(R.id.busStation);  //
             this.remainingTime = view.findViewById(R.id.busRemaining);
             this.stationNo = view.findViewById(R.id.stationId); //arsID
             this.busNum = view.findViewById(R.id.busNum); //busNo

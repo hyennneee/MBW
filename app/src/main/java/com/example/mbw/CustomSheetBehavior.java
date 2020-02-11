@@ -49,6 +49,7 @@ public class CustomSheetBehavior
                 }
             }
 
+            // BottomSheet 중간에 걸치도록
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset)
             {
