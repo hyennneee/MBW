@@ -21,12 +21,9 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private ArrayList<Route> routeList;
 
-
     public RouteAdapter(ArrayList<Route> routeList) {
         this.routeList = routeList;
     }
-
-    
 
     @NonNull
     @Override
@@ -71,7 +68,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
         RouteViewHolder(View itemView) {    //layout에 보여주기
             super(itemView);
-            rvItem = itemView.findViewById(R.id.rv_sub_item);
+            //rvItem = itemView.findViewById(R.id.rv_sub_item);
             totalTime = itemView.findViewById(R.id.totalTimeView);
             walkingTime = itemView.findViewById(R.id.walkingTimeView);
             cost = itemView.findViewById(R.id.costView);
