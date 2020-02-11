@@ -300,7 +300,7 @@ public class ShowPathActivity extends AppCompatActivity {
             int pathArrayCount = pathArray.length();
             //a < pathArrayCount
 
-            for (int a = 0; a < 2; a++) { //경로 개수만큼
+            for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
                 String remainingTime1 = "", finalStation, arsID;
                 JSONObject pathArrayDetailOBJ = pathArray.getJSONObject(a);
                 ArrayList<Item> itemArrayList = new ArrayList<Item>();
