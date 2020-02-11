@@ -57,7 +57,7 @@ public class ShowPathActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
-    private TextView all, bus, sub, busNsub, exTV;
+    private TextView all, bus, sub, busNsub;
     private View first, second, third, fourth;
     public JSONObject jsonObject, jsonObjectBus;
 
