@@ -1,8 +1,9 @@
 package com.example.mbw;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,20 +16,19 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.example.mbw.route.DetailItem;
+import com.example.mbw.route.DetailItemAdapter;
+import com.google.android.gms.maps.model.LatLng;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
+
+import java.util.ArrayList;
 
 public class DetailPathActivity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback {
     private static final String TAG = "DetailPathActivity";
@@ -37,6 +37,8 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
     private CustomSheetBehavior mBottomSheetBehavior;
     private int lastSheetState;
     private boolean userIsChangingSheetState = false;
+
+    private ArrayList<DetailItem> detailItemList;
 
     TMapView tMapView;
     TMapPoint tMapPointStart = new TMapPoint(37.545316, 126.964883); // 숙명여대 37.5463644,126.9626424
@@ -55,13 +57,43 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         View bottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = new CustomSheetBehavior(bottomSheet, this);
 
+        // RecyclerView 지정
+        // RecyclerView recyclerView = findViewById(R.id.detailPath_rv) ;
+        // recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
+
+        // Test => DetailItem 배열 넣어서 test 해보기
+
+        ArrayList<String> list = new ArrayList<>();
+        for (int i=0; i<2; i++) {
+            list.add(String.format("TEXT %d", i)) ;
+        }
+
+        // 리사이클러뷰에 LinearLayoutManager 객체 지정.
+        RecyclerView recyclerView = findViewById(R.id.detailPath_rv) ;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
+
+
+        // 리사이클러뷰에 DetailItemAdapter 객체 지정.
+        detailItemList = new ArrayList<DetailItem>();    //mArrayList의 내용을 채워야돼
+        LatLng start = new LatLng(127, 35);
+        LatLng end = new LatLng(127.001, 35.001);
+
+        detailItemList.add(new DetailItem(start, 0, "숙명여자대학교"));
+        detailItemList.add(new DetailItem(start, end, 3, 10, 320));
+
+        // detailPathItem 추가
+        // ex. 시작 - 도보 - 지하철 - 버스 - 도보 - 도착
+
+        DetailItemAdapter adapter = new DetailItemAdapter(detailItemList) ;
+        recyclerView.setAdapter(adapter) ;
+
         //지도 부분
         LinearLayout linearLayoutTmap = findViewById(R.id.linearLayoutTmap);
         tMapView = new TMapView(this);
         tMapView.setSKTMapApiKey("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
         linearLayoutTmap.addView( tMapView );
 
-        tMapView.setIconVisibility(true);//현재위치로 표시될 아이콘을 표시할지 여부를 설정합니다.
+        tMapView.setIconVisibility(true);//현재위치로 표시될 아이콘을 표시할지 여부를 설정
 
         setGps();
 
@@ -108,6 +140,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         }
     };
 
+
     public void setGps() {
         final LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -119,7 +152,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                 mLocationListener);
     }
 
-
+    // 도보 경로 표시 위해서 (from Tmap)
     class PathAsync extends AsyncTask<TMapPolyLine, Void, TMapPolyLine> {
         @Override
         protected TMapPolyLine doInBackground(TMapPolyLine... tMapPolyLines) {
@@ -142,6 +175,5 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
             tMapView.addTMapPolyLine("Line1", tMapPolyLine);
         }
     }
-
 
 }

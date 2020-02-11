@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:id="@+id/subStationText"
+        android:id="@+id/subStation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -33,7 +33,7 @@
         android:textSize="0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subStationText" />
+        app:layout_constraintTop_toBottomOf="@+id/subStation" />
     <!--
     view 길이 줄이려면 textSize 0sp, text=""
     -->
