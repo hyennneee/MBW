@@ -54,12 +54,12 @@
         android:id="@+id/busType"
         android:layout_width="30dp"
         android:layout_height="18dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/blue_bus"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+        app:layout_constraintStart_toEndOf="@+id/view3"
+        app:layout_constraintTop_toBottomOf="@+id/busStationText" />
 
     <TextView
         android:id="@+id/stationId"
@@ -74,10 +74,10 @@
 
     <View
         android:id="@+id/view3"
-        android:layout_width="1dp"
+        android:layout_width="2dp"
         android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,6 +88,8 @@
         android:id="@+id/busImage"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:background="@drawable/bus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
