@@ -61,7 +61,7 @@ public class ShowPathActivity extends AppCompatActivity {
     private View first, second, third, fourth;
     public JSONObject jsonObject, jsonObjectBus;
 
-    private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1, totalWalk, cost, totalTime;
+    private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1, totalWalk, cost, totalTime, GET_RESULT = 0;
     private double longitude[] = new double[2], latitude[] = new double[2];
     String busStationInfo[] = new String[5], busNum;
     private Intent searchIntent = null;
@@ -299,16 +299,17 @@ public class ShowPathActivity extends AppCompatActivity {
             JSONArray pathArray = result.getJSONArray("path");
 // pathArray 안의 경로 갯수
             int pathArrayCount = pathArray.length();
+            //a < pathArrayCount
 
-            for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
-                String remainingTime1 = "", finalStation;
+            for (int a = 0; a < 2; a++) { //경로 개수만큼
+                String remainingTime1 = "", finalStation, arsID;
                 JSONObject pathArrayDetailOBJ = pathArray.getJSONObject(a);
                 ArrayList<Item> itemArrayList = new ArrayList<Item>();
+                totalWalk = 0;
 // 경로 타입 1 지하철 2 버스 3도보
                 int pathType = pathArrayDetailOBJ.getInt("pathType");
-                if (searchType ==  pathType || searchType == 0) { //지하철
+                if (searchType ==  pathType || searchType == 0) {   //검색 타입과 일치하는 것만 출력
                     JSONObject infoOBJ = pathArrayDetailOBJ.getJSONObject("info");
-                    totalWalk = infoOBJ.getInt("totalWalk"); // 총 도보 이동거리
                     cost = infoOBJ.getInt("payment"); // 요금
                     totalTime = infoOBJ.getInt("totalTime"); // 소요시간
                     String firstStartStation = infoOBJ.getString("firstStartStation"); // 출발 정거장
@@ -320,7 +321,7 @@ public class ShowPathActivity extends AppCompatActivity {
 // 반환 데이터 스트링으로
                     for (int b = 0; b < subPathArraycount; b++) {   //한 경로당
                         int subLine, busType, stationID;
-                        String stationName, arsID, non_step1, non_step2;
+                        String stationName, non_step1;
 
                         JSONObject subPathOBJ = subPathArray.getJSONObject(b);
                         int Type = subPathOBJ.getInt("trafficType"); // 이동방법
@@ -346,8 +347,9 @@ public class ShowPathActivity extends AppCompatActivity {
                                 stationID = subPathOBJ.getInt("startID"); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
                                 busType = laneObj.getJSONObject(0).getInt("type");
                                 OdsayAPi(stationID);
-                                arsID = "버스노선상세조회에서 가져오기";
+                                arsID = busStationInfo[0];
                                 //!!!!!이거 해야돼!!!!!
+                                //OdsayApi(stationID)에서 getStation하기 전에 밑에 코드 실행되는듯
                                 non_step1 = busStationInfo[1];
                                 subLine = 0;
                                 if (b == 0) {   //첫 타자면
@@ -357,12 +359,13 @@ public class ShowPathActivity extends AppCompatActivity {
                                     remainingTime1 = "";
                                 }
                             }
-                            int sectionTime = subPathOBJ.getInt("sectionTime"); // 이동시간
-                            totalTime += sectionTime;
 ////////////////////////////////////////////////////////////addlist 넣기!!! 한줄마다 listview설정하기
                             //stationNo: layout에 띄워줄 정류장 번호, busID: 버스노선조회하면 나오는거(ex 500)
                             Item item = new Item(stationName, remainingTime1, busNum, arsID, subLine, busType, non_step1);
                             itemArrayList.add((item));
+                        }
+                        else{
+                            totalWalk += subPathOBJ.getInt("sectionTime");
                         }
 
                     }
@@ -379,20 +382,22 @@ public class ShowPathActivity extends AppCompatActivity {
     }
 
     private void getStationInfo(JSONObject jsonObjectBus) {
-        String asrID;
         //busStationInfo
         try {
+            GET_RESULT = 0;
             JSONObject result = jsonObjectBus.getJSONObject("result");
-            asrID = result.getString("arsID");
+            String arsID = result.getString("arsID");
             //'-' 빼야돼
-            String[] array = asrID.split("-");
-            asrID = "";
+            arsID = "";
+            String[] array = arsID.split("-");
             for(int i = 0; i < array.length; i++){
-                asrID += array[i];
+                arsID += array[i];
             }
-            busStationInfo[0] = asrID;
+            busStationInfo[0] = arsID;
+            GET_RESULT = 1;
+
             //남은 시간, 저상버스 여부
-            String rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + asrID;  // RSS URL 구성
+            String rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;  // RSS URL 구성
             GetXMLTask task = new GetXMLTask(this);
             task.execute(rss);
         } catch (JSONException e) {
@@ -465,6 +470,7 @@ public class ShowPathActivity extends AppCompatActivity {
                     busStationInfo[2] = busType2;
                     busStationInfo[3] = arrmsg1;
                     busStationInfo[4] = arrmsg2;
+                    GET_RESULT = 1;
 
                 }
             }

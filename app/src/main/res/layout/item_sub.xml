@@ -39,10 +39,11 @@
     -->
 
     <View
-        android:layout_width="1dp"
+        android:id="@+id/subwayLine"
+        android:layout_width="2dp"
         android:layout_height="0dp"
-        android:layout_marginStart="9dp"
-        android:layout_marginLeft="9dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +53,8 @@
         android:id="@+id/subImage"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:background="@drawable/line6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

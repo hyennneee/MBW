@@ -19,6 +19,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private static int TYPE_BUS = 1;
     private static int TYPE_SUB = 2;
+    private View adapterView;
     public ItemAdapter(ArrayList<Item> list) {
         this.data = list;
     }
@@ -62,13 +63,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public class BusViewHolder extends RecyclerView.ViewHolder {
 
 
-        protected TextView stationName, remainingTime, stationNo, busNum;
+        protected TextView stationName, busRemaining, stationNo, busNum;
         protected ImageView busType;
 
         public BusViewHolder(@NonNull View view) {//constructor임
             super(view);
             this.stationName = view.findViewById(R.id.busStationText);  //
-            this.remainingTime = view.findViewById(R.id.busRemaining);
+            this.busRemaining = view.findViewById(R.id.busRemaining);
             this.stationNo = view.findViewById(R.id.stationId); //arsID
             this.busNum = view.findViewById(R.id.busNum); //busNo
             this.busType = view.findViewById(R.id.busType); //type: 0-일반, 1-저상
@@ -77,7 +78,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private void setBusDetails(Item item) {
             stationName.setText(item.getStationName());
             if(item.getRemainingTime() != "") {
-                remainingTime.setText(item.getRemainingTime());
+                busRemaining.setText(item.getRemainingTime());
             }
             busNum.setText(item.getBusNum());
             stationNo.setText(item.getArsID());
@@ -100,6 +101,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         protected TextView subStation, subRemaining;
         protected ImageView subImage;
+        protected View subLine;
 
         public SubViewHolder(@NonNull View view) {//constructor임
             //findViewById로 변수 정의
@@ -108,6 +110,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             super(view);
             this.subStation = view.findViewById(R.id.subStationText); //stationName
             this.subImage = view.findViewById(R.id.subImage);  //subwayCode
+            subLine = view.findViewById(R.id.subwayLine);
+            adapterView = view;
         }
         //오디세이로부터 받아오긴하는데 안드에서 띄워줄 필요는 없는 정보는 어떻게 처리하지
         //일단 Route가 갖고있어야는되지 않나
@@ -120,27 +124,35 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             switch (item.getSubLine()){   //subwayCode
                 case 1:
                     subImage.setImageResource(R.drawable.line1);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line1));
                     break;
                 case 2:
                     subImage.setImageResource(R.drawable.line2);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line2));
                     break;
                 case 3:
                     subImage.setImageResource(R.drawable.line3);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line3));
                     break;
                 case 4:
                     subImage.setImageResource(R.drawable.line4);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line4));
                     break;
                 case 5:
                     subImage.setImageResource(R.drawable.line5);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line5));
                     break;
                 case 6:
                     subImage.setImageResource(R.drawable.line6);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line6));
                     break;
                 case 7:
                     subImage.setImageResource(R.drawable.line7);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line7));
                     break;
                 case 8:
                     subImage.setImageResource(R.drawable.line8);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line8));
                     break;
             }
         }
