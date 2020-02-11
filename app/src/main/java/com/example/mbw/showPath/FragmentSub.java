@@ -59,8 +59,6 @@ public class FragmentSub extends Fragment {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-
-
         return inflater.inflate(R.layout.fragment_sub, container, false);
     }
 }

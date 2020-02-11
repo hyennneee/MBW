@@ -1,6 +1,5 @@
 package com.example.mbw.route;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             super(itemView);
             //rvItem = itemView.findViewById(R.id.rv_sub_item);
             totalTime = itemView.findViewById(R.id.totalTimeView);
-            walkingTime = itemView.findViewById(R.id.walkingTimeView);
+            walkingTime = itemView.findViewById(R.id.walkTime);
             cost = itemView.findViewById(R.id.costView);
         }
     }

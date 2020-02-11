@@ -70,7 +70,6 @@ public class ShowPathActivity extends AppCompatActivity {
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
     static ArrayList<Route> routeArrayList;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

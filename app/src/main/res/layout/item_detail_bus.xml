@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingTop="20dp">
+
+
+    <TextView
+        android:id="@+id/busStation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:text="신촌기차역"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/busImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/busNum"
+        android:layout_width="22dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="5dp"
+        android:text="173"
+        android:textColor="@android:color/black"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/busType"
+        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+
+    <ImageView
+        android:id="@+id/busType"
+        android:layout_width="30dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/blue_bus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/busStation" />
+
+    <TextView
+        android:id="@+id/stationId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:text="13210"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/busStation"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/subRemaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@+id/busNum"
+        app:layout_constraintTop_toBottomOf="@+id/stationId">
+
+        <TextView
+            android:id="@+id/busRemaining1"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:text="4분 40초 (여유)"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/busRemaining2"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:text="14분 40초 (복잡)"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/busDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/busType"
+        app:layout_constraintTop_toBottomOf="@+id/subRemaining">
+
+        <TextView
+            android:id="@+id/busTime"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="5dp"
+            android:paddingRight="10dp"
+            android:text="6분"
+            android:textColor="#3F51B5"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/stopNum"
+            android:layout_width="wrap_content"
+            android:layout_height="17dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="5dp"
+            android:text="4개 정류장 이동"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:maxWidth="17dp"
+            android:maxHeight="17dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/arrow_down" />
+
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="#F2F2F2"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/busImage"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/busImage"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/bus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/finImage"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/fin"
+        app:layout_constraintStart_toStartOf="@+id/busImage"
+        app:layout_constraintTop_toBottomOf="@+id/view3" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@+id/busDetail"
+        app:layout_constraintTop_toBottomOf="@+id/busDetail">
+
+        <LinearLayout
+            android:id="@+id/endDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/endStop"
+                android:layout_width="wrap_content"
+                android:layout_height="17dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:paddingRight="10dp"
+                android:text="효창공원앞역"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/stationId2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:text="03-235"
+                android:paddingRight="10dp"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="17dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:text="하차"
+                android:textColor="#000000"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
