@@ -136,7 +136,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         public ViewHolderBus(@NonNull final View itemView) {
             super(itemView);
-            busStation = itemView.findViewById(R.id.busStationText);
+            busStation = itemView.findViewById(R.id.finalStationText);
             endStop = itemView.findViewById(R.id.endStop);
             busNum = itemView.findViewById(R.id.busNum);
             stationId = itemView.findViewById(R.id.stationId);

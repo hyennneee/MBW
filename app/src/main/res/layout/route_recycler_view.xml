@@ -28,7 +28,7 @@
         android:text="도보 n분"
         app:layout_constraintBottom_toTopOf="@+id/dashedLine"
         app:layout_constraintEnd_toStartOf="@+id/view4"
-        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toEndOf="@+id/totalTimeView" />
 
     <View
