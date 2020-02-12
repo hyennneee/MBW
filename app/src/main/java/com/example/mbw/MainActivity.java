@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mbw.AddPath.AddPathActivity;
 import com.example.mbw.showPath.ShowPathActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -196,6 +197,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void onExample(View v){
         intent = new Intent(MainActivity.this, DetailPathActivity.class);
+        startActivity(intent);
+    }
+
+    public void onExample2(View v){
+        intent = new Intent(MainActivity.this, AddPathActivity.class);
         startActivity(intent);
     }
 

@@ -56,7 +56,6 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
     public int getItemViewType(int position){
         int type = DetailPath.get(position).getImageType();
 
-
         switch(type){
             case 0 : return LAYOUT_START;
             case 1 : return LAYOUT_BUS;
@@ -113,7 +112,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         }
 
         private void setStartDetails(DetailItem detailItem){
-            startPoint.setText(detailItem. getSpotName());
+            startPoint.setText(detailItem.getSpotName());
             startImage.setImageResource(detailItem.getImageType());
         }
     }
@@ -177,7 +176,6 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             }
         }
     }
-
 
     // 뷰홀더 지정 2 : Subway
     public class ViewHolderSub extends RecyclerView.ViewHolder {
