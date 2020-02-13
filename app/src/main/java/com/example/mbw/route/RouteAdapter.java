@@ -42,10 +42,11 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         h = time / 60;
         m = time % 60;
 
-        if(h != 0){
-            total = "" + h + " 시간 ";
-        }
-        total += "" + m + "분";
+        if(h != 0)
+            total = "" + h + "시간 ";
+        if(m != 0)
+            total += "" + m + "분";
+
         routeViewHolder.totalTime.setText(total);
         routeViewHolder.walkingTime.setText("도보 " + route.getWalkingTime() + "분");
         routeViewHolder.cost.setText(route.getCost() + "원");

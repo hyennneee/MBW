@@ -18,6 +18,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private static int TYPE_BUS = 1;
     private static int TYPE_SUB = 2;
+    private static int TYPE_FIN = 3;
     private View adapterView;
     public ItemAdapter(ArrayList<Item> list) {
         this.data = list;
@@ -30,9 +31,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bus, viewGroup, false);
             return new BusViewHolder(view);
 
-        } else { // for subway layout
+        } else if(viewType == TYPE_SUB){ // for subway layout
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_sub, viewGroup, false);
             return new SubViewHolder(view);
+        }
+        else{ // for final station layout
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_final, viewGroup, false);
+            return new FinViewHolder(view);
         }
     }
 
@@ -45,8 +50,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public int getItemViewType(int position) {
         if (data.get(position).getSubLine() == 0) {    //subLine == 0
             return TYPE_BUS;
-        } else {
+        } else if(data.get(position).getBusType() == -1){
             return TYPE_SUB;
+        }
+        else{
+            return TYPE_FIN;
         }
     }
 
@@ -54,8 +62,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         if (getItemViewType(position) == TYPE_BUS) {
             ((BusViewHolder) viewHolder).setBusDetails(data.get(position));
-        } else {
+        } else if(getItemViewType(position) == TYPE_SUB){
             ((SubViewHolder) viewHolder).setSubDetails(data.get(position));
+        }
+        else{
+            ((FinViewHolder) viewHolder).setFinDetails(data.get(position));
         }
     }
 
@@ -67,7 +78,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         public BusViewHolder(@NonNull View view) {//constructor임
             super(view);
-            this.stationName = view.findViewById(R.id.busStationText);  //
+            this.stationName = view.findViewById(R.id.finalStationText);  //
             this.busRemaining = view.findViewById(R.id.busRemaining);
             this.stationNo = view.findViewById(R.id.stationId); //arsID
             this.busNum = view.findViewById(R.id.busNum); //busNo
@@ -76,7 +87,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
         private void setBusDetails(Item item) {
             stationName.setText(item.getStationName());
-            if(item.getRemainingTime() != "") {
+            if(!item.getRemainingTime().equals("")) {
                 busRemaining.setText(item.getRemainingTime());
             }
             busNum.setText(item.getBusNum());
@@ -116,7 +127,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         //일단 Route가 갖고있어야는되지 않나
         private void setSubDetails(Item item) {
             subStation.setText(item.getStationName());
-            if(item.getRemainingTime() != "") {
+            if(!item.getRemainingTime().equals("")) {
                 subRemaining.setText(item.getRemainingTime());
                 subRemaining.setTextSize(12);
             }
@@ -154,6 +165,19 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line8));
                     break;
             }
+        }
+    }
+    public class FinViewHolder extends RecyclerView.ViewHolder {
+
+
+        protected TextView stationName;
+
+        public FinViewHolder(@NonNull View view) {//constructor임
+            super(view);
+            this.stationName = view.findViewById(R.id.finalStationText); //stationName
+        }
+        private void setFinDetails(Item item) {
+            stationName.setText(item.getStationName());
         }
     }
 
