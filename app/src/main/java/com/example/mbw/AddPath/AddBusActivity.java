@@ -71,23 +71,11 @@ public class AddBusActivity extends AppCompatActivity {
     public void search(View view){
 
         //busNum = "400"; // 이걸로 오디세이 콜
-        busNum = editText.getText().toString();
+        busNum = editText.getText().toString().replace(" ", ""); // 용산 04 -> 용산04 (공백 상관없이 검색 되도록)
         Log.i("search - bus num : %s", busNum);
         ODSayApi(busNum);
-        //Log.i("search - bus ID : %s", busId);
-        //busId = "703";
-
-        //busId = getBusId();
-
-        //ODSayApi2(busId);
-    }
-/*
-    public String getBusId(){
-        return busId;
     }
 
-
- */
     public void ODSayApi(String busNum){
         ODsayService odsayService;
         odsayService = ODsayService.init(getApplicationContext(), getString(R.string.odsay_key));
@@ -164,6 +152,7 @@ public class AddBusActivity extends AppCompatActivity {
 
                 String arsId = stationArrayDetail.getString("arsID");
                 Log.i("arsID", arsId);
+                arsId = arsId.replace("-", "");
 
                 AddBusItem item = new AddBusItem(stationName, arsId, false, false);
                 busItemList.add(item);
