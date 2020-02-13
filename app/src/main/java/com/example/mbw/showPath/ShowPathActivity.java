@@ -58,6 +58,13 @@ class BusInfo{
         busType = b;
     }
 }
+class SubInfo{
+    int wayCode, subLine;
+    public SubInfo(int w, int s){
+        wayCode = w;
+        subLine = s;
+    }
+}
 
 public class ShowPathActivity extends AppCompatActivity {
     TextView departure, destination;
@@ -81,11 +88,12 @@ public class ShowPathActivity extends AppCompatActivity {
 
 
     //variables to measure time
-    long startTime = 0, endTime = 0;
     Vector<String> arsIdInfo = new Vector<>();
     Vector<String> busNumInfo = new Vector<>();
     Vector<BusInfo> busStationInfo = new Vector<>();
-    int numOfBus, numOfCalled, pathArrayCount;
+    Vector<SubInfo> subInfo = new Vector<>();
+    Vector<String> subRemainingInfo = new Vector<>();
+    int numOfBus, numOfBusCalled, numOfSub, numOfSubCalled, numOfCalled, pathArrayCount;
 
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
     static ArrayList<Route> routeArrayList;
@@ -314,7 +322,7 @@ public class ShowPathActivity extends AppCompatActivity {
     // 이동방법 파싱
     private void transportation(JSONObject jsonObject) {   //여기서 mArrayList의 내용 채우기 - route 내용 채우기
          routeArrayList = new ArrayList<>();
-         numOfBus = numOfCalled = 0;
+         numOfBus = numOfBusCalled = numOfSubCalled = numOfCalled = 0;
         try {
             JSONObject result = jsonObject.getJSONObject("result");
             JSONArray pathArray = result.getJSONArray("path");
@@ -338,7 +346,8 @@ public class ShowPathActivity extends AppCompatActivity {
                     cost = infoOBJ.getInt("payment"); // 요금
                     totalTime = infoOBJ.getInt("totalTime"); // 소요시간
                     String finalStation = infoOBJ.getString("lastEndStation"); // 도착 정거장
-                    numOfBus += infoOBJ.getInt("busTransitCount");
+                    //numOfBus += infoOBJ.getInt("busTransitCount");
+                    //numOfSub += infoOBJ.getInt("subwayTransitCount");
 
                     // 세부경로 디테일
                     JSONArray subPathArray = pathArrayDetailOBJ.getJSONArray("subPath");
@@ -346,16 +355,19 @@ public class ShowPathActivity extends AppCompatActivity {
                     boolean is_first = true;
                     for (int b = 0; b < subPathArraycount; b++) {   //한 경로당
 
-                        int subLine, busType, stationID;
-                        String stationName, non_step1, remainingTime1 = "", arsID;
+                        int subLine, busType, stationID, wayCode;
+                        String stationName, non_step1, remainingTime1, arsID;
 
                         JSONObject subPathOBJ = subPathArray.getJSONObject(b);
                         int Type = subPathOBJ.getInt("trafficType"); // 이동방법
                         if (Type == 1 || Type == 2) {
                             stationName = subPathOBJ.getString("startName"); // 출발지
                             JSONArray laneObj = subPathOBJ.getJSONArray("lane");
+                            remainingTime1 = "";
                             if (Type == 1) { // 지하철
+                                wayCode = subPathOBJ.getInt("wayCode"); //상행, 하행(1, 2)
                                 subLine = laneObj.getJSONObject(0).getInt("subwayCode"); // 지하철 정보(몇호선)
+                                subInfo.add(new SubInfo(wayCode, subLine));
                                 busNum = "";
                                 arsID = "";
                                 busType = -1;
@@ -363,9 +375,10 @@ public class ShowPathActivity extends AppCompatActivity {
                                 if (is_first) {   //첫 타자면
                                     //아직 지하철 남은 시간 정보는 안 가져왔음
                                     is_first = false;
-                                }
-                                else{
-                                    remainingTime1 = "";
+                                    numOfSub++;
+                                    String rss = "http://swopenapi.seoul.go.kr/api/subway/7465716e4d70616e3533556c696957/xml/realtimeStationArrival/1/10/" + stationName;  // RSS URL 구성
+                                    GetSubXMLTask subXMLTask = new GetSubXMLTask(this);
+                                    subXMLTask.execute(rss);
                                 }
                             } else { // 버스
                                 busNum = laneObj.getJSONObject(0).getString("busNo"); // 버스번호정보
@@ -379,13 +392,9 @@ public class ShowPathActivity extends AppCompatActivity {
                                 non_step1 = "";
                                 subLine = 0;
                                 if (is_first) {   //첫 타자면
-                                    remainingTime1 = "";
                                     is_first = false;
+                                    numOfBus++;
                                 }
-                                else{
-                                    remainingTime1 = "";
-                                }
-
                             }
                             //stationNo: layout에 띄워줄 정류장 번호, busID: 버스노선조회하면 나오는거(ex 500)
 
@@ -402,6 +411,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 }
 
 
+                totalWalk *= 3;
                 //Route: totalTime, walkingTime, cost
                 Route route = new Route(totalTime, totalWalk, cost, itemArrayList);
                 routeArrayList.add(route);
@@ -420,7 +430,6 @@ public class ShowPathActivity extends AppCompatActivity {
         try {
             JSONObject result = jsonObjectBus.getJSONObject("result");
             String arsID = result.getString("arsID");
-            //'-' 빼야돼
             String[] array = arsID.split("-");
             arsID = "";
             for(int i = 0; i < array.length; i++){
@@ -467,6 +476,7 @@ public class ShowPathActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Document doc) {
+            numOfBusCalled++;
             numOfCalled++;
 
             NodeList nodeList = doc.getElementsByTagName("itemList");
@@ -478,7 +488,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 Element rtNmElement = (Element) rtNmList.item(0);
                 rtNmList = rtNmElement.getChildNodes();
                 String rtNm = ((Node) rtNmList.item(0)).getNodeValue();
-                if(rtNm.equals(busNumInfo.get(numOfCalled - 1))){
+                if(rtNm.equals(busNumInfo.get(numOfBusCalled - 1))){
                     NodeList busType1List = fstElmnt.getElementsByTagName("busType1");
                     Element busType1Element = (Element) busType1List.item(0);
                     busType1List = busType1Element.getChildNodes();
@@ -504,14 +514,12 @@ public class ShowPathActivity extends AppCompatActivity {
                 }
             }
 
-            if(numOfBus == numOfCalled) {
+            if(numOfBus == numOfBusCalled) {
 
-                int index = 0;
-                for (int i = 0; i < pathArrayCount; i++) {
-                    int size = routeArrayList.get(i).getItemList().size();
-                    ArrayList<Item> items = routeArrayList.get(i).getItemList();
-                    for (int j = 0; j < size - 1; j++) {
-                        Item item = items.get(j);
+                    int index = 0;
+                    for (int i = 0; i < pathArrayCount; i++) {
+                        ArrayList<Item> items = routeArrayList.get(i).getItemList();
+                        Item item = items.get(0);
                         if (item.getSubLine() == 0) {
                             item.setArsID(arsIdInfo.get(index));
                             BusInfo busInfo = busStationInfo.get(index);
@@ -520,12 +528,90 @@ public class ShowPathActivity extends AppCompatActivity {
                             index++;
                         }
                     }
+                if (numOfCalled == (numOfBus + numOfSub)) {
+                    //문제점: onPostExcute를 실행하지 않는 경우: 경로 목록에 버스가 없는 경우 아래 코드 수행 안 해
+                    transaction.detach(fragmentAll).attach(fragmentAll).commit();  //transaction = getSupportFragmentManager().beginTransaction()
+                    transaction.replace(R.id.showPathframe, fragmentAll);//.commitAllowingStateLoss();
                 }
-                //문제점: onPostExcute를 실행하지 않는 경우: 경로 목록에 버스가 없는 경우 아래 코드 수행 안 해
-                getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();
-                transaction.replace(R.id.showPathframe, fragmentAll);//.commitAllowingStateLoss();
+            }
+        }
 
-                //departure.setText("ars: " + arsIdInfo.size() + ", arr: " + busStationInfo.size());
+    }
+    private class GetSubXMLTask extends AsyncTask<String, Void, Document> {
+        private Activity context;
+
+        public GetSubXMLTask(Activity context) {
+            this.context = context;
+        }
+
+        @Override
+        protected Document doInBackground(String... urls) {
+
+            URL url;
+            try {
+                url = new URL(urls[0]);
+                DocumentBuilderFactory dbf = DocumentBuilderFactory
+                        .newInstance();
+                DocumentBuilder db;
+
+                db = dbf.newDocumentBuilder();
+                doc = db.parse(new InputSource(url.openStream()));
+                doc.getDocumentElement().normalize();
+
+            } catch (Exception e) {
+
+                Toast.makeText(getBaseContext(), "Parsing Error",
+                        Toast.LENGTH_SHORT).show();
+            }
+            return doc;
+        }
+
+        @Override
+        protected void onPostExecute(Document doc) {
+            numOfSubCalled++;
+            numOfCalled++;
+
+            NodeList nodeList = doc.getElementsByTagName("row");
+            for(int i = 0; i < nodeList.getLength(); i++){
+                Node node = nodeList.item(i);
+                Element fstElmnt = (Element) node;
+
+                NodeList subwayIdList = fstElmnt.getElementsByTagName("subwayId");
+                Element subwayIdElement = (Element) subwayIdList.item(0);
+                subwayIdList = subwayIdElement.getChildNodes();
+                String subwayId = ((Node) subwayIdList.item(0)).getNodeValue();
+
+                NodeList updnLineList = fstElmnt.getElementsByTagName("subwayId");
+                Element updnLineElement = (Element) updnLineList.item(0);
+                updnLineList = updnLineElement.getChildNodes();
+                String updnLine = ((Node) updnLineList.item(0)).getNodeValue();
+                int subLine = subInfo.get(numOfSubCalled - 1).subLine % 1000;
+                int wayCode = subInfo.get(numOfSubCalled - 1).wayCode;
+
+                if(subwayId.equals(Integer.toString(subLine)) && updnLine.equals(Integer.toString(wayCode))){
+                    NodeList arvlMsg2List = fstElmnt.getElementsByTagName("arvlMsg2");
+                    Element arvlMsg2Element = (Element) arvlMsg2List.item(0);
+                    arvlMsg2List = arvlMsg2Element.getChildNodes();
+                    String arvlMsg2 = ((Node) arvlMsg2List.item(0)).getNodeValue();
+
+                    subRemainingInfo.add(arvlMsg2);
+                }
+            }
+
+            if(numOfSub == numOfSubCalled) {
+                int index = 0;  //전체 지하철 수
+                for (int i = 0; i < pathArrayCount; i++) {  //전체 경로 개수
+                    ArrayList<Item> items = routeArrayList.get(i).getItemList();
+                    if(items.get(0).getBusType() == -1){
+                        Item item = items.get(0);
+                        item.setRemainingTime(subRemainingInfo.get(index++));
+                    }
+                }
+
+                if (numOfCalled == (numOfBus + numOfSub)) {
+                    transaction.detach(fragmentAll).attach(fragmentAll).commit();  //transaction = getSupportFragmentManager().beginTransaction()
+                    transaction.replace(R.id.showPathframe, fragmentAll);//.commitAllowingStateLoss();
+                }
             }
         }
 

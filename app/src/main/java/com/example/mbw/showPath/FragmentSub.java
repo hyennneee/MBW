@@ -22,6 +22,7 @@ import static com.example.mbw.showPath.ShowPathActivity.routeArrayList;
 public class FragmentSub extends Fragment {
 
     private RouteAdapter mAdapter;
+    private RecyclerView mRecyclerView;
 
     //1-지하철, 2-버스, 3-버스+지하철
     //api에서 받아온 결과를 어떻게 arrayList에 넣지?
@@ -30,10 +31,13 @@ public class FragmentSub extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView mRecyclerView = (RecyclerView) getView().findViewById(R.id.rv_sub_item);
+        return inflater.inflate(R.layout.fragment_sub, container, false);
+    }
 
-
-        //routeArrayList = new ArrayList<Route>();    //mArrayList의 내용을 채워야돼
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_sub_item);
         mAdapter = new RouteAdapter( routeArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -43,7 +47,5 @@ public class FragmentSub extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
-
-        return inflater.inflate(R.layout.fragment_sub, container, false);
     }
 }

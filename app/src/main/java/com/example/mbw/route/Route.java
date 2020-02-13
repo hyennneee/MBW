@@ -8,8 +8,8 @@ public class Route {
     private ArrayList<Item> itemList;
 
     public Route(int totalTime, int walkingTime, int cost, ArrayList<Item> itemList) {
-        this.totalTime = totalTime;
         this.walkingTime = walkingTime;
+        this.totalTime = totalTime;
         this.cost = cost;
         this.itemList = itemList;
     }

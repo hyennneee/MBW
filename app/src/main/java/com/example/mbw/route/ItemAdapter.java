@@ -164,6 +164,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     subImage.setImageResource(R.drawable.line8);
                     subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line8));
                     break;
+                case 9:
+                    subImage.setImageResource(R.drawable.line9);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line9));
+                    break;
             }
         }
     }
