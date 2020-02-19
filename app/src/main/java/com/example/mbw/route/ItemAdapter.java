@@ -88,7 +88,14 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private void setBusDetails(Item item) {
             stationName.setText(item.getStationName());
             if(!item.getRemainingTime().equals("")) {
-                busRemaining.setText(item.getRemainingTime());
+                String remaining;
+                if(item.getRemainingTime().equals("null")){
+                    remaining = "저상버스 정보가 없습니다";
+                }
+                else{
+                    remaining = item.getRemainingTime();
+                }
+                busRemaining.setText(remaining);
             }
             busNum.setText(item.getBusNum());
             stationNo.setText(item.getArsID());
@@ -120,6 +127,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             super(view);
             this.subStation = view.findViewById(R.id.subStation); //stationName
             this.subImage = view.findViewById(R.id.subImage);  //subwayCode
+            this.subRemaining = view.findViewById(R.id.subRemaining);
             subLine = view.findViewById(R.id.subwayLine);
             adapterView = view;
         }
@@ -129,7 +137,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             subStation.setText(item.getStationName());
             if(!item.getRemainingTime().equals("")) {
                 subRemaining.setText(item.getRemainingTime());
-                subRemaining.setTextSize(12);
+                subRemaining.setTextSize(13);
             }
             switch (item.getSubLine()){   //subwayCode
                 case 1:
@@ -182,6 +190,12 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
         private void setFinDetails(Item item) {
             stationName.setText(item.getStationName());
+            if(item.getSubLine() == -1){    //버스
+
+            }
+            else{   //지하철
+
+            }
         }
     }
 
