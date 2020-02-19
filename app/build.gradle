@@ -31,6 +31,6 @@ dependencies {
     implementation project(path: ':SDK_release_v2.0.0')
     implementation files('libs/com.skt.Tmap_1.63.jar')
     implementation 'com.google.android.material:material:1.2.0-alpha04'
-
+    implementation 'com.kyleduo.switchbutton:library:2.0.0'
 
 }

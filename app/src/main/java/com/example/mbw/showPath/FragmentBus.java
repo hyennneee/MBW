@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +22,6 @@ import static com.example.mbw.showPath.ShowPathActivity.routeArrayList;
 
 public class FragmentBus extends Fragment {
 
-    private ArrayList<Route> mArrayList;
     private RouteAdapter mAdapter;
     private RecyclerView mRecyclerView;
 
@@ -40,24 +40,21 @@ public class FragmentBus extends Fragment {
         1. odsay api 호출
         2. recycler view 정리
         3. route*/
-        View v = inflater.inflate(R.layout.fragment_all, container, false);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.rv_sub_item);
-
-
-        //routeArrayList = new ArrayList<Route>();    //mArrayList의 내용을 채워야돼
+        return inflater.inflate(R.layout.fragment_bus, container, false);
+    }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_sub_item);
         mAdapter = new RouteAdapter( routeArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
-        mRecyclerView.addItemDecoration(dividerItemDecoration);*/
-
-
-        //!지우면 안 됨!
-        return v;
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 }

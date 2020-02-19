@@ -2,10 +2,11 @@
     <string name="app_name">mbw</string>
 
     <string name="arrow">  \u2192  </string>
-
+    <!--<string name="odsay_key">IZo3GEfAG6MvOnYCNm4zrW9Vzm9JTgkumB2PD70+m7g</string>-->
     <string name="odsay_key">33jqZEvQcFvq/ALrK9KYzTV9BZUCK4zh3rx9X1vTJoE</string>
     <string name="odsay_key2">8LRlhN2YaxVlp7LU9r6iyU1cN9Mjb8Pv7318FlKNeQ8</string>
 
     <string name="google_key">AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY</string>
+    <string name="subway_key">7465716e4d70616e3533556c696957</string>
 
 </resources>
