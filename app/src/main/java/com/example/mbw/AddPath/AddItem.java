@@ -3,7 +3,7 @@ package com.example.mbw.AddPath;
 public class AddItem {
 
     private String num; // 버스 번호, 지하철 몇호선
-    private String numId;
+    private String numId;   // 노선 번호
 
     private String start; // 시작 버스 정류장, 지하철 역
     private String startId; // 시작 버스 정류장, 지하철 역 아이디
@@ -15,6 +15,12 @@ public class AddItem {
     private String endId; // 시작 버스 정류장, 지하철 역 아이디
 
 
+    // 지하철 경로 추가할 때
+    public AddItem(String num, String start, String end) {
+        this.num = num;
+        this.start = start;
+        this.end = end;
+    }
 
     public AddItem(String busType, String num, String numId, String start, String startId, String end, String endId) {
         this.busType = busType;
@@ -25,6 +31,8 @@ public class AddItem {
         this.end = end;
         this.endId = endId;
     }
+
+
 
 
     public String getNum() {

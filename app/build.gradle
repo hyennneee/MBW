@@ -32,5 +32,4 @@ dependencies {
     implementation files('libs/com.skt.Tmap_1.63.jar')
     implementation 'com.google.android.material:material:1.2.0-alpha04'
 
-
 }

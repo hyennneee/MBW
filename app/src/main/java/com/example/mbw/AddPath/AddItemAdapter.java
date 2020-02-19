@@ -1,5 +1,9 @@
 package com.example.mbw.AddPath;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +26,13 @@ public class AddItemAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private ArrayList<AddItem> AddPath = null;
 
-    public AddItemAdapter(ArrayList<AddItem> list) {
+    private Context context;
+    //in the Constructor, pass the context in the parametres
+
+    public AddItemAdapter(ArrayList<AddItem> list, Context context) {
         AddPath = list;
+        this.context = context;
+
     }
 
     @Override
@@ -48,6 +57,7 @@ public class AddItemAdapter extends RecyclerView.Adapter<ViewHolder> {
         ImageView endImage;
         ImageView busType;
 
+        View lineView;
         LinearLayout busInfo;
 
         public addViewHolder(@NonNull final View addView){
@@ -59,6 +69,7 @@ public class AddItemAdapter extends RecyclerView.Adapter<ViewHolder> {
             endImage = addView.findViewById(R.id.endImage);
             busType = addView.findViewById(R.id.busType);
             busInfo = addView.findViewById(R.id.busInfo);
+            lineView = addView.findViewById(R.id.view5);
         }
 
         public void setAddDetails(AddItem addItem){
@@ -86,40 +97,56 @@ public class AddItemAdapter extends RecyclerView.Adapter<ViewHolder> {
             else{
                 busInfo.setVisibility(View.GONE);
                 endImage.setImageResource(R.drawable.circle);
+
+                GradientDrawable endCircle = (GradientDrawable)endImage.getBackground();
+                //GradientDrawable line = (GradientDrawable)lineView.getBackground();
+
                 switch(addItem.getNum()){
-                    case "1":
+                    case "01호선":
                         startImage.setImageResource(R.drawable.line1);
-                        endImage.setColorFilter(R.color.line1);
+                        endCircle.setColor(context.getResources().getColor(R.color.line1));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line1));
                         break;
-                    case "2":
+                    case "02호선":
                         startImage.setImageResource(R.drawable.line2);
-                        endImage.setColorFilter(R.color.line2);
+                        endCircle.setColor(context.getResources().getColor(R.color.line2));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line2));
+
                         break;
-                    case "3":
+                    case "03호선":
                         startImage.setImageResource(R.drawable.line3);
-                        endImage.setColorFilter(R.color.line3);
+                        endCircle.setColor(context.getResources().getColor(R.color.line3));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line3));
+
                         break;
-                    case "4":
+                    case "04호선":
                         startImage.setImageResource(R.drawable.line4);
-                        endImage.setColorFilter(R.color.line4);
+                        endCircle.setColor(context.getResources().getColor(R.color.line4));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line4));
                         break;
-                    case "5":
+                    case "05호선":
                         startImage.setImageResource(R.drawable.line5);
-                        endImage.setColorFilter(R.color.line5);
+                        endCircle.setColor(context.getResources().getColor(R.color.line5));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line5));
                         break;
-                    case "6":
+                    case "06호선":
                         startImage.setImageResource(R.drawable.line6);
-                        endImage.setColorFilter(R.color.line6);
+                        endCircle.setColor(context.getResources().getColor(R.color.line6));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line6));
                         break;
-                    case "7":
+                    case "07호선":
                         startImage.setImageResource(R.drawable.line7);
-                        endImage.setColorFilter(R.color.line7);
+                        endCircle.setColor(context.getResources().getColor(R.color.line7));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line7));
                         break;
-                    case "8":
+                    case "08호선":
                         startImage.setImageResource(R.drawable.line8);
-                        endImage.setColorFilter(R.color.line8);
+                        endCircle.setColor(context.getResources().getColor(R.color.line8));
+                        lineView.setBackgroundColor(context.getResources().getColor(R.color.line8));
                         break;
+
                 }
+                endImage.setImageResource(R.drawable.circle);
             }
         }
     }
