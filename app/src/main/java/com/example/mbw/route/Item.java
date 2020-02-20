@@ -1,7 +1,10 @@
 package com.example.mbw.route;
 
+import java.util.Vector;
+
 public class Item {
-    private String stationName, remainingTime, busNum, arsID, non_step;
+    private String stationName, remainingTime, arsID, non_step;
+    Vector<String> busNum;
     private int subLine, busType;
     boolean first;
     //오디세이 parameter: busID
@@ -9,7 +12,7 @@ public class Item {
     //공통: 남은 시간, 역 이름; 지하철: 노선번호이미지, 버스: 버스번호, 버스타입, 저상여부, 정류장 번호
 
 
-    public Item(String stationName, String remainingTime, String busNum, String arsID, int subLine, int busType, String non_step, boolean first) {
+    public Item(String stationName, String remainingTime, Vector<String> busNum, String arsID, int subLine, int busType, String non_step, boolean first) {
         this.stationName = stationName;
         this.remainingTime = remainingTime;
         this.busNum = busNum;
@@ -44,11 +47,11 @@ public class Item {
         this.subLine = subLine;
     }
 
-    public String getBusNum() {
+    public Vector<String> getBusNum() {
         return busNum;
     }
 
-    public void setBusNum(String busNum) {
+    public void setBusNum(Vector<String> busNum) {
         this.busNum = busNum;
     }
 
