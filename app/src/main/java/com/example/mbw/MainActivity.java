@@ -57,8 +57,13 @@ public class MainActivity extends AppCompatActivity {
 
         //에뮬레이터 돌릴 때 들어갈 내용
         exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
-        latitude[0] = 37.5463644;
-        longitude[0] = 126.9648311;
+        //숙입역
+        latitude[0] = 37.545097;
+        longitude[0] = 126.9697983;
+        //숙대 명신관
+        /*latitude[0] = 37.5463644;
+        longitude[0] = 126.9648311;*/
+
         //실제 디바이스 돌릴 때 들어갈 내용
         /*Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
         onLocationChanged(location);*/

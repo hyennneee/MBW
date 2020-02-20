@@ -90,7 +90,6 @@ public class ShowPathActivity extends AppCompatActivity {
 
     private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1, totalWalk, cost, totalTime, GET_RESULT = 0;
     private double longitude[] = new double[2], latitude[] = new double[2];
-    String busNum;
     private Intent searchIntent = null;
     Document doc;
 
@@ -101,6 +100,7 @@ public class ShowPathActivity extends AppCompatActivity {
     Vector<ArrivalBusInfo> arrBusInfo;
     Vector<SubInfo> subInfo;
     Vector<String> subRemainingInfo;
+    //Vector<String> busNum;
     int numOfBus, numOfBusCalled, numOfSub, numOfSubCalled, numOfCalled, pathArrayCount;
     boolean isFiltered = false, created = false;
 
@@ -397,18 +397,19 @@ public class ShowPathActivity extends AppCompatActivity {
                         JSONObject subPathOBJ = subPathArray.getJSONObject(b);
                         int Type = subPathOBJ.getInt("trafficType"); // 이동방법
                         if (Type == 1 || Type == 2) {   //1: 지하철, 2: 버스, 3: 도보
+                            Vector<String> busNum = new Vector<>();
                             stationName = subPathOBJ.getString("startName"); // 출발지
                             JSONArray laneObj = subPathOBJ.getJSONArray("lane");
                             remainingTime1 = non_step1 = arsID = "";
                             if (Type == 1) { // 지하철
                                 wayCode = subPathOBJ.getInt("wayCode"); //상행, 하행(1, 2)
                                 subLine = laneObj.getJSONObject(0).getInt("subwayCode"); // 지하철 정보(몇호선)
-                                subInfo.add(new SubInfo(wayCode, subLine));
-                                busNum = "";
+                                busNum.add("");
                                 busType = -1;
                                 if (is_first) {   //첫 타자면
                                     //첫 번째 지하철에 대해서만 xml호출할거임
                                     numOfSub++;
+                                    subInfo.add(new SubInfo(wayCode, subLine));
                                     String subStation = stationName;
                                     for(int i = 0; i < stationArray.length; i++){
                                         if(stationArray[i].contains(stationName))
@@ -424,9 +425,11 @@ public class ShowPathActivity extends AppCompatActivity {
                                 //numOfBus++;
 
                                 //여러개일 수도 있음
-                                busNum = laneObj.getJSONObject(0).getString("busNo"); // 버스번호정보
+                                for(int i = 0; i < laneObj.length(); i++) {
+                                    busNum.add(laneObj.getJSONObject(i).getString("busNo")); // 버스번호정보
+                                }
                                 int stationID = subPathOBJ.getInt("startID"); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
-                                busInfo.add(new BusInfo(busNum, stationID));
+                                busInfo.add(new BusInfo(busNum.get(0), stationID));
                                 busType = laneObj.getJSONObject(0).getInt("type");
                                 //OdsayAPi(stationID);
                                 //!!!!!이거 해야돼!!!!!
@@ -453,7 +456,9 @@ public class ShowPathActivity extends AppCompatActivity {
                         finalStation += "역";
                         subLine = itemArrayList.get(total - 1).getSubLine();
                     }
-                    Item lastItem = new Item(finalStation, "", "", "", subLine, busType, "", false);
+                    Vector<String> tmpBusNum = new Vector<>();
+                    tmpBusNum.add("");
+                    Item lastItem = new Item(finalStation, "", tmpBusNum, "", subLine, busType, "", false);
                     itemArrayList.add(lastItem);
                     totalTime += totalWalk;
                     totalWalk *= 2; //도보 시간에 보통 사람들의 2배 가량 소요된다 가정
@@ -560,6 +565,8 @@ public class ShowPathActivity extends AppCompatActivity {
                     Element arrmsg2Element = (Element) arrmsg2List.item(0);
                     arrmsg2List = arrmsg2Element.getChildNodes();
                     String arrmsg2 = ((Node) arrmsg2List.item(0)).getNodeValue();
+                    String[] array = arrmsg1.split("\\[");
+                    arrmsg1 = array[0];
 
                     arrBusInfo.add(new ArrivalBusInfo(arrmsg1, busType1));
                     //arrBusInfo.add(new ArrivalBusInfo(arrmsg1, busType1)); //모든 버스들에 대한 정보 들어있음

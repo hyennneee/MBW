@@ -73,7 +73,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public class BusViewHolder extends RecyclerView.ViewHolder {
 
 
-        protected TextView stationName, busRemaining, stationNo, busNum;
+        protected TextView stationName, busRemaining, stationNo, busNum, busOthers2, numOfOtherBus1, numOfOtherBus2;
         protected ImageView busType;
 
         public BusViewHolder(@NonNull View view) {//constructor임
@@ -83,11 +83,17 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             this.stationNo = view.findViewById(R.id.stationId); //arsID
             this.busNum = view.findViewById(R.id.busNum); //busNo
             this.busType = view.findViewById(R.id.busType); //type: 0-일반, 1-저상
+            this.busOthers2 = view.findViewById(R.id.busOthers2);
+            this.numOfOtherBus1 = view.findViewById(R.id.numOfOtherBus1);
+            this.numOfOtherBus2 = view.findViewById(R.id.numOfOtherBus2);
+
             //저상 여부 어떻게 표시할까
         }
         private void setBusDetails(Item item) {
             stationName.setText(item.getStationName());
-            if(!item.getRemainingTime().equals("")) {
+            String mainBus = item.getBusNum().get(0);
+            int size = item.getBusNum().size();
+            if(item.isFirst()) {   //첫 번째가 버스
                 String remaining;
                 if(item.getRemainingTime().equals("null")){
                     remaining = "저상버스 정보가 없습니다";
@@ -95,9 +101,32 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 else{
                     remaining = item.getRemainingTime();
                 }
+                //busNum 2개 이상
+                if(size > 1){
+                    String subBus = item.getBusNum().get(1);
+                    busOthers2.setTextSize(13);
+                    if(item.getBusNum().size() > 2) {
+                        subBus += ", " + item.getBusNum().get(2);
+                        if(size > 3){
+                            numOfOtherBus2.setTextSize(13);
+                            numOfOtherBus2.setText("외 " + (size - 2) + "대");
+                        }
+                    }
+                    busOthers2.setText(subBus);
+                }
                 busRemaining.setText(remaining);
             }
-            busNum.setText(item.getBusNum());
+            else{//others1
+                if(size > 1) {
+                    mainBus += ", " + item.getBusNum().get(1);
+                    if (size > 2) {
+                        numOfOtherBus1.setTextSize(13);
+                        numOfOtherBus1.setText("외 " + (size - 2) + "대");
+                    }
+                }
+            }
+            busNum.setText(mainBus);
+
             stationNo.setText(item.getArsID());
             switch (item.getBusType()){
                 case 11:
