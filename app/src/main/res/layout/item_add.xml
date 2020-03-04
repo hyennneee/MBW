@@ -79,7 +79,7 @@
 
             <TextView
                 android:id="@+id/busNum"
-                android:layout_width="22dp"
+                android:layout_width="wrap_content"
                 android:layout_height="18dp"
 
                 android:text="173"

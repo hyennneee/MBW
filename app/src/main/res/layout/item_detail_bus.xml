@@ -139,7 +139,6 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/arrow_down" />
 
-
     </LinearLayout>
 
 

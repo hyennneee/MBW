@@ -19,13 +19,15 @@ import java.util.List;
 public class AddSubActivity extends AppCompatActivity {
 
     DataBaseHelper DBHelper;
-    String selectedLine="01호선";
-    List stationNameList = new ArrayList(); // seletedLine에 해당하는 역이름 리스트
+    String selectedLine = "01호선";
+    List stationNameList = new ArrayList(); //seletedLine에 해당하는 역이름 리스트
     ArrayAdapter<String> adapter;
 
     ImageButton btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9;
     ImageButton lastClicked ;
     AutoCompleteTextView startEditText, endEditText;
+    String startId, endId;
+    DataAdapter mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,6 @@ public class AddSubActivity extends AppCompatActivity {
         btn7.setImageAlpha(50);
         btn8.setImageAlpha(50);
         btn9.setImageAlpha(50);
-
 
         ImageButton.OnClickListener onClickListener = new ImageButton.OnClickListener() {
             @Override
@@ -110,7 +111,6 @@ public class AddSubActivity extends AppCompatActivity {
                 // 역이름 리스트 업데이트 위해서
                 new AdapterHelper().update((ArrayAdapter)adapter, new ArrayList<Object>(stationNameList));
                 adapter.notifyDataSetChanged();
-
             }
         };
 
@@ -123,9 +123,7 @@ public class AddSubActivity extends AppCompatActivity {
         btn7.setOnClickListener(onClickListener);
         btn8.setOnClickListener(onClickListener);
         btn9.setOnClickListener(onClickListener);
-
     }
-
 
     public class AdapterHelper {
         @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -140,7 +138,7 @@ public class AddSubActivity extends AppCompatActivity {
     public List initLoadDB(String selectedLine) {
         List stationNameList = new ArrayList();
 
-        DataAdapter mDbHelper = new DataAdapter(getApplicationContext());
+        mDbHelper = new DataAdapter(getApplicationContext());
         mDbHelper.createDatabase();
         mDbHelper.open();
 
@@ -149,17 +147,22 @@ public class AddSubActivity extends AppCompatActivity {
         Log.i("stationList[0] : %s", stationNameList.get(0).toString());
 
         // db 닫기
-        mDbHelper.close();
-
         return stationNameList;
     }
 
     public void OnClickHandle(View view)
     {
+        startId = mDbHelper.getStationId(selectedLine, startEditText.getText().toString());
+        endId = mDbHelper.getStationId(selectedLine, endEditText.getText().toString());
+
+        mDbHelper.close();
+
         Intent resultIntent = new Intent();
         resultIntent.putExtra("line", selectedLine);
         resultIntent.putExtra("start", startEditText.getText().toString());
         resultIntent.putExtra("end", endEditText.getText().toString());
+        resultIntent.putExtra("startID", startId);
+        resultIntent.putExtra("endID", endId);
 
         setResult(Code.subresultCode, resultIntent);
         finish();

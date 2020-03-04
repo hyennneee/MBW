@@ -1,8 +1,6 @@
 package com.example.mbw.AddPath;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 
-import com.example.mbw.AddPath.AddItem;
 import com.example.mbw.R;
 
 import java.util.ArrayList;
@@ -80,16 +77,19 @@ public class AddItemAdapter extends RecyclerView.Adapter<ViewHolder> {
             if(addItem.getBusType()!=null) {
                 busInfo.setVisibility(View.VISIBLE);
                 busNum.setText(addItem.getNum());
-                startImage.setImageResource(R.drawable.bus);
-                endImage.setImageResource(R.drawable.fin);
+                startImage.setImageResource(0);
+                startImage.setImageResource(R.drawable.bus1);
+                endImage.setImageResource(R.drawable.busend);
+                lineView.setBackgroundColor(context.getResources().getColor(R.color.busblue));
+
                 switch (addItem.getBusType()) {
-                    case "간선":
+                    case "11":
                         busType.setImageResource(R.drawable.blue_bus);
                         break;
-                    case "지선":
+                    case "12":
                         busType.setImageResource(R.drawable.green_bus);
                         break;
-                    case "마을":
+                    case "3":
                         busType.setImageResource(R.drawable.town_bus);
                         break;
                 }

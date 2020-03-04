@@ -102,6 +102,48 @@ public class DataAdapter {
         }
     }
 
+
+
+    public String getStationId(String selectedLine, String stationName)
+    {
+        try
+        {
+            // line에 해당하는 stationName 받아오기
+            String sql = "select id from stationInfo where line = '"+selectedLine+"' and stationName = '"+stationName+"'";
+
+            // 모델 넣을 리스트 생성
+            String stationId =null;
+            // TODO : 모델 선언
+            //AddSubItem item = null;
+
+            Cursor mCur = mDb.rawQuery(sql, null);
+            if (mCur!=null)
+            {
+                // 칼럼의 마지막까지
+                while( mCur.moveToNext() ) {
+
+                    // TODO : 커스텀 모델 생성
+                    //item = new AddSubItem(null, null, null);
+
+                    // TODO : Record 기술
+                    //item.setId(mCur.getString(0));
+
+                    // 리스트에 넣기
+                    stationId = mCur.getString(0);
+                }
+
+            }
+            return stationId;
+        }
+        catch (SQLException mSQLException)
+        {
+            Log.e(TAG, "getTestData >>"+ mSQLException.toString());
+            throw mSQLException;
+        }
+    }
+
+
+
         /*
         ArrayList 버젼
         public ArrayList<AddSubItem> getTableData(String selectedLine)

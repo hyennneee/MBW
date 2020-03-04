@@ -1,6 +1,8 @@
 package com.example.mbw.AddPath;
 
 public class AddBusItem {
+
+    private String stationId;
     private String busStopName;
     private String busStopId;
 
@@ -8,13 +10,21 @@ public class AddBusItem {
     private boolean off; // 하차
 
 
-    public AddBusItem(String busStopName, String busStopId, boolean on, boolean off) {
+    public AddBusItem(String stationId, String busStopName, String busStopId, boolean on, boolean off) {
+        this.stationId = stationId;
         this.busStopName = busStopName;
         this.busStopId = busStopId;
         this.on = on;
         this.off = off;
     }
 
+    public String getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(String stationId) {
+        this.stationId = stationId;
+    }
 
     public String getBusStopName() {
         return busStopName;
