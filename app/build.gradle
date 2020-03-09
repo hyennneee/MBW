@@ -31,5 +31,8 @@ dependencies {
     implementation project(path: ':SDK_release_v2.0.0')
     implementation files('libs/com.skt.Tmap_1.63.jar')
     implementation 'com.google.android.material:material:1.2.0-alpha04'
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
 }

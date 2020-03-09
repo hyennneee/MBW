@@ -105,7 +105,7 @@ public class AddPathActivity extends AppCompatActivity {
         startActivityForResult(intent, Code.requestCode);
     }
 
-    public void makePathJson(){
+    public void makePathJSON(){
         JSONObject obj = new JSONObject();
         try{
             obj.put("startAddress", startPoint);
@@ -165,7 +165,8 @@ public class AddPathActivity extends AppCompatActivity {
             pathType = 1;
         else
             pathType = 0; // 추가된 경로 없음.
-        makePathJson();
+        makePathJSON();
+        // 어느 화면으로 돌아갈지 정하기
     }
 
 }

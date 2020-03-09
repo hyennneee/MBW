@@ -7,5 +7,9 @@
     <string name="odsay_key2">8LRlhN2YaxVlp7LU9r6iyU1cN9Mjb8Pv7318FlKNeQ8</string>
 
     <string name="google_key">AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY</string>
+    <string name="problem1">이동 경로가 위험해요.</string>
+    <string name="problem2">역 안에 승강기가 하나도 없어요.</string>
+    <string name="problem3">이동 경로 중 승강기가 없어요.</string>
+    <string name="problem4">승강기가 존재하지만, 이동이 어려워요.</string>
 
 </resources>
