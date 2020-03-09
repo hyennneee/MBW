@@ -30,8 +30,8 @@
         <activity android:name=".DetailPathActivity" />
         <activity android:name=".showPath.ShowPathActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".SignInActivity">
+        <activity android:name=".accountActivity.SignUpActivity" />
+        <activity android:name=".accountActivity.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
