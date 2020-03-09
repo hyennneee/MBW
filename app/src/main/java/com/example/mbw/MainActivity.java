@@ -30,15 +30,13 @@ import java.util.List;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
-
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
     TextView toHome, toOffice, exTV, exTV2, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
-    //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
-    //public static Vector<Location> locations;
+    String token = null;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
@@ -55,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         Places.initialize(getApplicationContext(), getString(R.string.google_key));
 
-        userName.setText(SignInActivity.userName);
+        String info[] = getIntent().getStringArrayExtra("USER_INFO");
+        token = info[0];
+        userName.setText(info[1]);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
         //숙입역
         //x경도 y 위도 (127, 36)
-        positions.add(new Position(126.9697983, 37.545097 , 0, 0));
+        positions.add(new Position(126.9625327, 37.5464301 , 0, 0));
         //숙대 명신관
         /*latitude[0] = 37.5463644;
         longitude[0] = 126.9648311;*/

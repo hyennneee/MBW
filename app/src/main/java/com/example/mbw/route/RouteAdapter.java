@@ -3,6 +3,7 @@ package com.example.mbw.route;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,22 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
         routeViewHolder.totalTime.setText(total);
         routeViewHolder.walkingTime.setText("도보 " + route.getWalkingTime() + "분");
-        routeViewHolder.cost.setText(route.getCost() + "원");
+        if(route.getCost() == 0)
+            routeViewHolder.cost.setText("");
+        else
+            routeViewHolder.cost.setText(route.getCost() + "원");
+        switch (route.getGroup()){
+            case 1:
+                routeViewHolder.routeType.setImageResource(R.drawable.basic);
+                break;
+            case 2:
+            case 3:
+                routeViewHolder.routeType.setImageResource(R.drawable.user);
+                break;
+            case 4:
+                routeViewHolder.routeType.setImageResource(R.drawable.detour);
+                break;
+        }
 
         // Create layout manager with initial prefetch item count
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -78,6 +94,7 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     class RouteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView totalTime, walkingTime, cost;
         private RecyclerView rvItem;
+        private ImageView routeType;
         OnItemClickListener onItemClickListener;
 
         RouteViewHolder(View itemView, OnItemClickListener onItemClickListener) {    //layout에 보여주기
@@ -86,9 +103,11 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             totalTime = itemView.findViewById(R.id.totalTimeView);
             walkingTime = itemView.findViewById(R.id.walkTime);
             cost = itemView.findViewById(R.id.costView);
+            routeType = itemView.findViewById(R.id.routeType);
             this.onItemClickListener = onItemClickListener;
 
             itemView.setOnClickListener(this);
+            rvItem.setOnClickListener(this);
         }
 
         @Override
