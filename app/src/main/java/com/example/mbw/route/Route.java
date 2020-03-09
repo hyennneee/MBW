@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 public class Route {
     //승차 정류장, 하차 정류장 정보는 여기서 처리해야될듯
-    private int totalTime, walkingTime, cost;
+    private int totalTime, walkingTime, cost, group;
     private ArrayList<Item> itemList;
 
-    public Route(int totalTime, int walkingTime, int cost, ArrayList<Item> itemList) {
-        this.walkingTime = walkingTime;
+    public Route(int totalTime, int walkingTime, int cost, int group, ArrayList<Item> itemList) {
         this.totalTime = totalTime;
+        this.walkingTime = walkingTime;
         this.cost = cost;
+        this.group = group;
         this.itemList = itemList;
     }
 
@@ -36,6 +37,14 @@ public class Route {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    public int getGroup() {
+        return group;
+    }
+
+    public void setGroup(int group) {
+        this.group = group;
     }
 
     public ArrayList<Item> getItemList() {

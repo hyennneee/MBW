@@ -97,8 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                 SignUpResponse result = response.body();
                 if(response.isSuccessful()) {
                     if (result.getCode() == 200) {  //회원가입 성공
-                        SignInActivity.userName = data.getName();
-                        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                        Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
                         startActivity(intent);
                     }
                 }
