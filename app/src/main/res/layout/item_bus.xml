@@ -24,16 +24,40 @@
 
     <TextView
         android:id="@+id/busNum"
-        android:layout_width="22dp"
-        android:layout_height="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:layout_marginLeft="3dp"
         android:layout_marginTop="5dp"
-        android:text="173"
+        android:text="서대문03"
         android:textColor="@android:color/black"
         android:textSize="13sp"
         app:layout_constraintStart_toEndOf="@+id/busType"
         app:layout_constraintTop_toBottomOf="@+id/finalStationText" />
+
+    <TextView
+        android:id="@+id/busOthers2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="3dp"
+        android:textColor="@android:color/black"
+        android:text=""
+        android:textSize="0sp"
+        app:layout_constraintStart_toEndOf="@+id/view3"
+        app:layout_constraintTop_toBottomOf="@+id/busNum" />
+
+    <TextView
+        android:id="@+id/numOfOtherBus2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:textSize="0sp"
+        app:layout_constraintStart_toEndOf="@+id/busOthers2"
+        app:layout_constraintTop_toBottomOf="@+id/busNum" />
 
     <TextView
         android:id="@+id/busRemaining"
@@ -92,6 +116,15 @@
         android:background="@drawable/bus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/numOfOtherBus1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/busRemaining"
+        app:layout_constraintTop_toBottomOf="@+id/finalStationText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

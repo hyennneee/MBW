@@ -6,11 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".showPath.ShowPathActivity">
 
+    <!--<ProgressBar
+        android:id="@+id/progress_loader"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="200dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
     <ImageView
         android:id="@+id/goBackButton"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="10dp"
         android:clickable="true"
         android:onClick="onBackClick"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,15 +80,15 @@
         android:id="@+id/destinationText"
         android:layout_width="230dp"
         android:layout_height="24dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="5dp"
+        android:clickable="true"
         android:ems="10"
         android:hint="목적지"
-        android:clickable="true"
-        android:textColor="@android:color/black"
         android:onClick="onClickShowPath"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
@@ -99,10 +113,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="110dp"
-        android:text="전체"
+        android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
+        android:text="전체"
         android:textColor="@color/colorMajor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -113,10 +127,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="33dp"
         android:layout_marginLeft="33dp"
-        android:layout_marginTop="110dp"
-        android:text="버스"
+        android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
+        android:text="버스"
         app:layout_constraintStart_toEndOf="@+id/showAll"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -126,10 +140,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="33dp"
         android:layout_marginLeft="33dp"
-        android:layout_marginTop="110dp"
-        android:text="지하철"
+        android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
+        android:text="지하철"
         app:layout_constraintStart_toEndOf="@+id/showBus"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -139,7 +153,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="33dp"
         android:layout_marginLeft="33dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
         android:text="버스+지하철"
@@ -152,15 +166,16 @@
         android:id="@+id/allLine"
         android:layout_width="60dp"
         android:layout_height="1dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="120dp"
         android:background="@color/colorMajor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <View
         android:id="@+id/busLine"
         android:layout_width="60dp"
         android:layout_height="1dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="120dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintStart_toEndOf="@+id/allLine"
         app:layout_constraintTop_toTopOf="parent" />
@@ -169,7 +184,7 @@
         android:id="@+id/subLine"
         android:layout_width="70dp"
         android:layout_height="1dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="120dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintStart_toEndOf="@+id/busLine"
         app:layout_constraintTop_toTopOf="parent" />
@@ -178,12 +193,27 @@
         android:id="@+id/busNSubLine"
         android:layout_width="100dp"
         android:layout_height="1dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="120dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/subLine"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Switch
+        android:id="@+id/non_step_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:onClick="onFilterChecked"
+        android:text="저상버스 "
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 
     <FrameLayout
@@ -194,8 +224,15 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/allLine">
-
+        app:layout_constraintTop_toBottomOf="@+id/non_step_switch">
+        <ImageView
+            android:id="@+id/loading_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="160dp"
+            android:layout_marginTop="70dp"
+            app:srcCompat="@drawable/loading"
+            tools:visibility="visible" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
