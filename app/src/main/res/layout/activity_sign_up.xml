@@ -68,12 +68,13 @@
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <Button
-        android:id="@+id/signInButton"
+        android:id="@+id/signUpButton"
         android:layout_width="350dp"
         android:layout_height="48dp"
         android:layout_marginTop="52dp"
         android:background="#1ABC9C"
-        android:text="sign in"
+        android:text="sign up"
+        android:onClick="onClickSignUp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirmPasswd" />
