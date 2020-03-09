@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mbw.accountActivity.SignInActivity;
+import com.example.mbw.pathData.Position;
 import com.example.mbw.AddPath.AddPathActivity;
 import com.example.mbw.showPath.ShowPathActivity;
 import com.google.android.gms.common.api.Status;
@@ -25,19 +27,22 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
-    TextView toHome, toOffice, exTV, exTV2;
+    TextView toHome, toOffice, exTV, exTV2, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
-    double longitude[] = new double[2], latitude[] = new double[2];
+    //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
+    //public static Vector<Location> locations;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+    public static Vector<Position> positions = new Vector<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
         destination = findViewById(R.id.destinationText);
         exTV = findViewById(R.id.exampleTV);
         exTV2 = findViewById(R.id.exampleTV2);
+        userName = findViewById(R.id.userName);
         Places.initialize(getApplicationContext(), getString(R.string.google_key));
 
+        userName.setText(SignInActivity.userName);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -59,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         //에뮬레이터 돌릴 때 들어갈 내용
         exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
         //숙입역
-        latitude[0] = 37.545097;
-        longitude[0] = 126.9697983;
+        //x경도 y 위도 (127, 36)
+        positions.add(new Position(126.9697983, 37.545097 , 0, 0));
         //숙대 명신관
         /*latitude[0] = 37.5463644;
         longitude[0] = 126.9648311;*/
@@ -83,9 +90,13 @@ public class MainActivity extends AppCompatActivity {
 
     //위치 바꼈을 때
     public void onLocationChanged(Location location){
-        latitude[0] = location.getLatitude();
-        longitude[0] = location.getLongitude();
-        exTV.setText("lat: " + latitude[0] + "\nlong: " + longitude[0]);
+        double lat, lng;
+        lat = location.getLatitude();
+        lng = location.getLongitude();
+        int size = MainActivity.positions.size();
+        Position pos = MainActivity.positions.get(size - 1);
+        pos.setSX(lat);
+        pos.setSY(lng);
     }
 
     public void onClickMain(View v){
@@ -100,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 //회사로 누르면 목적지 회사 위치로 바뀜
                 //null이면 회사 저장해달라는 메세지 띄우기
                 break;
-            case R.id.swap:
+            case R.id.swap: //도착지 지정 안 된 상태에서 swap하면 안 됨!
                 if(destination.getText().toString() != "") {
                     //swap 버튼 누르면 departure랑 destination "내용" 바뀌게
                     String deptTmp = departure.getText().toString();
@@ -109,22 +120,28 @@ public class MainActivity extends AppCompatActivity {
                     destination.setText(deptTmp);
 
                     //위도 경도도 바뀌게
-                    double lt, lg;
-                    lt = latitude[0];
-                    lg = longitude[0];
-                    latitude[0] = latitude[1];
-                    longitude[0] = longitude[1];
-                    latitude[1] = lt;
-                    longitude[1] = lg;
+                    double tmpLat, tmpLong, startLng, startLat, endLng, endLat;
+                    int size = MainActivity.positions.size();
+                    Position pos = MainActivity.positions.get(size - 1);
+                    tmpLat = pos.getSX();
+                    tmpLong = pos.getSY();
+                    endLat = pos.getEX();
+                    endLng = pos.getEY();
 
-                    String[] str = new String[6];
-                    str[0] = new Double(latitude[0]).toString();
-                    str[1] = new Double(latitude[1]).toString();
-                    str[2] = new Double(longitude[0]).toString();
-                    str[3] = new Double(longitude[1]).toString();
-                    str[4] = departure.getText().toString();
-                    str[5] = destination.getText().toString();
+                    startLat = endLat;
+                    startLng = endLng;
+                    endLat = tmpLat;
+                    endLng = tmpLong;
 
+                    String[] str = new String[2];
+                    str[0] = departure.getText().toString();
+                    str[1] = destination.getText().toString();
+
+                    if(str[0].isEmpty() || str[1].isEmpty())
+                        return;
+
+                    positions.remove(size - 1);
+                    positions.add(new Position(startLng, startLat, endLng, endLat));
                     intent = new Intent(MainActivity.this, ShowPathActivity.class);
                     intent.putExtra("LOC_DATA", str);
                     startActivity(intent);
@@ -142,19 +159,20 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.departureText:
                 FLAG = 1;
-                searchIntent = new Autocomplete.IntentBuilder(
-                        AutocompleteActivityMode.OVERLAY, fields)
-                        .build(this);
-                startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
+                searchPlace();
                 break;
             case R.id.destinationText:
                 FLAG = 2;
-                searchIntent = new Autocomplete.IntentBuilder(
-                        AutocompleteActivityMode.OVERLAY, fields)
-                        .build(this);
-                startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
+                searchPlace();
                 break;
         }
+    }
+
+    public void searchPlace(){
+        searchIntent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY, fields)
+                .build(this);
+        startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
     }
 
     @Override
@@ -163,28 +181,31 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                double lt, lg;
-                lt = place.getLatLng().latitude;
-                lg = place.getLatLng().longitude;
-                latitude[FLAG - 1] = lt;
-                longitude[FLAG - 1] = lg;
-                if(FLAG == 1){
+                double lat, lng;
+                lat = place.getLatLng().latitude;
+                lng = place.getLatLng().longitude;
+
+                int size = MainActivity.positions.size();
+                Position pos = MainActivity.positions.get(size - 1);
+
+                if(FLAG == 1){  //search for departure
+                    pos.setSX(lng);
+                    pos.setSY(lat);
                     departure.setText(place.getName());
-                    if (destination.getText() == "") {
-                        return;
-                    }
                 }
                 else if(FLAG == 2){
+                    pos.setEX(lng);
+                    pos.setEY(lat);
                     destination.setText(place.getName());}
+
+                if (departure.getText().toString().isEmpty() || destination.getText().toString().isEmpty()) {
+                    return;
+                }
                 //길찾기 실행
 
-                String[] str = new String[6];
-                str[0] = new Double(latitude[0]).toString();
-                str[1] = new Double(latitude[1]).toString();
-                str[2] = new Double(longitude[0]).toString();
-                str[3] = new Double(longitude[1]).toString();
-                str[4] = departure.getText().toString();
-                str[5] = destination.getText().toString();
+                String[] str = new String[2];
+                str[0] = departure.getText().toString();
+                str[1] = destination.getText().toString();
 
                 intent = new Intent(MainActivity.this, ShowPathActivity.class);
                 intent.putExtra("LOC_DATA", str);

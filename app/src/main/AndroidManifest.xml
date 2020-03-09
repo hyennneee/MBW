@@ -17,15 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".TestActivity"/>
         <activity android:name=".AddPath.AddBusActivity"></activity>
         <activity android:name=".AddPath.AddSubActivity" />
         <activity android:name=".myPageFragment.FragmentPath" />
         <activity android:name=".myPageFragment.FragmentPlace" />
         <activity android:name=".myPageFragment.FragmentSetting" />
         <activity android:name=".showPath.FragmentAll" />
-        <activity android:name=".showPath.FragmentBus" />
-        <activity android:name=".showPath.FragmentSub" />
-        <activity android:name=".showPath.FragmentBusNSub" />
         <activity android:name=".AddPath.AddPathActivity" />
         <activity android:name=".BookmarkActivity" />
         <activity android:name=".MyPageActivity" />

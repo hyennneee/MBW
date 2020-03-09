@@ -13,5 +13,9 @@
     <color name="line7">#677718</color>
     <color name="line8">#E9545D</color>
     <color name="line9">#A4880E</color>
+    <color name="line_gyeonui">#72C6A6</color>
+    <color name="line_bundang">#FD8F01</color>
+    <color name="line_airport">#3680B6</color>
+    <color name="line_default">#F592CC</color>
 
 </resources>

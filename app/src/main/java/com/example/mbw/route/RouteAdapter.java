@@ -3,14 +3,15 @@ package com.example.mbw.route;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.gson.JsonObject;
 
 import com.example.mbw.R;
+import com.example.mbw.showPath.ShowPathActivity;
 
 import java.util.ArrayList;
 
@@ -19,22 +20,24 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
     private ArrayList<Route> routeList;
+    public static JsonObject detailPathData;
+    private OnItemClickListener mListener;
 
-    public RouteAdapter(ArrayList<Route> routeList) {
+    public RouteAdapter(ArrayList<Route> routeList, OnItemClickListener onItemClickListener) {
         this.routeList = routeList;
+        this.mListener = onItemClickListener;
     }
 
     @NonNull
     @Override
     public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.route_recycler_view, viewGroup, false);
-        return new RouteViewHolder(view);
+        return new RouteViewHolder(view, mListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RouteViewHolder routeViewHolder, int i) {
-        Route route = routeList.get(i);
+    public void onBindViewHolder(@NonNull RouteViewHolder routeViewHolder, int position) {
+        Route route = routeList.get(position);
         //routeViewHolder가 Null이라고 함
         int time, h, m;
         time = route.getTotalTime();
@@ -72,16 +75,33 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         return routeList.size();
     }
 
-    class RouteViewHolder extends RecyclerView.ViewHolder {
+    class RouteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView totalTime, walkingTime, cost;
         private RecyclerView rvItem;
+        OnItemClickListener onItemClickListener;
 
-        RouteViewHolder(View itemView) {    //layout에 보여주기
+        RouteViewHolder(View itemView, OnItemClickListener onItemClickListener) {    //layout에 보여주기
             super(itemView);
             rvItem = itemView.findViewById(R.id.rv_sub_item);
             totalTime = itemView.findViewById(R.id.totalTimeView);
             walkingTime = itemView.findViewById(R.id.walkTime);
             cost = itemView.findViewById(R.id.costView);
+            this.onItemClickListener = onItemClickListener;
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view){
+            onItemClickListener.onItemClick(getAdapterPosition());
+        }
+    }
+    public interface OnItemClickListener {
+        void onItemClick(int position) ;
+    }
+
+    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener ;
     }
 }

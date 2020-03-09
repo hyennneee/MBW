@@ -94,13 +94,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             String mainBus = item.getBusNum().get(0);
             int size = item.getBusNum().size();
             if(item.isFirst()) {   //첫 번째가 버스
-                String remaining;
-                if(item.getRemainingTime().equals("null")){
-                    remaining = "저상버스 정보가 없습니다";
-                }
-                else{
-                    remaining = item.getRemainingTime();
-                }
+                String getRemaining = item.getRemainingTime();
+                busRemaining.setText(getRemaining);
                 //busNum 2개 이상
                 if(size > 1){
                     String subBus = item.getBusNum().get(1);
@@ -109,12 +104,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                         subBus += ", " + item.getBusNum().get(2);
                         if(size > 3){
                             numOfOtherBus2.setTextSize(13);
-                            numOfOtherBus2.setText("외 " + (size - 2) + "대");
+                            numOfOtherBus2.setText(" 외 " + (size - 2) + "대");
                         }
                     }
                     busOthers2.setText(subBus);
                 }
-                busRemaining.setText(remaining);
             }
             else{//others1
                 if(size > 1) {
@@ -204,6 +198,22 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 case 9:
                     subImage.setImageResource(R.drawable.line9);
                     subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line9));
+                    break;
+                case 100:
+                    subImage.setImageResource(R.drawable.line_bundang);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_bundang));
+                    break;
+                case 101:
+                    subImage.setImageResource(R.drawable.line_airport);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_airport));
+                    break;
+                case 104:
+                    subImage.setImageResource(R.drawable.line_gyeongui);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_gyeonui));
+                    break;
+                default:
+                    subImage.setImageResource(R.drawable.line_default);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_default));
                     break;
             }
         }
