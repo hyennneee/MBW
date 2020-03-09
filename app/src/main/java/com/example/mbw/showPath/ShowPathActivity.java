@@ -135,13 +135,13 @@ public class ShowPathActivity extends AppCompatActivity {
         transaction = fragmentManager.beginTransaction();
 
         //이 부분 수정!!
-        String[] strings;
+        /*String[] strings;
         strings = getIntent().getStringArrayExtra("LOC_DATA");
         departure.setText(strings[0]);
         destination.setText(strings[1]);
         routeHistory = new Vector<>();
         routeHistory.add(strings[0]);
-        routeHistory.add(strings[1]);
+        routeHistory.add(strings[1]);*/
         service = RetrofitClient.getClient().create(ServiceApi.class);
         getLastPosition();
         /*departure.setText("" + lastPos.getSX() + ", " + lastPos.getSY());
@@ -739,7 +739,7 @@ public class ShowPathActivity extends AppCompatActivity {
             }
 
             if(!found){
-                subRemainingInfo.add("정보를 찾지 못했습니다");
+                subRemainingInfo.add("운행종료");
             }
 
             numOfSubCalled++;

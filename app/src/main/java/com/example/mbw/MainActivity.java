@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
         //숙입역
         //x경도 y 위도 (127, 36)
         positions.add(new Position(126.9625327, 37.5464301 , 0, 0));
+        /*intent = new Intent(MainActivity.this, ShowPathActivity.class);
+        intent.putExtra("LOC_DATA", str);
+        startActivity(intent);*/
         //숙대 명신관
         /*latitude[0] = 37.5463644;
         longitude[0] = 126.9648311;*/
@@ -137,14 +140,8 @@ public class MainActivity extends AppCompatActivity {
                     str[0] = departure.getText().toString();
                     str[1] = destination.getText().toString();
 
-                    if(str[0].isEmpty() || str[1].isEmpty())
-                        return;
-
                     positions.remove(size - 1);
                     positions.add(new Position(startLng, startLat, endLng, endLat));
-                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
-                    intent.putExtra("LOC_DATA", str);
-                    startActivity(intent);
                 }
                 break;
             case R.id.profileView:
@@ -185,8 +182,8 @@ public class MainActivity extends AppCompatActivity {
                 lat = place.getLatLng().latitude;
                 lng = place.getLatLng().longitude;
 
-                int size = MainActivity.positions.size();
-                Position pos = MainActivity.positions.get(size - 1);
+                int size = positions.size();
+                Position pos = positions.get(size - 1);
 
                 if(FLAG == 1){  //search for departure
                     pos.setSX(lng);
