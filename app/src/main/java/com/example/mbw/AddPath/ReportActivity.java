@@ -14,18 +14,36 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.mbw.MainActivity;
 import com.example.mbw.R;
+import com.example.mbw.addPathData.addPathResponse;
+import com.example.mbw.problemArea.problemAreaData;
+import com.example.mbw.problemArea.problemAreaResponse;
+
+import com.example.mbw.network.RetrofitClient;
+import com.example.mbw.network.ServiceApi;
+import com.example.mbw.problemArea.problemAreaResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /* 사용자 문제 구역 제보 -> 서버 json 전송*/
 public class ReportActivity extends AppCompatActivity {
+
+    ServiceApi service;
     DataBaseHelper DBHelper;
     String selectedLine = "01호선";
     List stationNameList = new ArrayList(); //seletedLine에 해당하는 역이름 리스트
@@ -41,12 +59,15 @@ public class ReportActivity extends AppCompatActivity {
     DataAdapter mDbHelper;
 
     // 서버에 전송
+    JSONObject obj;
     int line = 0;
     String Name;
     int transfer;
     String nextStation;
     String exitNo;
     int problemType;
+    String resultMessage;
+    String problem = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +86,7 @@ public class ReportActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,stationNameList);
         stationName.setAdapter(adapter);
 
+        service = RetrofitClient.getClient().create(ServiceApi.class);
 
         RadioGroup rg = (RadioGroup)findViewById(R.id.problemType);
 
@@ -251,27 +273,26 @@ public class ReportActivity extends AppCompatActivity {
         Name = stationName.getText().toString();
         nextStation = directionName.getText().toString();
         makeReportJSON(); // json 파일 만들기
+        sendProblemArea(new problemAreaData(line, Name, transfer, nextStation, exitNo, problemType, problem));
     }
 
-    public JSONObject makeReportJSON(){
-        JSONObject obj = new JSONObject();
+    public void makeReportJSON(){
+        obj = new JSONObject();
         try{
             obj.put("subwayCode", line);
             obj.put("stationName", Name);
             obj.put("transfer", transfer);
 
             if(transfer == 1) obj.put("nextStation", nextStation);
-            else obj.put("nextStation",JSONObject.NULL);
+            else {nextStation = null; obj.put("nextStation",JSONObject.NULL);}
 
             if(problemType == 4){
                 exitNo = exitNum.getText().toString();
                 obj.put("endExitNo", exitNo);
             }
-            else obj.put("endExitNo", "전체");
+            else {exitNo = "전체"; obj.put("endExitNo", "전체");}
 
             obj.put("problemNo", problemType);
-
-            String problem = "";
 
             switch (problemType){
                 case 1:
@@ -295,7 +316,63 @@ public class ReportActivity extends AppCompatActivity {
         }
 
         Log.i("JSON Test", obj.toString());
-        return obj;
+    }
+
+    private void sendProblemArea(problemAreaData data){
+        service.reportProblem("application/json", data).enqueue(new Callback<problemAreaResponse>() {
+            @Override
+            public void onResponse(Call<problemAreaResponse> call, Response<problemAreaResponse> response) {
+                problemAreaResponse result = response.body();
+
+                boolean success = response.isSuccessful();
+                Log.i("successfdggdf", success+"");
+
+                if(success) {
+                    int code = result.getCode();
+
+                    if (code == 200) {   // 서버 전송 성공
+                        try {
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Intent intent = new Intent(ReportActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                }
+                else {
+                    try {
+                        setError(response);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<problemAreaResponse> call, Throwable t) {
+                Toast.makeText(ReportActivity.this, "경로 추가 에러 발생", Toast.LENGTH_SHORT).show();
+                Log.e("위험 지역 제보하기", t.getMessage());
+
+            }
+        });
+    }
+
+    public void setError(Response<problemAreaResponse> response) throws IOException {
+        Gson gson = new Gson();
+        problemAreaResponse result = gson.fromJson(response.errorBody().string(), problemAreaResponse.class);
+        int code = result.getCode();
+
+        if (code == 500) {   // 서버 내부 오류
+            Toast.makeText(ReportActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show(); //오류메시지 출력
+            Log.i("500", result.getMessage());
+        }
+        else if(code == 400){  // 문제 제보 작성 실패, 파라미터 값 부족 (ex transfer 값 안 넣었을 때)
+            Log.i("400", result.getMessage());
+        }
+
+        Toast.makeText(ReportActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show(); //오류메시지 출력
+        Log.i("etc", result.getMessage());
     }
 
 

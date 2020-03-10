@@ -4,8 +4,12 @@ import com.example.mbw.accountData.SignInData;
 import com.example.mbw.accountData.SignInResponse;
 import com.example.mbw.accountData.SignUpData;
 import com.example.mbw.accountData.SignUpResponse;
+import com.example.mbw.addPathData.addPathData;
 import com.example.mbw.addPathData.addPathResponse;
+import com.example.mbw.problemArea.problemAreaData;
+import com.example.mbw.problemArea.problemAreaResponse;
 import com.example.mbw.pathData.PathResponse;
+import com.example.mbw.problemArea.problemAreaResponse;
 
 import org.json.JSONObject;
 
@@ -28,5 +32,8 @@ public interface ServiceApi {
     Call<PathResponse>searchPath(@Query("SX") double SX, @Query("SY") double SY, @Query("EX") double EX, @Query("EY") double EY, @Query("SearchPathType") int type);
 
     @POST("/addMyPath")
-    Call<addPathResponse> addMyPath(@Header("Content-Type") String contentType, @Header("token") String token, @Body JSONObject data);
+    Call<addPathResponse> addMyPath(@Header("Content-Type") String contentType, @Header("token") String token, @Body addPathData data);
+
+    @POST("/problemArea")
+    Call<problemAreaResponse> reportProblem(@Header("Content-Type") String contentType, @Body problemAreaData data);
 }
