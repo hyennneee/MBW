@@ -5,7 +5,6 @@ import com.example.mbw.accountData.SignInResponse;
 import com.example.mbw.accountData.SignUpData;
 import com.example.mbw.accountData.SignUpResponse;
 import com.example.mbw.pathData.PathResponse;
-
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;

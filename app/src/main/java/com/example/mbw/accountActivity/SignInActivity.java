@@ -14,23 +14,16 @@ import com.example.mbw.MainActivity;
 import com.example.mbw.R;
 import com.example.mbw.accountData.SignInData;
 import com.example.mbw.accountData.SignInResponse;
-import com.example.mbw.accountData.SignUpData;
-import com.example.mbw.accountData.SignUpResponse;
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 
 public class SignInActivity extends AppCompatActivity {
 
