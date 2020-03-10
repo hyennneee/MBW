@@ -38,7 +38,7 @@ public class SignInActivity extends AppCompatActivity {
     TextView signUp;
     EditText email, passwd;
     String strEmail, strPasswd;
-    public static String token = null, userName = null;
+    String token = null, userName = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +81,6 @@ public class SignInActivity extends AppCompatActivity {
         else{
             startSignIn(new SignInData(strEmail, strPasswd));
         }
-            //Intent intent = null;
     }
 
     public void onClickCreateAccount(View v){
@@ -103,17 +102,16 @@ public class SignInActivity extends AppCompatActivity {
 
                     if (code == 200) {   //로그인 성공
                         JsonElement userData = result.getData();
+                        String infoArr[] = new String[2];
                         try {
-                            //JsonObject대신 Element로 하니까 됐음
-                            token = userData.getAsJsonObject().get("token").getAsString();
-                            userName = userData.getAsJsonObject().get("name").getAsString();
+                            //JsonObject대신 JsonElement로
+                            infoArr[0] = userData.getAsJsonObject().get("token").getAsString();
+                            infoArr[1] = userData.getAsJsonObject().get("name").getAsString();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-                        intent.putExtra("token", token);
-                        Log.i("token", token);
-                        intent.putExtra("userName", userName);
+                        intent.putExtra("USER_INFO", infoArr);
                         startActivity(intent);
                     }
                 }

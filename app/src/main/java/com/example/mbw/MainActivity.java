@@ -30,12 +30,15 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+
 public class MainActivity extends AppCompatActivity {
+
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
     TextView toHome, toOffice, exTV, exTV2, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
+    //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
     String token = null;
     // Set the fields to specify which types of place data to
@@ -56,11 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
         //String info[] = getIntent().getStringArrayExtra("USER_INFO");
         //token = info[0];
+        /*
         token = getIntent().getStringExtra("token");
         Log.i("token2", token);
 
         String name = getIntent().getStringExtra("userName");
         userName.setText(name);
+*/
+
+        String info[] = getIntent().getStringArrayExtra("USER_INFO");
+        token = info[0];
+        userName.setText(info[1]);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -72,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
         exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
         //숙입역
         //x경도 y 위도 (127, 36)
-        positions.add(new Position(126.9625327, 37.5464301 , 0, 0));
+        positions.add(new Position(126.9625327, 37.5464301 , 0, 0));    //127.0043575, 37.5672437
+        /*intent = new Intent(MainActivity.this, ShowPathActivity.class);
+        startActivity(intent);*/
         //숙대 명신관
         /*latitude[0] = 37.5463644;
         longitude[0] = 126.9648311;*/
@@ -84,11 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
         /*toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
+
         profile = findViewById(R.id.profileView);
         swap = findViewById(R.id.swap);
         home = findViewById(R.id.houseButton);
         office = findViewById(R.id.officeButton);
         bookmark = findViewById(R.id.bookmarkButton);*/
+
     }
 
     //위치 바꼈을 때
@@ -177,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 .build(this);
         startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -187,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
                 lat = place.getLatLng().latitude;
                 lng = place.getLatLng().longitude;
 
-                int size = MainActivity.positions.size();
-                Position pos = MainActivity.positions.get(size - 1);
+                int size = positions.size();
+                Position pos = positions.get(size - 1);
 
                 if(FLAG == 1){  //search for departure
                     pos.setSX(lng);

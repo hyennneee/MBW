@@ -90,7 +90,7 @@ public class ShowPathActivity extends AppCompatActivity {
     private TextView all, bus, sub, busNsub;
     private View first, second, third, fourth;
 
-    private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1, totalWalk, cost, totalTime;
+    private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1;//, totalWalk, cost, totalTime;
     private Intent searchIntent = null;
     Document doc;
 
@@ -144,8 +144,6 @@ public class ShowPathActivity extends AppCompatActivity {
         routeHistory.add(strings[1]);
         service = RetrofitClient.getClient().create(ServiceApi.class);
         getLastPosition();
-        /*departure.setText("" + lastPos.getSX() + ", " + lastPos.getSY());
-        destination.setText("" + lastPos.getEX() + ", " + lastPos.getEY());*/
         startSearchPath(lastPos);
     }
 
@@ -405,6 +403,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 pathArrayCount = pathArray.size();
                 //doInBackground
                 for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
+                    int totalWalk, cost, totalTime, group;
                     JsonObject pathArrayDetailOBJ = pathArray.get(a).getAsJsonObject();
                     totalWalk = 0;
 
@@ -415,7 +414,12 @@ public class ShowPathActivity extends AppCompatActivity {
                     int pathType = pathArrayDetailOBJ.get("pathType").getAsInt();
                     if (searchType == 0 || searchType ==  pathType) {   //검색 타입과 일치하는 것만 출력
                         JsonObject infoOBJ = pathArrayDetailOBJ;
-                        cost = infoOBJ.get("totalPay").getAsInt(); // 요금
+                        group = infoOBJ.get("group").getAsInt();
+                        if(group == 1)
+                            cost = infoOBJ.get("totalPay").getAsInt(); // 요금
+                        else{
+                            cost = 0;
+                        }
                         totalTime = infoOBJ.get("totalTime").getAsInt(); // 소요시간
                         String finalStation = infoOBJ.get("lastEndStation").getAsString(); // 도착 정거장
                         //한 세부 경로에 대해서만 필요
@@ -503,7 +507,7 @@ public class ShowPathActivity extends AppCompatActivity {
                         totalTime += totalWalk;
                         totalWalk *= 2; //도보 시간에 보통 사람들의 2배 가량 소요된다 가정
                         //Route: totalTime, walkingTime, cost
-                        Route route = new Route(totalTime, totalWalk, cost, itemArrayList);
+                        Route route = new Route(totalTime, totalWalk, cost, group, itemArrayList);
                         routeArrayList.add(route);
                     }
                 }
@@ -623,14 +627,14 @@ public class ShowPathActivity extends AppCompatActivity {
                             if(item.isFirst()) {    //첫타자인 경우만
                                 ArrivalBusInfo arrivalBusInfo = arrBusInfo.get(index);
                                 String arrmsg = arrivalBusInfo.arrmsg;
-                                if(!arrmsg.startsWith("곧") && !arrmsg.startsWith("저")) { //
-                                    String str[] = arrmsg.split("분");
+                                String str[] = arrmsg.split("분");
+                                try {   //남은 시간이 숫자일 경우
                                     if (Integer.parseInt(str[0]) >= 5) //10분 이상
                                         item.setRemainingTime(str[0] + "분");
                                     else
                                         item.setRemainingTime(arrmsg);
                                 }
-                                else {
+                                catch(NumberFormatException e) {    //문자일 경우
                                     item.setRemainingTime(arrmsg);
                                 }
                                 item.setNon_step(arrivalBusInfo.busType);
@@ -733,7 +737,7 @@ public class ShowPathActivity extends AppCompatActivity {
             }
 
             if(!found){
-                subRemainingInfo.add("정보를 찾지 못했습니다");
+                subRemainingInfo.add("운행종료");
             }
 
             numOfSubCalled++;
