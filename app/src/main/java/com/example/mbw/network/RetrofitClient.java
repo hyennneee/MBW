@@ -1,9 +1,5 @@
 package com.example.mbw.network;
 
-import android.content.res.Resources;
-
-import com.example.mbw.R;
-
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -14,6 +10,7 @@ public class RetrofitClient {
     private static Retrofit retrofit = null;
 
     public RetrofitClient() {
+
     }
 
     public static Retrofit getClient() {

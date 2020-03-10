@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mbw.R;
 
 import java.util.ArrayList;
+import java.util.logging.Handler;
 
 public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private ArrayList<Item> data;  //adapter는 viewholder로 변경할 data를 가지고 있는다
+
+    Handler handler;
+    //CountDownTimerView.CountRunnable countRunnable;
 
     private static int TYPE_BUS = 1;
     private static int TYPE_SUB = 2;
@@ -237,5 +241,111 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
         }
     }
+
+    /*public class CountDownTimerView extends LinearLayout {
+        Handler handler;
+        CountRunnable countRunnable;
+        String endtime;
+        boolean endtimeoverflag = false;
+        ServiceReciever serviceReciever;
+        Context mContext;
+        int position;
+        private transient TextView tvCountDays;
+        private transient TextView tvCounthours;
+        private transient TextView tvCountMinute;
+        private transient TextView tvCountSeconds;
+
+        public CountDownTimerView(Context context) {
+            super(context);
+        }
+
+        public CountDownTimerView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public CountDownTimerView(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        @Override
+        protected void onFinishInflate() {
+            super.onFinishInflate();
+            tvCountDays = (TextView ) findViewById(R.id.tvCountDays);
+            tvCounthours = (TextView ) findViewById(R.id.tvCounthours);
+            tvCountMinute = (TextView ) findViewById(R.id.tvCountMinute);
+            tvCountSeconds = (TextView ) findViewById(R.id.tvCountSeconds);
+            countRunnable = new CountRunnable();
+            handler = new Handler();
+        }
+
+        public void setCountDownData() {
+            handler.postDelayed(countRunnable, 1000);
+        }
+
+        public void setEndTime(String endtime) {
+            this.endtime = endtime;
+            setCountDownData();
+        }
+
+        public boolean getendtimeflag() {
+            return endtimeoverflag;
+        }
+
+
+
+        public void setContext(Context context,int position) {
+            this.mContext = context;
+            this.position=position;
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            super.onDetachedFromWindow();
+            handler.removeCallbacks(countRunnable);
+        }
+
+        class CountRunnable implements Runnable {
+
+            @Override
+            public void run() {
+                String[] countdowntimearray = Utils.getCounterTime(endtime);
+
+                if (Integer.parseInt(countdowntimearray[0]) <= 0) {
+                    tvCountDays.setText("0");
+                    endtimeoverflag = false;
+                } else {
+                    tvCountDays.setText(countdowntimearray[0]);
+                    endtimeoverflag = true;
+                }
+
+                if (Integer.parseInt(countdowntimearray[1]) <= 0) {
+                    tvCounthours.setText("0");
+                    endtimeoverflag = false;
+                } else {
+                    tvCounthours.setText(countdowntimearray[1]);
+                    endtimeoverflag = true;
+                }
+
+                if (Integer.parseInt(countdowntimearray[2]) <= 0) {
+                    tvCountMinute.setText("0");
+                    endtimeoverflag = false;
+                } else {
+                    tvCountMinute.setText(countdowntimearray[2]);
+                    endtimeoverflag = true;
+                }
+
+                if (Integer.parseInt(countdowntimearray[3]) <= 0) {
+                    tvCountSeconds.setText("0");
+                    endtimeoverflag = false;
+                } else {
+                    tvCountSeconds.setText(countdowntimearray[3]);
+                    endtimeoverflag = true;
+                }
+
+                setCountDownData();
+            }
+        }
+    }*/
+
 
 }
