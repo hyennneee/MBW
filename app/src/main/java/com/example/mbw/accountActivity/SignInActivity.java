@@ -111,6 +111,9 @@ public class SignInActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                        intent.putExtra("token", token);
+                        Log.i("token", token);
+                        intent.putExtra("userName", userName);
                         startActivity(intent);
                     }
                 }

@@ -9,32 +9,49 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mbw.AddPath.AddItem;
 import com.example.mbw.DetailPathActivity;
 import com.example.mbw.MainActivity;
 import com.example.mbw.R;
+import com.example.mbw.accountActivity.SignInActivity;
+import com.example.mbw.accountData.SignInResponse;
+import com.example.mbw.addPathData.addPathResponse;
+import com.example.mbw.network.RetrofitClient;
+import com.example.mbw.network.ServiceApi;
 import com.example.mbw.route.DetailItem;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-// TODO : json 파일 보내기 (1. 위험 spot, 2. 사용자 제보 경로)
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class AddPathActivity extends AppCompatActivity {
 
     private String startPoint, endPoint;
     // TODO : 앞에서 start, end 에 대한 latitude, longitude 받아오기
+    ServiceApi service;
+    JSONObject obj, tokenObj;
     private double startLongi, startLati, endLongi, endLati;
     private ArrayList<AddItem> addItemList = new ArrayList<AddItem>();
     Intent intent = null;
     RecyclerView recyclerView;
     TextView startTv, endTv;
 
+
     boolean usingSub, usingBus = false;
     int pathType = 0;
+    String token ="yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c";    // TODO : token -> 앞에서 받아오기
+    String resultMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +65,10 @@ public class AddPathActivity extends AppCompatActivity {
         endTv = findViewById(R.id.endPoint);
         startPoint = startTv.getText().toString();
         endPoint = endTv.getText().toString();
+
+        service = RetrofitClient.getClient().create(ServiceApi.class);
+        token = getIntent().getStringExtra("token");
+        Log.i("token43t5", token);
     }
 
     @Override
@@ -106,8 +127,11 @@ public class AddPathActivity extends AppCompatActivity {
     }
 
     public void makePathJSON(){
-        JSONObject obj = new JSONObject();
+        obj = new JSONObject();
+        tokenObj = new JSONObject();
         try{
+            //tokenObj.put("Content-Type", "application/json");
+            tokenObj.put("token", token);
             obj.put("startAddress", startPoint);
             obj.put("startLongi", startLongi);
             obj.put("startLati", startLati);
@@ -120,7 +144,14 @@ public class AddPathActivity extends AppCompatActivity {
             // path Type : 1-지하철, 2-버스, 3-버스+지하철
             pathObj.put("pathType", pathType);
 
+            /* 경로 시작에 도보 추가*/
             JSONArray subPathArray = new JSONArray();
+            JSONObject subPathStartObj = new JSONObject();
+            subPathStartObj.put("trafficType", 3);
+            subPathStartObj.put("distance", 0);
+            subPathStartObj.put("sectionTime", 0);
+            subPathArray.put(subPathStartObj);
+
             for (int i=0; i<addItemList.size(); i++){
                 AddItem nowItem = addItemList.get(i);
                 JSONObject subPathObj = new JSONObject();
@@ -135,7 +166,9 @@ public class AddPathActivity extends AppCompatActivity {
                     subPathObj.put("endY", nowItem.getEndY());
                     subPathObj.put("startID", nowItem.getStartId());
                     subPathObj.put("busNo", nowItem.getNum());
-                    subPathObj.put("stations", nowItem.getPassingStationList());
+                    JSONArray list = new JSONArray(nowItem.getPassingStationList());
+                    subPathObj.put("stations", list);
+                    //subPathObj.put("stations", nowItem.getPassingStationList().toString());
                 }
                 else{ // 지하철일 때
                     subPathObj.put("trafficType", 1);
@@ -143,6 +176,13 @@ public class AddPathActivity extends AppCompatActivity {
                     subPathObj.put("endID",nowItem.getEndId());
                 }
                 subPathArray.put(subPathObj);
+
+                /*대중교통 끝에 도보 추가*/
+                JSONObject subPathEndObj = new JSONObject();
+                subPathEndObj.put("trafficType", 3);
+                subPathEndObj.put("distance", 0);
+                subPathEndObj.put("sectionTime", 0);
+                subPathArray.put(subPathEndObj);
             }
 
             pathObj.put("subPath", subPathArray);
@@ -166,7 +206,71 @@ public class AddPathActivity extends AppCompatActivity {
         else
             pathType = 0; // 추가된 경로 없음.
         makePathJSON();
-        // 어느 화면으로 돌아갈지 정하기
+        sendMyPath(token, obj);
     }
+
+    private void sendMyPath(String token, JSONObject obj){
+
+        service.addMyPath("application/json", token, obj).enqueue(new Callback<addPathResponse>() {
+            @Override
+            public void onResponse(Call<addPathResponse> call, Response<addPathResponse> response) {
+                addPathResponse result = response.body();
+
+                boolean success = response.isSuccessful();
+                Log.i("successfdggdf", success+"");
+
+                if(success) {
+                    int code = result.getCode();
+
+                    if (code == 200) {   // 서버전송 성공
+                        JsonElement userData = result.getData();
+                        try {
+                            //JsonObject대신 Element로 하니까 됐음
+                            resultMessage = userData.getAsJsonObject().get("message").getAsString();
+                            Log.i("resultMessage", resultMessage);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Intent intent = new Intent(AddPathActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                }
+                else {
+                    try {
+                        setError(response);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<addPathResponse> call, Throwable t) {
+                Toast.makeText(AddPathActivity.this, "경로 추가 에러 발생", Toast.LENGTH_SHORT).show();
+                Log.e("경로 추가 에러 발생", t.getMessage());
+
+            }
+        });
+    }
+
+    public void setError(Response<addPathResponse> response) throws IOException {
+        Gson gson = new Gson();
+        addPathResponse result = gson.fromJson(response.errorBody().string(), addPathResponse.class);
+        int code = result.getCode();
+
+        //View focusView = null;
+        if (code == 400) {   // 버스, 지하철, 도보 추가 실패 or 헤더에 토큰값 없을 때
+            Toast.makeText(AddPathActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show(); //오류메시지 출력
+            Log.i("구체적 에러", result.getMessage());
+        }
+
+
+        Toast.makeText(AddPathActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show(); //오류메시지 출력
+        Log.i("구체적 에러", result.getMessage());
+        //focusView.requestFocus();
+    }
+
 
 }

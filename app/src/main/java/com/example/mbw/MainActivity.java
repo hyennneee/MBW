@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,17 +30,14 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-
 public class MainActivity extends AppCompatActivity {
-
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
     TextView toHome, toOffice, exTV, exTV2, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
-    //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
-    //public static Vector<Location> locations;
+    String token = null;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
@@ -56,7 +54,13 @@ public class MainActivity extends AppCompatActivity {
         userName = findViewById(R.id.userName);
         Places.initialize(getApplicationContext(), getString(R.string.google_key));
 
-        userName.setText(SignInActivity.userName);
+        //String info[] = getIntent().getStringArrayExtra("USER_INFO");
+        //token = info[0];
+        token = getIntent().getStringExtra("token");
+        Log.i("token2", token);
+
+        String name = getIntent().getStringExtra("userName");
+        userName.setText(name);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
         //숙입역
         //x경도 y 위도 (127, 36)
-        positions.add(new Position(126.9697983, 37.545097 , 0, 0));
+        positions.add(new Position(126.9625327, 37.5464301 , 0, 0));
         //숙대 명신관
         /*latitude[0] = 37.5463644;
         longitude[0] = 126.9648311;*/
@@ -80,13 +84,11 @@ public class MainActivity extends AppCompatActivity {
 
         /*toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
-
         profile = findViewById(R.id.profileView);
         swap = findViewById(R.id.swap);
         home = findViewById(R.id.houseButton);
         office = findViewById(R.id.officeButton);
         bookmark = findViewById(R.id.bookmarkButton);*/
-
     }
 
     //위치 바꼈을 때
@@ -175,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
                 .build(this);
         startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -222,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     public void onExample(View v){
         intent = new Intent(MainActivity.this, DetailPathActivity.class);
         startActivity(intent);
@@ -229,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onExample2(View v){
         intent = new Intent(MainActivity.this, AddPathActivity.class);
+        intent.putExtra("token", token);
         startActivity(intent);
     }
 
