@@ -81,7 +81,6 @@ public class SignInActivity extends AppCompatActivity {
         else{
             startSignIn(new SignInData(strEmail, strPasswd));
         }
-            //Intent intent = null;
     }
 
     public void onClickCreateAccount(View v){

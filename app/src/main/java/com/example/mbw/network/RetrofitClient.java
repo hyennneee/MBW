@@ -4,6 +4,7 @@ import android.content.res.Resources;
 
 import com.example.mbw.R;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
