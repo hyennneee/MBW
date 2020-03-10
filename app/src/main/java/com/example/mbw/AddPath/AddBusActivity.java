@@ -84,7 +84,7 @@ public class AddBusActivity extends AppCompatActivity {
     public void OnClickHandle(View view){
         startIndex = adapter.startIndex;
         endIndex = adapter.endIndex;
-        passingStation = endIndex-startIndex+1;
+        passingStation = endIndex-startIndex;
         startID = stationIDList.get(startIndex);
         passingStationList = new ArrayList(stationNameList.subList(startIndex, endIndex+1));
         Log.i("startIndex", stationNameList.get(0));
