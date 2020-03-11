@@ -12,9 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.mbw.DetailPathActivity;
-import com.example.mbw.MainActivity;
 import com.example.mbw.TestActivity;
 import com.example.mbw.route.RouteAdapter;
 
@@ -26,7 +23,6 @@ import static com.example.mbw.showPath.ShowPathActivity.routeArrayList;
 public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickListener{
    static  private RouteAdapter mAdapter;
     static private RecyclerView mRecyclerView;
-    private JsonObject detailPathData;
 
     //1-지하철, 2-버스, 3-버스+지하철
     //api에서 받아온 결과를 어떻게 arrayList에 넣지?
@@ -53,9 +49,17 @@ public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickLis
     }
     public void onItemClick(int position){
         //아이템 클릭 이벤트 처리
-        detailPathData = ShowPathActivity.pathArray.get(position).getAsJsonObject();
+        String tmp[] = getArguments().getStringArray("PATH_INFO");
+        JsonObject jsonData = ShowPathActivity.pathArray.get(position).getAsJsonObject();
+        String detailPathData[] = new String[7];
+        detailPathData[0] = jsonData.toString();
+        int i = 1;
+        for( String data : tmp ) {
+            detailPathData[i++] = data;
+        }
+
         Intent intent = new Intent(getActivity(), TestActivity.class);
-        intent.putExtra("DETAIL_PATH", detailPathData.toString());
+        intent.putExtra("DETAIL_PATH", detailPathData);
         startActivity(intent);
     }
 }

@@ -3,23 +3,22 @@ package com.example.mbw.route;
 import java.util.Vector;
 
 public class Item {
-    private String stationName, remainingTime, arsID, non_step;
+    private String stationName, remainingTime, arsID, currStation;
     Vector<String> busNum;
-    private int subLine, busType;
+    private int subLine, busType, time = 0;   //time은 남은 시간이 문자로 들어올 때, 또는 받지 않았을 때 0임
     boolean first;
     //오디세이 parameter: busID
     //공공데이터 포털 parameter: idx(=ord), localStationID(=stationID)
     //공통: 남은 시간, 역 이름; 지하철: 노선번호이미지, 버스: 버스번호, 버스타입, 저상여부, 정류장 번호
 
 
-    public Item(String stationName, String remainingTime, Vector<String> busNum, String arsID, int subLine, int busType, String non_step, boolean first) {
+    public Item(String stationName, Vector<String> busNum, String arsID, int subLine, int busType, boolean first) {
         this.stationName = stationName;
-        this.remainingTime = remainingTime;
+        this.remainingTime = "";
         this.busNum = busNum;
         this.arsID = arsID;
         this.subLine = subLine;
         this.busType = busType;
-        this.non_step = non_step;
         this.first = first;
     }
 
@@ -71,19 +70,27 @@ public class Item {
         this.arsID = arsID;
     }
 
-    public String getNon_step() {
-        return non_step;
-    }
-
-    public void setNon_step(String non_step) {
-        this.non_step = non_step;
-    }
-
     public boolean isFirst() {
         return first;
     }
 
     public void setFirst(boolean first) {
         this.first = first;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public String getCurrStation() {
+        return currStation;
+    }
+
+    public void setCurrStation(String currStation) {
+        this.currStation = currStation;
     }
 }

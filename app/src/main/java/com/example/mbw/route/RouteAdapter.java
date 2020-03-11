@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.JsonObject;
 
 import com.example.mbw.R;
-import com.example.mbw.showPath.ShowPathActivity;
 
 import java.util.ArrayList;
 

@@ -80,10 +80,11 @@ public class MainActivity extends AppCompatActivity {
         //에뮬레이터 돌릴 때 들어갈 내용
         exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
         //숙입역
-        //x경도 y 위도 (127, 36)
+        //x경도 y 위도 (127, 36)//126.9513153, 37.496374
         positions.add(new Position(126.9625327, 37.5464301 , 0, 0));    //127.0043575, 37.5672437
         /*intent = new Intent(MainActivity.this, ShowPathActivity.class);
         startActivity(intent);*/
+
         //숙대 명신관
         /*latitude[0] = 37.5463644;
         longitude[0] = 126.9648311;*/
