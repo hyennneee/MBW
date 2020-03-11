@@ -1,6 +1,7 @@
 package com.example.mbw;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class TestActivity extends AppCompatActivity{
             tmp += jsonString[i];
         }
         tv.setText(tmp);
+        Log.i("JSON", tmp);
         /*JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);*/
     }
