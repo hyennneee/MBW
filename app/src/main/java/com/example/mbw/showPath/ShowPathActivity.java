@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -19,12 +18,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mbw.MainActivity;
+import com.example.mbw.DB.DBHelper;
+import com.example.mbw.DB.DBvalue;
+import com.example.mbw.DB.RouteDBHelper;
 import com.example.mbw.R;
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
 import com.example.mbw.pathData.PathResponse;
-import com.example.mbw.pathData.Position;
 import com.example.mbw.route.Item;
 import com.example.mbw.route.Route;
 import com.google.android.gms.common.api.Status;
@@ -86,6 +86,8 @@ public class ShowPathActivity extends AppCompatActivity {
     private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1;//, totalWalk, cost, totalTime;
     private Intent searchIntent = null;
     Document doc;
+    DBHelper MyDB;
+    RouteDBHelper routeDBHelper;
 
 
     //variables to measure time
@@ -94,16 +96,16 @@ public class ShowPathActivity extends AppCompatActivity {
     Vector<String> busRemaining;
     Vector<SubInfo> subInfo;
     Vector<String> subRemainingInfo;
-    public static Vector<String> routeHistory;
-    int numOfBus, numOfBusCalled, numOfSub, numOfSubCalled, numOfCalled, pathArrayCount, posSize;
+    int numOfBus, numOfBusCalled, numOfSub, numOfSubCalled, numOfCalled, pathArrayCount;
     boolean isFiltered = false;
     ServiceApi service;
-    Position lastPos;
     static JsonArray pathArray;
     //public static JsonArray pathArray;
 
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
     static ArrayList<Route> routeArrayList;
+    private String sx, sy, ex, ey;
+    final int forTest = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,31 +128,36 @@ public class ShowPathActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
+        MyDB = new DBHelper(this);
+        routeDBHelper = new RouteDBHelper(this);
 
         //이 부분 수정!!
         String[] strings;
         strings = getIntent().getStringArrayExtra("LOC_DATA");
         departure.setText(strings[0]);
         destination.setText(strings[1]);
-        routeHistory = new Vector<>();
-        routeHistory.add(strings[0]);
-        routeHistory.add(strings[1]);
+        sx = strings[2]; sy = strings[3]; ex = strings[4]; ey = strings[5];
         service = RetrofitClient.getClient().create(ServiceApi.class);
-        getLastPosition();
-        startSearchPath(lastPos);
+        startSearchPath(0);
     }
 
     public void onClickShowPath(View v) {
+        String dest, dept;
+        dept = departure.getText().toString();
+        dest = destination.getText().toString();
         switch (v.getId()) {
             case R.id.star:
                 //즐겨찾는 경로에 추가
+                if(!dept.isEmpty() && !dest.isEmpty()) {
+                    routeDBHelper.insertRouteBM(new DBvalue(dept, dest, sx, sy, ex, ey));
+                }
                 break;
             case R.id.swap:
                 //swap 버튼 누르면 departure랑 destination 내용 바뀌게
                 //fragmentAll로 초기화
                 searchType = 0;
-                String deptTmp = departure.getText().toString();
-                String destTmp = destination.getText().toString();
+                dest = departure.getText().toString();
+                dept = destination.getText().toString();
                 all.setTextColor(Color.parseColor("#1ABC9C"));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -161,24 +168,17 @@ public class ShowPathActivity extends AppCompatActivity {
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 //transaction.replace(R.id.showPathframe, fragmentAll);//.commitAllowingStateLoss();
-                departure.setText(destTmp);
-                destination.setText(deptTmp);
-                routeHistory.add(destTmp);
-                routeHistory.add(deptTmp);
+                departure.setText(dept);
+                destination.setText(dest);
 
-                //위도, 경도 바뀌게
-                double SX, SY, EX, EY;
-                getLastPosition();
-                Position pos;
-                SX = lastPos.getEX();
-                SY = lastPos.getEY();
-                EX = lastPos.getSX();
-                EY = lastPos.getSY();
-                pos = new Position(SX, SY, EX, EY);
-                MainActivity.positions.add(pos);
+                //위도 경도도 바뀌게
+                String tmpSx, tmpSy;
+                tmpSx = sx; tmpSy = sy;
+                sx = ex; sy = ey;
+                ex = tmpSx; ey = tmpSy;
 
                 //길찾기 실행
-                startSearchPath(pos);
+                startSearchPath(0);
                 break;
             case R.id.departureText:
                 FLAG = 1;
@@ -204,33 +204,21 @@ public class ShowPathActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                Position pos = new Position();
-                double x, y;
-                x = place.getLatLng().longitude;
-                y = place.getLatLng().latitude;
-                getLastPosition();
-                //
+                String x, y;
+                x = Double.toString(place.getLatLng().longitude);
+                y = Double.toString(place.getLatLng().latitude);
                 if (FLAG == 1) {    //출발지 검색
-                    pos.setSX(x);
-                    pos.setSY(y);
-                    pos.setEX(lastPos.getEX());
-                    pos.setEY(lastPos.getEY());
-                    MainActivity.positions.add(pos);
+                    sx = x;
+                    sy = y;
                     departure.setText(place.getName());
                 } else if (FLAG == 2) {
-                    pos.setSX(lastPos.getSX());
-                    pos.setSY(lastPos.getSY());
-                    pos.setEX(x);
-                    pos.setEY(y);
-                    MainActivity.positions.add(pos);
+                    ex = x;
+                    ey = y;
                     destination.setText(place.getName());
                 }
-                //길찾기 실행
-                routeHistory.add(departure.getText().toString());
-                routeHistory.add(destination.getText().toString());
 
-                MainActivity.positions.add(pos);
-                startSearchPath(pos);
+                //길찾기 실행
+                startSearchPath(0);
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
@@ -245,8 +233,6 @@ public class ShowPathActivity extends AppCompatActivity {
     public void showPathFragmentHandler(View v) {
 
         //FragmentTransaction transaction = fragmentManager.beginTransaction();
-        getLastPosition();
-
         switch (v.getId()) {
             case R.id.showAll:
                 searchType = 0;
@@ -259,8 +245,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                lastPos.setType(searchType);
-                startSearchPath(lastPos);
+                startSearchPath(searchType);
                 break;
             case R.id.showBus:
                 searchType = 2;
@@ -274,8 +259,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 second.setBackgroundColor(Color.parseColor("#1abc9c"));
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                lastPos.setType(searchType);
-                startSearchPath(lastPos);
+                startSearchPath(searchType);
                 break;
             case R.id.showSub:
                 searchType = 1;
@@ -288,8 +272,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 third.setBackgroundColor(Color.parseColor("#1abc9c"));
                 fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                lastPos.setType(searchType);
-                startSearchPath(lastPos);
+                startSearchPath(searchType);
                 break;
         }
     }
@@ -298,23 +281,20 @@ public class ShowPathActivity extends AppCompatActivity {
         finish();
     }
 
-    private void startSearchPath(Position data) {
-        double sx, sy, ex, ey;
+    private void startSearchPath(int searchType) {
         int type;
-        sx = data.getSX();
-        sy = data.getSY();
-        ex = data.getEX();
-        ey = data.getEY();
-        type = data.getType();
+        type = searchType;
 
         Bundle bundle = new Bundle();
-        int size = routeHistory.size();
         String dept, dest;
-        dept = routeHistory.get(size - 2);
-        dest = routeHistory.get(size - 1);
-        String pathDetail[] = {dept, dest, Double.toString(sx), Double.toString(sy), Double.toString(ex), Double.toString(ey)};
+        dept = departure.getText().toString();
+        dest = destination.getText().toString();
+        String pathDetail[] = {dept, dest, sx, sy, ex, ey};
         bundle.putStringArray("PATH_INFO", pathDetail);
         fragmentAll.setArguments(bundle);
+
+        DBvalue db = new DBvalue(dept, dest, sx, sy, ex, ey);
+        MyDB.insertRoute(db);
 
         Log.i(TAG, "sx: " + sx + ", sy: " + sy + ", ex: " + ex + ", ey: " + ey + ", type: " + type);
         //departure.setText("" + sx + ", " + sy);
@@ -405,6 +385,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 // pathArray 안의 경로 개수
                 pathArrayCount = pathArray.size();
                 //doInBackground
+                //a < pathArrayCount
                 for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
                     int totalWalk, cost, totalTime, group;
                     JsonObject pathArrayDetailOBJ = pathArray.get(a).getAsJsonObject();
@@ -808,9 +789,5 @@ public class ShowPathActivity extends AppCompatActivity {
                 }
             }
         }
-     public void getLastPosition(){
-        posSize = MainActivity.positions.size();
-        lastPos = MainActivity.positions.get(posSize - 1);
-     }
 }
 

@@ -65,9 +65,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view;
 
-        //Timer timer = new Timer();
-        //timer.schedule(task, 0, 1000);
-
         if (viewType == TYPE_BUS) { // for bus layout
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bus, viewGroup, false);
             return new BusViewHolder(view);
@@ -97,6 +94,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
 
     @Override   //adapter는 viewholder에 data를 전달해 주어야 한다.
@@ -192,11 +193,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         public void updateTimeRemaining() {
             int time = item.getTime() - 1;
-            item.setTime(time);
             if (time > 0 && time < 600) {
                 if(time < 84)
                     busRemaining.setText("곧 도착");
                 else {
+                    item.setTime(time);
                     int min = time / 60;
                     int sec = time % 60;
                     String left = "";
@@ -314,11 +315,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void updateTimeRemaining() {
             int time = item.getTime() - 1;
-            item.setTime(time);
             if (time > 0 && time < 600) {
                 if(time < 84)
                     subRemaining.setText("곧 도착");
                 else {
+                    item.setTime(time);
                     int min = time / 60;
                     int sec = time % 60;
                     String left = "";

@@ -2,49 +2,82 @@ package com.example.mbw;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.AlphabeticIndex;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mbw.DB.DBHelper;
+import com.example.mbw.DB.DBvalue;
+import com.example.mbw.DB.PlaceDB;
+import com.example.mbw.DB.PlaceDBHelper;
+import com.example.mbw.DB.RecordAdapter;
+import com.example.mbw.DB.RouteDBHelper;
 import com.example.mbw.accountActivity.SignInActivity;
+import com.example.mbw.myPageFragment.FragmentPath;
 import com.example.mbw.pathData.Position;
 import com.example.mbw.AddPath.AddPathActivity;
 import com.example.mbw.AddPath.ReportActivity;
 import com.example.mbw.showPath.ShowPathActivity;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
-
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements RecordAdapter.OnItemClickListener{
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
-    TextView toHome, toOffice, exTV, exTV2, userName;
+    TextView toHome, toOffice, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
     //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
-    String token = null;
+    String token = null, sx = "0", sy = "0", ex = "0", ey = "0", currLocation;
+    PlaceDB homeDB, officeDB;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
-    public static Vector<Position> positions = new Vector<>();
+    DBHelper MyDB;
+    RouteDBHelper routeDBHelper;
+    PlaceDBHelper placeDBHelper;
+    private ArrayList<DBvalue> mArrayList;
+    private RecordAdapter mAdapter;
+    static private RecyclerView mRecyclerView;
+    private FusedLocationProviderClient fusedLocationClient;
+    private FragmentPath fragmentPath;
+
+    private FragmentManager fragmentManager;
+    private FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         departure = findViewById(R.id.departureText);
         destination = findViewById(R.id.destinationText);
-        exTV = findViewById(R.id.exampleTV);
-        exTV2 = findViewById(R.id.exampleTV2);
         userName = findViewById(R.id.userName);
         Places.initialize(getApplicationContext(), getString(R.string.google_key));
 
@@ -71,6 +102,11 @@ public class MainActivity extends AppCompatActivity {
         token = info[0];
         userName.setText(info[1]);
 
+        MyDB = new DBHelper(this);
+        placeDBHelper = new PlaceDBHelper(this);
+        routeDBHelper = new RouteDBHelper(this);
+        search();
+
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -78,11 +114,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //에뮬레이터 돌릴 때 들어갈 내용
-        exTV.setText("검색 기록 띄우기: A->B 이것도 recyclerView");
         //숙입역
         //x경도 y 위도 (127, 36)//126.9513153, 37.496374
-        positions.add(new Position(126.9625327, 37.5464301 , 0, 0));    //127.0043575, 37.5672437
-        /*intent = new Intent(MainActivity.this, ShowPathActivity.class);
+
+        /*sx = "126.9625327"; sy = "37.5464301";  ex="127.0043575"; ey="37.5672437";
+        String currentLoc = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
+        String sp[] = currentLoc.split(",");
+        departure.setText("현위치: " + sp[0]);
+        Intent intent = new Intent(MainActivity.this, ShowPathActivity.class);
+        String data[] = {departure.getText().toString(), "국립중앙의료원", sx, sy, ex, ey};
+        intent.putExtra("LOC_DATA", data);
         startActivity(intent);*/
 
         //숙대 명신관
@@ -90,45 +131,156 @@ public class MainActivity extends AppCompatActivity {
         longitude[0] = 126.9648311;*/
 
         //실제 디바이스 돌릴 때 들어갈 내용
-        /*Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-        onLocationChanged(location);*/
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            sx = Double.toString(location.getLongitude());
+                            sy = Double.toString(location.getLatitude());
+                            currLocation = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
+                            String sp[] = currLocation.split("국 ");
+                            currLocation = sp[1];
+                            departure.setText("현위치: " + currLocation);
+                        }
+                    }
+                });
 
 
-        /*toHome = findViewById(R.id.toHome);
+
+
+        toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
 
         profile = findViewById(R.id.profileView);
         swap = findViewById(R.id.swap);
         home = findViewById(R.id.houseButton);
         office = findViewById(R.id.officeButton);
-        bookmark = findViewById(R.id.bookmarkButton);*/
+        bookmark = findViewById(R.id.bookmarkButton);
+
+
+        fragmentManager = getSupportFragmentManager();
+        transaction = fragmentManager.beginTransaction();
 
     }
+    public void search() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.searchView);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-    //위치 바꼈을 때
-    public void onLocationChanged(Location location){
-        double lat, lng;
-        lat = location.getLatitude();
-        lng = location.getLongitude();
-        int size = MainActivity.positions.size();
-        Position pos = MainActivity.positions.get(size - 1);
-        pos.setSX(lat);
-        pos.setSY(lng);
+        mArrayList = MyDB.getAllRoutes();
+        mAdapter = new RecordAdapter(mArrayList, this);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+    public void onItemClick(int position){
+        //아이템 클릭 이벤트 처리
+        //DB에서 해당 내용 삭제, 추가
+        //ShowPathActivity에 좌표, 출발지, 도착지 전달
+        DBvalue db = mArrayList.get(position);
+        String data[] = db.getValue().toArray(new String[0]);
+        String dept, dest;
+        dept = db.getDeparture();
+        dest = db.getDestination();
+        MyDB.deleteRoute(dept, dest);
+        MyDB.insertRoute(db);
+
+        Intent intent = new Intent(MainActivity.this, ShowPathActivity.class);
+        intent.putExtra("LOC_DATA", data);
+        startActivity(intent);
+    }
+
+    public String getCurrentAddress(LatLng latlng) {
+
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                    latlng.latitude,
+                    latlng.longitude,
+                    1);
+        } catch (IOException ioException) {
+            //네트워크 문제
+            Toast.makeText(this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+        }
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+
+        } else {
+            Address address = addresses.get(0);
+            return address.getAddressLine(0).toString();
+        }
+
     }
 
     public void onClickMain(View v){
+        ArrayList<PlaceDB> pdb;
         switch (v.getId()){
-            case R.id.toHome:
+           case R.id.toHome:
             case R.id.houseButton:
                 //집으로 누르면 목적지 집 위치로 바뀜
                 //null이면 집 저장해달라는 메세지 띄우기
+                pdb = placeDBHelper.getAllPlaces();
+                for(PlaceDB place : pdb){
+                    if(place.getName().equals("home"))
+                        homeDB = place;
+                    else
+                        officeDB = place;
+                }
+                if(homeDB == null)
+                    return;
+                else{
+                    String dest = homeDB.getPlace();
+                    String ex, ey;
+                    ex = homeDB.getX(); ey = homeDB.getY();
+                    DBvalue db = new DBvalue(currLocation, dest, sx, sy, ex, ey);
+                    MyDB.insertRoute(db);
+
+                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
+                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
+                    intent.putExtra("LOC_DATA", sendData);
+                    startActivity(intent);
+                }
                 break;
             case R.id.toOffice:
             case R.id.officeButton:
                 //회사로 누르면 목적지 회사 위치로 바뀜
                 //null이면 회사 저장해달라는 메세지 띄우기
+                pdb = placeDBHelper.getAllPlaces();
+                for(PlaceDB place : pdb){
+                    if(place.getName().equals("home"))
+                        homeDB = place;
+                    else
+                        officeDB = place;
+                }
+                if(officeDB == null)
+                    return;
+                else{
+                    String dest = officeDB.getPlace();
+                    String ex, ey;
+                    ex = officeDB.getX(); ey = officeDB.getY();
+                    //Toast.makeText(this, "1: " + currLocation + ", 2: " + dest + ", 3: " + sx + ", 4: " + sy + ", 5: " + ex + ", 6: " + ey, Toast.LENGTH_LONG).show();
+                    DBvalue db = new DBvalue(currLocation, dest, sx, sy, ex, ey);
+                    MyDB.insertRoute(db);
+
+                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
+                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
+                    intent.putExtra("LOC_DATA", sendData);
+                    startActivity(intent);
+                }
                 break;
-            case R.id.swap: //도착지 지정 안 된 상태에서 swap하면 안 됨!
+            case R.id.swap: //도착지 지정 안 된 상태에서 swap하면 안 됨
                 if(destination.getText().toString() != "") {
                     //swap 버튼 누르면 departure랑 destination "내용" 바뀌게
                     String deptTmp = departure.getText().toString();
@@ -137,42 +289,24 @@ public class MainActivity extends AppCompatActivity {
                     destination.setText(deptTmp);
 
                     //위도 경도도 바뀌게
-                    double tmpLat, tmpLong, startLng, startLat, endLng, endLat;
-                    int size = MainActivity.positions.size();
-                    Position pos = MainActivity.positions.get(size - 1);
-                    tmpLat = pos.getSX();
-                    tmpLong = pos.getSY();
-                    endLat = pos.getEX();
-                    endLng = pos.getEY();
-
-                    startLat = endLat;
-                    startLng = endLng;
-                    endLat = tmpLat;
-                    endLng = tmpLong;
-
-                    String[] str = new String[2];
-                    str[0] = departure.getText().toString();
-                    str[1] = destination.getText().toString();
-
-                    if(str[0].isEmpty() || str[1].isEmpty())
-                        return;
-
-                    positions.remove(size - 1);
-                    positions.add(new Position(startLng, startLat, endLng, endLat));
-                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
-                    intent.putExtra("LOC_DATA", str);
-                    startActivity(intent);
+                    String tmpSx, tmpSy;
+                    tmpSx = sx; tmpSy = sy;
+                    sx = ex; sy = ey;
+                    ex = tmpSx; ey = tmpSy;
                 }
                 break;
             case R.id.profileView:
                 //profile사진 누르면 myPage로 이동
+                String name = userName.getText().toString();
                 intent = new Intent(MainActivity.this, MyPageActivity.class);
+                intent.putExtra("NAME", name);
                 startActivity(intent);
                 break;
             case R.id.bookmarkButton:
                 //즐찾 버튼 누르면 즐찾해놓은 경로 띄우기
-                intent = new Intent(MainActivity.this, BookmarkActivity.class);
-                startActivity(intent);
+                mArrayList = routeDBHelper.getAllRoutesBM();
+                mAdapter = new RecordAdapter(mArrayList, this);
+                mRecyclerView.setAdapter(mAdapter);
                 break;
             case R.id.departureText:
                 FLAG = 1;
@@ -198,34 +332,42 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
-                double lat, lng;
-                lat = place.getLatLng().latitude;
-                lng = place.getLatLng().longitude;
-
-                int size = positions.size();
-                Position pos = positions.get(size - 1);
+                String lat, lng;
+                lat = Double.toString(place.getLatLng().latitude);
+                lng = Double.toString(place.getLatLng().longitude);
 
                 if(FLAG == 1){  //search for departure
-                    pos.setSX(lng);
-                    pos.setSY(lat);
+                    sx = lng;
+                    sy = lat;
                     departure.setText(place.getName());
                 }
                 else if(FLAG == 2){
-                    pos.setEX(lng);
-                    pos.setEY(lat);
-                    destination.setText(place.getName());}
+                    ex = lng;
+                    ey = lat;
+                    destination.setText(place.getName());
+                }
 
+                //출발지 또는 목적지 입력 안 됨
                 if (departure.getText().toString().isEmpty() || destination.getText().toString().isEmpty()) {
                     return;
                 }
                 //길찾기 실행
 
-                String[] str = new String[2];
-                str[0] = departure.getText().toString();
-                str[1] = destination.getText().toString();
+                String[] sendData = new String[6];
+                String tmp[] = departure.getText().toString().split(": ");
+                sendData[0] = tmp[1];
+                sendData[1] = destination.getText().toString();
+                sendData[2] = sx; sendData[3] = sy; sendData[4] = ex; sendData[5] = ey;
 
+                ArrayList<String> arrayList = new ArrayList<>();
+                for(String temp : sendData){
+                    arrayList.add(temp);
+                }
+
+                DBvalue db = new DBvalue(arrayList);
+                MyDB.insertRoute(db);
                 intent = new Intent(MainActivity.this, ShowPathActivity.class);
-                intent.putExtra("LOC_DATA", str);
+                intent.putExtra("LOC_DATA", sendData);
                 startActivity(intent);
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
