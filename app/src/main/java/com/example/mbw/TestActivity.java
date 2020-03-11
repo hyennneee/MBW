@@ -1,6 +1,7 @@
 package com.example.mbw;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +20,11 @@ public class TestActivity extends AppCompatActivity{
 
         String jsonString[] = getIntent().getStringArrayExtra("DETAIL_PATH");
         String tmp = "";
-        tv.setText("x: "+ jsonString[3] + ", y: " + jsonString[4] + ", x: " + jsonString[5] + ", y: " + jsonString[6]+"\n"+jsonString[0]);
+        for(int i = 1; i < jsonString.length; i++){
+            tmp += jsonString[i];
+        }
+        tv.setText(tmp);
+        Log.i("JSON", tmp);
         /*JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);*/
     }

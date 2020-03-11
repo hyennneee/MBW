@@ -1,5 +1,6 @@
 package com.example.mbw.showPath;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.mbw.DetailPathActivity;
 import com.example.mbw.TestActivity;
 import com.example.mbw.route.RouteAdapter;
 
@@ -58,7 +61,7 @@ public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickLis
             detailPathData[i++] = data;
         }
 
-        Intent intent = new Intent(getActivity(), TestActivity.class);
+        Intent intent = new Intent(getActivity(), DetailPathActivity.class);
         intent.putExtra("DETAIL_PATH", detailPathData);
         startActivity(intent);
     }

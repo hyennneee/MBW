@@ -57,12 +57,16 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         int type = DetailPath.get(position).getImageType();
 
         switch(type){
-            case 0 : return LAYOUT_START;
-            case 1 : return LAYOUT_BUS;
-            case 2 : return LAYOUT_SUB;
-            case 3 : return LAYOUT_WALK;
-            case 4 : return LAYOUT_END;
-            default: return -1; // wrong!
+            case 0 :
+                return LAYOUT_START;
+            case 20 :
+                return LAYOUT_BUS;
+            case 30 :
+                return LAYOUT_WALK;
+            case 40 :
+                return LAYOUT_END;
+            default:
+                return LAYOUT_SUB;
         }
     }
 
@@ -113,7 +117,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         private void setStartDetails(DetailItem detailItem){
             startPoint.setText(detailItem.getSpotName());
-            startImage.setImageResource(detailItem.getImageType());
+            startImage.setImageResource(R.drawable.start);
         }
     }
 
@@ -157,17 +161,17 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             busRemaining1.setText(detailItem.getRemaining1());
             busRemaining2.setText(detailItem.getRemaining2());
 
-            busTime.setText(detailItem.getTime());
-            stopNum.setText(detailItem.getPassedStop());
+            busTime.setText(detailItem.getTime()+"분");
+            stopNum.setText(detailItem.getPassedStop()+"개 정류장 이동");
 
             // busImage.setImageResource(R.drawable.bus);
 
             // 간선, 지선, 마을
             switch (detailItem.getBusType1()){
-                case 1:
+                case 11:
                     busType1.setImageResource(R.drawable.blue_bus);
                     break;
-                case 2:
+                case 12:
                     busType1.setImageResource(R.drawable.green_bus);
                     break;
                 case 3:
@@ -290,8 +294,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         }
 
         private void setWalkDetails(DetailItem detailItem){
-            walkTime.setText("도보 "+detailItem.getTime());
-            walkDistance.setText(detailItem.getWalkDistance()+" 이동");
+            walkTime.setText("도보 "+detailItem.getTime()+"분");
+            walkDistance.setText(detailItem.getWalkDistance()+"m 이동");
         }
     }
 
@@ -308,7 +312,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         private void setEndDetails(DetailItem detailItem){
             endPoint.setText(detailItem. getSpotName());
-            endImage.setImageResource(detailItem.getImageType());
+            endImage.setImageResource(R.drawable.end);
         }
     }
 

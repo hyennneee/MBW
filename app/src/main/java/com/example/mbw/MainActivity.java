@@ -17,6 +17,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ import com.example.mbw.accountActivity.SignInActivity;
 import com.example.mbw.myPageFragment.FragmentPath;
 import com.example.mbw.pathData.Position;
 import com.example.mbw.AddPath.AddPathActivity;
+import com.example.mbw.AddPath.ReportActivity;
 import com.example.mbw.showPath.ShowPathActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -52,13 +54,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-
 public class MainActivity extends AppCompatActivity implements RecordAdapter.OnItemClickListener{
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
     TextView toHome, toOffice, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
+    //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
     String token = null, sx = "0", sy = "0", ex = "0", ey = "0", currLocation;
     PlaceDB homeDB, officeDB;
@@ -85,6 +87,16 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         destination = findViewById(R.id.destinationText);
         userName = findViewById(R.id.userName);
         Places.initialize(getApplicationContext(), getString(R.string.google_key));
+
+        //String info[] = getIntent().getStringArrayExtra("USER_INFO");
+        //token = info[0];
+        /*
+        token = getIntent().getStringExtra("token");
+        Log.i("token2", token);
+
+        String name = getIntent().getStringExtra("userName");
+        userName.setText(name);
+*/
 
         String info[] = getIntent().getStringArrayExtra("USER_INFO");
         token = info[0];
@@ -368,6 +380,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         }
     }
 
+
     public void onExample(View v){
         intent = new Intent(MainActivity.this, DetailPathActivity.class);
         startActivity(intent);
@@ -375,6 +388,12 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
     public void onExample2(View v){
         intent = new Intent(MainActivity.this, AddPathActivity.class);
+        intent.putExtra("token", token);
+        startActivity(intent);
+    }
+
+    public void onExample3(View v){
+        intent = new Intent(MainActivity.this, ReportActivity.class);
         startActivity(intent);
     }
 

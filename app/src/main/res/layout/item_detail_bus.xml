@@ -26,10 +26,9 @@
 
     <TextView
         android:id="@+id/busNum"
-        android:layout_width="22dp"
+        android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:layout_marginStart="3dp"
-        android:layout_marginLeft="3dp"
         android:layout_marginTop="5dp"
         android:text="173"
         android:textColor="@android:color/black"
@@ -138,7 +137,6 @@
             android:maxHeight="17dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/arrow_down" />
-
 
     </LinearLayout>
 
