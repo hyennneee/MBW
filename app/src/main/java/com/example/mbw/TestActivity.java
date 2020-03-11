@@ -17,8 +17,12 @@ public class TestActivity extends AppCompatActivity{
         setContentView(R.layout.test_layout);
         tv = findViewById(R.id.testView);
 
-        String jsonString = getIntent().getStringExtra("DETAIL_PATH");
-        tv.setText(jsonString);
+        String jsonString[] = getIntent().getStringArrayExtra("DETAIL_PATH");
+        String tmp = "";
+        for(int i = 1; i < jsonString.length; i++){
+            tmp += jsonString[i];
+        }
+        tv.setText(tmp);
         /*JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);*/
     }

@@ -11,35 +11,71 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mbw.R;
 
 import java.util.ArrayList;
-import java.util.logging.Handler;
+import java.util.Timer;
+import java.util.TimerTask;
+import android.os.Handler;
 
-public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<Item> data;  //adapter는 viewholder로 변경할 data를 가지고 있는다
 
-    Handler handler;
-    //CountDownTimerView.CountRunnable countRunnable;
-
-    private static int TYPE_BUS = 1;
-    private static int TYPE_SUB = 2;
-    private static int TYPE_FIN = 3;
+    private static final int TYPE_BUS = 1;
+    private static final int TYPE_SUB = 2;
+    private static final int TYPE_FIN = 3;
     private View adapterView;
+
+    ArrayList<RecyclerView.ViewHolder> viewHoldersList;
+    private Handler handler = new Handler();
+    private Runnable updateRemainingTimeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            synchronized (viewHoldersList) {
+                for (RecyclerView.ViewHolder holder : viewHoldersList) {
+                    int type = holder.getItemViewType();
+                    switch (type){
+                        case TYPE_BUS:
+                            ((BusViewHolder) holder).updateTimeRemaining();
+                            break;
+                        case TYPE_SUB:
+                            ((SubViewHolder) holder).updateTimeRemaining();
+                            break;
+                    }
+                }
+            }
+        }
+    };
+
     public ItemAdapter(ArrayList<Item> list) {
         this.data = list;
+        viewHoldersList = new ArrayList<>();
+        startUpdateTimer();
+    }
+
+    private void startUpdateTimer() {
+        Timer tmr = new Timer();
+        tmr.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(updateRemainingTimeRunnable);
+            }
+        }, 1000, 1000);
     }
 
     @Override   //adapter는 아이템마다 viewholder를 만드는 방법을 정의해야 한다
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View view;
+
+        //Timer timer = new Timer();
+        //timer.schedule(task, 0, 1000);
+
         if (viewType == TYPE_BUS) { // for bus layout
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_bus, viewGroup, false);
             return new BusViewHolder(view);
 
-        } else if(viewType == TYPE_SUB){ // for subway layout
+        } else if (viewType == TYPE_SUB) { // for subway layout
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_sub, viewGroup, false);
             return new SubViewHolder(view);
-        }
-        else{ // for final station layout
+        } else { // for final station layout
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_final, viewGroup, false);
             return new FinViewHolder(view);
         }
@@ -54,31 +90,36 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public int getItemViewType(int position) {
         if (data.get(position).getSubLine() == 0) {    //subLine == 0
             return TYPE_BUS;
-        } else if(data.get(position).getBusType() == -1){
+        } else if (data.get(position).getBusType() == -1) {
             return TYPE_SUB;
-        }
-        else{
+        } else {
             return TYPE_FIN;
         }
     }
+
+
 
     @Override   //adapter는 viewholder에 data를 전달해 주어야 한다.
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         if (getItemViewType(position) == TYPE_BUS) {
             ((BusViewHolder) viewHolder).setBusDetails(data.get(position));
-        } else if(getItemViewType(position) == TYPE_SUB){
+        }
+        else if(getItemViewType(position) == TYPE_SUB){
             ((SubViewHolder) viewHolder).setSubDetails(data.get(position));
         }
         else{
             ((FinViewHolder) viewHolder).setFinDetails(data.get(position));
         }
+        synchronized (viewHoldersList) {
+            viewHoldersList.add(viewHolder);
+        }
     }
 
     public class BusViewHolder extends RecyclerView.ViewHolder {
 
-
         protected TextView stationName, busRemaining, stationNo, busNum, busOthers2, numOfOtherBus1, numOfOtherBus2;
         protected ImageView busType;
+        private Item item;
 
         public BusViewHolder(@NonNull View view) {//constructor임
             super(view);
@@ -90,16 +131,27 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             this.busOthers2 = view.findViewById(R.id.busOthers2);
             this.numOfOtherBus1 = view.findViewById(R.id.numOfOtherBus1);
             this.numOfOtherBus2 = view.findViewById(R.id.numOfOtherBus2);
-
-            //저상 여부 어떻게 표시할까
         }
         private void setBusDetails(Item item) {
+            this.item = item;
             stationName.setText(item.getStationName());
             String mainBus = item.getBusNum().get(0);
             int size = item.getBusNum().size();
             if(item.isFirst()) {   //첫 번째가 버스
-                String getRemaining = item.getRemainingTime();
-                busRemaining.setText(getRemaining);
+                int total = item.getTime();
+                if(total == 0){   //받은 내용이 문자열
+                    String getRemaining = item.getRemainingTime();
+                    busRemaining.setText(getRemaining);
+                }
+                else{
+                    int m, s;
+                    m = total / 60;
+                    s = total % 60;
+                    String remaining = "" + m + "분";
+                    if(s != 0)
+                        remaining += " " + s + "초";
+                    busRemaining.setText(remaining);
+                }
                 //busNum 2개 이상
                 if(size > 1){
                     String subBus = item.getBusNum().get(1);
@@ -114,7 +166,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     busOthers2.setText(subBus);
                 }
             }
-            else{//others1
+            else{   //첫 타자 아닌 버스
                 if(size > 1) {
                     mainBus += ", " + item.getBusNum().get(1);
                     if (size > 2) {
@@ -138,14 +190,34 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     break;
             }
         }
+        public void updateTimeRemaining() {
+            int time = item.getTime() - 1;
+            item.setTime(time);
+            if (time > 0 && time < 600) {
+                if(time < 84)
+                    busRemaining.setText("곧 도착");
+                else {
+                    int min = time / 60;
+                    int sec = time % 60;
+                    String left = "";
+                    if (min > 0)
+                        left += "" + min + "분";
+                    if (sec > 0)
+                        left += " " + sec + "초";
+                    busRemaining.setText(left);
+                }
+            }
+        }
+
     }
 
     public class SubViewHolder extends RecyclerView.ViewHolder {
 
 
-        protected TextView subStation, subRemaining;
+        protected TextView subStation, subRemaining, subCurrSt;
         protected ImageView subImage;
         protected View subLine;
+        private Item item;
 
         public SubViewHolder(@NonNull View view) {//constructor임
             //findViewById로 변수 정의
@@ -155,16 +227,34 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             this.subStation = view.findViewById(R.id.subStation); //stationName
             this.subImage = view.findViewById(R.id.subImage);  //subwayCode
             this.subRemaining = view.findViewById(R.id.subRemaining);
+            this.subCurrSt = view.findViewById(R.id.subCurrSt);
             subLine = view.findViewById(R.id.subwayLine);
             adapterView = view;
         }
         //오디세이로부터 받아오긴하는데 안드에서 띄워줄 필요는 없는 정보는 어떻게 처리하지
         //일단 Route가 갖고있어야는되지 않나
         private void setSubDetails(Item item) {
+            this.item = item;
             subStation.setText(item.getStationName());
-            if(!item.getRemainingTime().equals("")) {
-                subRemaining.setText(item.getRemainingTime());
+            if(item.isFirst()) {
                 subRemaining.setTextSize(13);
+                int total = item.getTime();
+                if(total == 0){   //받은 내용이 문자열
+                    String getRemaining = item.getRemainingTime();
+                    subRemaining.setText(getRemaining);
+                }
+                else{   //받은 내용이 시간 + 현위치
+                    int m, s;
+                    m = total / 60;
+                    s = total % 60;
+                    String remaining = "" + m + "분";
+                    if(s != 0)
+                        remaining += " " + s + "초";
+                    subRemaining.setText(remaining);
+                    String station = item.getCurrStation();
+                    subCurrSt.setTextSize(13);
+                    subCurrSt.setText(station);
+                }
             }
             switch (item.getSubLine()){   //subwayCode
                 case 1:
@@ -221,6 +311,25 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     break;
             }
         }
+
+        public void updateTimeRemaining() {
+            int time = item.getTime() - 1;
+            item.setTime(time);
+            if (time > 0 && time < 600) {
+                if(time < 84)
+                    subRemaining.setText("곧 도착");
+                else {
+                    int min = time / 60;
+                    int sec = time % 60;
+                    String left = "";
+                    if (min > 0)
+                        left += "" + min + "분";
+                    if (sec > 0)
+                        left += " " + sec + "초";
+                    subRemaining.setText(left);
+                }
+            }
+        }
     }
     public class FinViewHolder extends RecyclerView.ViewHolder {
 
@@ -241,111 +350,4 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             }
         }
     }
-
-    /*public class CountDownTimerView extends LinearLayout {
-        Handler handler;
-        CountRunnable countRunnable;
-        String endtime;
-        boolean endtimeoverflag = false;
-        ServiceReciever serviceReciever;
-        Context mContext;
-        int position;
-        private transient TextView tvCountDays;
-        private transient TextView tvCounthours;
-        private transient TextView tvCountMinute;
-        private transient TextView tvCountSeconds;
-
-        public CountDownTimerView(Context context) {
-            super(context);
-        }
-
-        public CountDownTimerView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public CountDownTimerView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
-
-        @Override
-        protected void onFinishInflate() {
-            super.onFinishInflate();
-            tvCountDays = (TextView ) findViewById(R.id.tvCountDays);
-            tvCounthours = (TextView ) findViewById(R.id.tvCounthours);
-            tvCountMinute = (TextView ) findViewById(R.id.tvCountMinute);
-            tvCountSeconds = (TextView ) findViewById(R.id.tvCountSeconds);
-            countRunnable = new CountRunnable();
-            handler = new Handler();
-        }
-
-        public void setCountDownData() {
-            handler.postDelayed(countRunnable, 1000);
-        }
-
-        public void setEndTime(String endtime) {
-            this.endtime = endtime;
-            setCountDownData();
-        }
-
-        public boolean getendtimeflag() {
-            return endtimeoverflag;
-        }
-
-
-
-        public void setContext(Context context,int position) {
-            this.mContext = context;
-            this.position=position;
-        }
-
-        @Override
-        protected void onDetachedFromWindow() {
-            super.onDetachedFromWindow();
-            handler.removeCallbacks(countRunnable);
-        }
-
-        class CountRunnable implements Runnable {
-
-            @Override
-            public void run() {
-                String[] countdowntimearray = Utils.getCounterTime(endtime);
-
-                if (Integer.parseInt(countdowntimearray[0]) <= 0) {
-                    tvCountDays.setText("0");
-                    endtimeoverflag = false;
-                } else {
-                    tvCountDays.setText(countdowntimearray[0]);
-                    endtimeoverflag = true;
-                }
-
-                if (Integer.parseInt(countdowntimearray[1]) <= 0) {
-                    tvCounthours.setText("0");
-                    endtimeoverflag = false;
-                } else {
-                    tvCounthours.setText(countdowntimearray[1]);
-                    endtimeoverflag = true;
-                }
-
-                if (Integer.parseInt(countdowntimearray[2]) <= 0) {
-                    tvCountMinute.setText("0");
-                    endtimeoverflag = false;
-                } else {
-                    tvCountMinute.setText(countdowntimearray[2]);
-                    endtimeoverflag = true;
-                }
-
-                if (Integer.parseInt(countdowntimearray[3]) <= 0) {
-                    tvCountSeconds.setText("0");
-                    endtimeoverflag = false;
-                } else {
-                    tvCountSeconds.setText(countdowntimearray[3]);
-                    endtimeoverflag = true;
-                }
-
-                setCountDownData();
-            }
-        }
-    }*/
-
-
 }

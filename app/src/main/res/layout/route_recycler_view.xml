@@ -10,11 +10,11 @@
         android:id="@+id/routeType"
         android:layout_width="45dp"
         android:layout_height="27dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/basic"
         app:layout_constraintBottom_toTopOf="@+id/dashedLine"
-        app:layout_constraintStart_toEndOf="@+id/costView" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/totalTimeView"

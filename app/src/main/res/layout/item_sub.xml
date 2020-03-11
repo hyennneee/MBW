@@ -3,6 +3,7 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -37,6 +38,20 @@
     <!--
     view 길이 줄이려면 textSize 0sp, text=""
     -->
+
+    <TextView
+        android:id="@+id/subCurrSt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:text=""
+        android:textColor="@android:color/darker_gray"
+        android:textSize="0sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/subRemaining"
+        app:layout_constraintTop_toBottomOf="@+id/subStation"
+        app:layout_constraintVertical_bias="0.0" />
 
     <View
         android:id="@+id/subwayLine"
