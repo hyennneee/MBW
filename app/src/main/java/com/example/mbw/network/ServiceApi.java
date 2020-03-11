@@ -20,5 +20,5 @@ public interface ServiceApi {
     Call<SignUpResponse> userSignUp(@Body SignUpData data);
 
     @GET("searchPath")
-    Call<PathResponse>searchPath(@Query("SX") double SX, @Query("SY") double SY, @Query("EX") double EX, @Query("EY") double EY, @Query("SearchPathType") int type);
+    Call<PathResponse>searchPath(@Query("SX") String SX, @Query("SY") String SY, @Query("EX") String EX, @Query("EY") String EY, @Query("SearchPathType") int type);
 }

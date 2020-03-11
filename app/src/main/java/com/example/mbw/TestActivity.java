@@ -19,10 +19,7 @@ public class TestActivity extends AppCompatActivity{
 
         String jsonString[] = getIntent().getStringArrayExtra("DETAIL_PATH");
         String tmp = "";
-        for(int i = 1; i < jsonString.length; i++){
-            tmp += jsonString[i];
-        }
-        tv.setText(tmp);
+        tv.setText("x: "+ jsonString[3] + ", y: " + jsonString[4] + ", x: " + jsonString[5] + ", y: " + jsonString[6]+"\n"+jsonString[0]);
         /*JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);*/
     }

@@ -21,7 +21,7 @@ public class MyPageActivity extends AppCompatActivity {
     private FragmentSetting fragmentSetting;
     private FragmentTransaction transaction;
     private FrameLayout fragment;
-    private TextView path, place, setting;
+    private TextView path, place, setting, userName;
     private View first, second, third;
 
     @Override
@@ -42,6 +42,10 @@ public class MyPageActivity extends AppCompatActivity {
         first = findViewById(R.id.firstLine);
         second = findViewById(R.id.secondLine);
         third = findViewById(R.id.thirdLine);
+
+        userName = findViewById(R.id.userNameTV);
+        String name = getIntent().getStringExtra("NAME");
+        userName.setText(name);
 
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.myPageFrame, fragmentPath).commitAllowingStateLoss();
@@ -77,7 +81,7 @@ public class MyPageActivity extends AppCompatActivity {
                 second.setBackgroundColor(Color.parseColor("#1abc9c"));
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 break;
-            case R.id.settingView:
+            /*case R.id.settingView:
                 transaction.replace(R.id.myPageFrame, fragmentSetting).commitAllowingStateLoss();
                 path.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 place.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -87,6 +91,8 @@ public class MyPageActivity extends AppCompatActivity {
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 third.setBackgroundColor(Color.parseColor("#1abc9c"));
                 break;
+
+             */
         }
     }
 
