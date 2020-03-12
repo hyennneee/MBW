@@ -114,8 +114,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((FinViewHolder) viewHolder).setFinDetails(data.get(position));
         }
         synchronized (viewHoldersList) {
-            //data.size크기의 viewHolderList를 만들어.
-            //중복되는 viewHolder는 저장하지 않아.
+            //중복되는 viewHolder는 저장하지 않게
             for(int pos : positionList){
                 if(pos == position) //이미 저장된 viewholder면 return
                     return;
@@ -177,6 +176,8 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
             else{   //첫 타자 아닌 버스
+                busRemaining.setTextSize(0);
+                busRemaining.setText("");
                 if(size > 1) {
                     mainBus += ", " + item.getBusNum().get(1);
                     if (size > 2) {
@@ -266,6 +267,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     subCurrSt.setText(station);
                 }
             }
+            else {
+                subRemaining.setTextSize(0);
+                subRemaining.setText("");
+            }
+
             switch (item.getSubLine()){   //subwayCode
                 case 1:
                     subImage.setImageResource(R.drawable.line1);
