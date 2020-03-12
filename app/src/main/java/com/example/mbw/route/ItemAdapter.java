@@ -25,6 +25,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private View adapterView;
 
     ArrayList<RecyclerView.ViewHolder> viewHoldersList;
+    ArrayList<Integer> positionList;
     private Handler handler = new Handler();
     private Runnable updateRemainingTimeRunnable = new Runnable() {
         @Override
@@ -48,6 +49,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ItemAdapter(ArrayList<Item> list) {
         this.data = list;
         viewHoldersList = new ArrayList<>();
+        positionList = new ArrayList<>();
         startUpdateTimer();
     }
 
@@ -112,6 +114,13 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((FinViewHolder) viewHolder).setFinDetails(data.get(position));
         }
         synchronized (viewHoldersList) {
+            //data.size크기의 viewHolderList를 만들어.
+            //중복되는 viewHolder는 저장하지 않아.
+            for(int pos : positionList){
+                if(pos == position) //이미 저장된 viewholder면 return
+                    return;
+            }
+            positionList.add(position);
             viewHoldersList.add(viewHolder);
         }
     }
