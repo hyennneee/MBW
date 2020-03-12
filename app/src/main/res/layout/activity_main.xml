@@ -202,7 +202,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/exampleTV" />
-
+<!--
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
@@ -232,7 +232,7 @@
         android:text="위험 지역 제보하기"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
-
+-->
     <TextView
         android:layout_width="85dp"
         android:layout_height="19dp"
