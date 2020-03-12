@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         }
 
         //에뮬레이터 돌릴 때 들어갈 내용
-        //숙입역
         //x경도 y 위도 (127, 36)//126.9513153, 37.496374
 
         sx = "126.9625327"; sy = "37.5464301";  //ex="127.0043575"; ey="37.5672437";
@@ -125,10 +124,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         String data[] = {departure.getText().toString(), "국립중앙의료원", sx, sy, ex, ey};
         intent.putExtra("LOC_DATA", data);
         startActivity(intent);*/
-
-        //숙대 명신관
-        /*latitude[0] = 37.5463644;
-        longitude[0] = 126.9648311;*/
 
         //실제 디바이스 돌릴 때 들어갈 내용
         /*fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -164,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
+
 
     }
     public void search() {
@@ -271,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     String dest = officeDB.getPlace();
                     String ex, ey;
                     ex = officeDB.getX(); ey = officeDB.getY();
-                    //Toast.makeText(this, "1: " + currLocation + ", 2: " + dest + ", 3: " + sx + ", 4: " + sy + ", 5: " + ex + ", 6: " + ey, Toast.LENGTH_LONG).show();
                     DBvalue db = new DBvalue(currLocation, dest, sx, sy, ex, ey);
                     MyDB.insertRoute(db);
 
