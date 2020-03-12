@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         //숙입역
         //x경도 y 위도 (127, 36)//126.9513153, 37.496374
 
-        /*sx = "126.9625327"; sy = "37.5464301";  ex="127.0043575"; ey="37.5672437";
-        String currentLoc = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
+        sx = "126.9625327"; sy = "37.5464301";  //ex="127.0043575"; ey="37.5672437";
+        /*String currentLoc = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
         String sp[] = currentLoc.split(",");
         departure.setText("현위치: " + sp[0]);
         Intent intent = new Intent(MainActivity.this, ShowPathActivity.class);
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         longitude[0] = 126.9648311;*/
 
         //실제 디바이스 돌릴 때 들어갈 내용
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        /*fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -143,10 +143,11 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                             currLocation = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
                             String sp[] = currLocation.split("국 ");
                             currLocation = sp[1];
-                            departure.setText("현위치: " + currLocation);
+                            departure.setText(currLocation);
                         }
                     }
                 });
+                */
 
 
 
@@ -354,8 +355,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                 //길찾기 실행
 
                 String[] sendData = new String[6];
-                String tmp[] = departure.getText().toString().split(": ");
-                sendData[0] = tmp[1];
+                sendData[0] = departure.getText().toString();
                 sendData[1] = destination.getText().toString();
                 sendData[2] = sx; sendData[3] = sy; sendData[4] = ex; sendData[5] = ey;
 

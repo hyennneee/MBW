@@ -36,6 +36,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.odsay.odsayandroidsdk.API;
+import com.odsay.odsayandroidsdk.ODsayData;
+import com.odsay.odsayandroidsdk.ODsayService;
+import com.odsay.odsayandroidsdk.OnResultCallbackListener;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -308,7 +313,7 @@ public class ShowPathActivity extends AppCompatActivity {
                     //transportation을 sub thread로 빼기
                     TransportAsyncTask transport = new TransportAsyncTask(pathResult);
                     transport.execute();
-                    //transportation(pathResult);
+                    transportation(pathResult);
                 } else {
                     try {
                         Gson gson = new Gson();
@@ -354,7 +359,6 @@ public class ShowPathActivity extends AppCompatActivity {
         protected void onPreExecute() { //progress bar 실행
             super.onPreExecute();
             Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-            progressBar.setAnimation(animation);
             progressBar.startAnimation(animation);
         }
 
@@ -388,16 +392,15 @@ public class ShowPathActivity extends AppCompatActivity {
                 //a < pathArrayCount
                 for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
                     int totalWalk, cost, totalTime, group;
-                    JsonObject pathArrayDetailOBJ = pathArray.get(a).getAsJsonObject();
+                    JsonObject infoOBJ = pathArray.get(a).getAsJsonObject();
                     totalWalk = 0;
 
                     //한 경로에 대해 한 itemArrayList 가짐
                     ArrayList<Item> itemArrayList = new ArrayList<Item>();
 
 // 경로 타입 1 지하철 2 버스 3 지하철 + 버스
-                    int pathType = pathArrayDetailOBJ.get("pathType").getAsInt();
+                    int pathType = infoOBJ.get("pathType").getAsInt();
                     if (searchType == 0 || searchType ==  pathType) {   //검색 타입과 일치하는 것만 출력
-                        JsonObject infoOBJ = pathArrayDetailOBJ;
                         group = infoOBJ.get("group").getAsInt();
                         if(group == 1)
                             cost = infoOBJ.get("totalPay").getAsInt(); // 요금
@@ -413,7 +416,7 @@ public class ShowPathActivity extends AppCompatActivity {
                         int total = bus + sub;
 
                         // 세부경로 디테일
-                        JsonArray subPathArray = pathArrayDetailOBJ.get("subPath").getAsJsonArray();
+                        JsonArray subPathArray = infoOBJ.get("subPath").getAsJsonArray();
                         int subPathArraycount = subPathArray.size();
                         boolean is_first = true;
                         for (int b = 0; b < subPathArraycount; b++) {   //한 경로당
@@ -456,10 +459,10 @@ public class ShowPathActivity extends AppCompatActivity {
                                     for(int i = 0; i < laneObj.size(); i++) {
                                         busNum.add(laneObj.get(i).getAsJsonObject().get("busNo").getAsString()); // 버스번호정보
                                     }
-                                    int stationID = subPathOBJ.get("startID").getAsInt(); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
-                                    busInfo.add(new BusInfo(busNum.get(0), stationID));
+                                    int startID = subPathOBJ.get("startID").getAsInt(); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
+                                    busInfo.add(new BusInfo(busNum.get(0), startID));
                                     busType = laneObj.get(0).getAsJsonObject().get("type").getAsInt();
-                                    //OdsayAPi(stationID);
+                                    //OdsayAPi(startID);
                                     //OdsayApi(stationID)에서 getStation하기 전에 밑에 코드 실행되는듯
                                     subLine = 0;
                                     arsID = subPathOBJ.get("busArsID").getAsString();
