@@ -147,7 +147,7 @@
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/line8" />
+                app:srcCompat="@drawable/line9" />
         </LinearLayout>
 
 

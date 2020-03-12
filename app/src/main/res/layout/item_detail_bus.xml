@@ -143,11 +143,10 @@
 
     <View
         android:id="@+id/view3"
-        android:layout_width="1dp"
+        android:layout_width="3dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="#F2F2F2"
+        android:background="@color/busblue"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/finalStation"
@@ -196,8 +195,7 @@
                 android:paddingRight="10dp"
                 android:text="효창공원앞역"
                 android:textColor="#000000"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/stationId2"

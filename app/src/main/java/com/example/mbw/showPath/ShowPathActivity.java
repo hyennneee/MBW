@@ -144,7 +144,7 @@ public class ShowPathActivity extends AppCompatActivity {
         destination.setText(strings[1]);
         sx = strings[2]; sy = strings[3]; ex = strings[4]; ey = strings[5];
         service = RetrofitClient.getClient().create(ServiceApi.class);
-        startSearchPath(0);
+        startSearchPath(1);
         token = getIntent().getStringExtra("token");
         departureName = departure.getText().toString();
         destinationName = destination.getText().toString();

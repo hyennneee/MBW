@@ -149,26 +149,18 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
 
         Log.i("clicked path json", jsonObject.toString());
 
-
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         RecyclerView recyclerView = findViewById(R.id.detailPath_rv) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
-
 
         // 리사이클러뷰에 DetailItemAdapter 객체 지정.
         detailItemList = new ArrayList<DetailItem>();    //mArrayList의 내용을 채워야돼
         LatLng start = new LatLng(startLongi, startLati);
         LatLng end = new LatLng(endLongi, endLati);
 
-
         detailItemList.add(new DetailItem(start, 0, startPoint)); // 시작점
-
         parseJson(obj);
-
         detailItemList.add(new DetailItem(end, 40, endPoint)); // 끝점
-
-        //detailItemList.add(new DetailItem(start, end, 3, 10, 320));
-
 
         DetailItemAdapter adapter = new DetailItemAdapter(detailItemList) ;
         recyclerView.setAdapter(adapter) ;
@@ -179,12 +171,11 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         tMapView.setSKTMapApiKey("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
         linearLayoutTmap.addView( tMapView );
 
-        tMapView.setCenterPoint(startLongi, startLati);
 
 
         tMapView.setIconVisibility(true);//현재위치로 표시될 아이콘을 표시할지 여부를 설정
 
-        setGps();
+        //setGps();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -195,8 +186,9 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
             return;
         }
 
-        tMapView.setZoomLevel(18);
-        tMapView.setTrackingMode(true);
+        tMapView.setZoomLevel(16);
+        //tMapView.setTrackingMode(true);
+        tMapView.setCenterPoint(startLongi, startLati);
 
         //경로 부분
         TMapPolyLine polyLine = new TMapPolyLine();
@@ -215,7 +207,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 tMapView.setLocationPoint(longitude, latitude);
-                tMapView.setCenterPoint(longitude, latitude);
+                //tMapView.setCenterPoint(longitude, latitude);
             }
         }
 
@@ -295,10 +287,8 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                         LatLng end1 = new LatLng( subObj.getDouble("endY"), subObj.getDouble("endX"));
                         String door = subObj.getString("door"); // ex. 1-1
 
-
                         url = "https://maps.googleapis.com/maps/api/directions/json?origin=37.54554,126.9695013&destination=37.5455348,126.9366705&mode=transit&key=AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY";
                         new GetPaths().execute();
-
 
                         JSONObject passStopObj = subObj.getJSONObject("passStopList");
                         JSONArray stationsArray = passStopObj.getJSONArray("stations");
@@ -321,7 +311,6 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                             String endContent = endElevatorObj.getString("content");
                             detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, null, null, sectionTime1,  stationCount1, startContent, endContent));
                             //url= "https://maps.googleapis.com/maps/api/directions/json?origin="+start1.latitude+","+start1.longitude+"&destination="+end1.latitude+","+end1.longitude+"&mode=transit&key=AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY";
-
                         }
                         break;
 
@@ -341,7 +330,6 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                         int endID = subObj.getInt("endID");
                             detailItemList.add(new DetailItem(start, end, 20, startName, endName, String.valueOf(startID), String.valueOf(endID), type, -1, busNo, null, null, null, sectionTime, stationCount));
                         break;
-
                     case 3: //도보
                         Log.i("도보", "3");
                         int distance = subObj.getInt("distance");
@@ -367,7 +355,6 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
             pDialog.show();
   */
         }
-
         @Override
         protected Void doInBackground(Void... arg0) {
             HttpHandler sh = new HttpHandler();
@@ -459,6 +446,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         startActivity(intent);
     }
 
+    // 실시간 도착정보 시간 불러오기
 
 
 }

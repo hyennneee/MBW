@@ -191,10 +191,10 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView subStation;
         TextView endStop;
         TextView subMainDir;
-        TextView subDirection1;
-        TextView subDirection2;
-        TextView subRemaining1;
-        TextView subRemaining2;
+        //TextView subDirection1;
+        //TextView subDirection2;
+        //TextView subRemaining1;
+        //TextView subRemaining2;
         TextView fastPlatform;
         TextView fastPlatform2;
 
@@ -210,10 +210,10 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             subStation = itemView.findViewById(R.id.subStation);
             endStop = itemView.findViewById(R.id.endStop);
             subMainDir = itemView.findViewById(R.id.subMainDir);
-            subDirection1 = itemView.findViewById(R.id.subDirection1);
-            subDirection2 = itemView.findViewById(R.id.subDirection2);
-            subRemaining1 = itemView.findViewById(R.id.subRemaining1);
-            subRemaining2 = itemView.findViewById(R.id.subRemaining2);
+            //subDirection1 = itemView.findViewById(R.id.subDirection1);
+            //subDirection2 = itemView.findViewById(R.id.subDirection2);
+            //subRemaining1 = itemView.findViewById(R.id.subRemaining1);
+            //subRemaining2 = itemView.findViewById(R.id.subRemaining2);
             stationNum = itemView.findViewById(R.id.stationNum);
             fastPlatform = itemView.findViewById(R.id.contextInfo1);
             fastPlatform2 = itemView.findViewById(R.id.contextInfo2);
@@ -226,10 +226,10 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             subStation.setText(detailItem.getSpotName());
             endStop.setText(detailItem.getSpotName2()); // 도착역 이름
             subMainDir.setText(detailItem.getWayNum()+" 방면"); // 방면
-            subDirection1.setText(detailItem.getDirection1());  // 행
-            subDirection2.setText(detailItem.getDirection2());
-            subRemaining1.setText(detailItem.getRemaining1());  // 남은 시간
-            subRemaining2.setText(detailItem.getRemaining2());
+            //subDirection1.setText(detailItem.getDirection1());  // 행
+            //subDirection2.setText(detailItem.getDirection2());
+            //subRemaining1.setText(detailItem.getRemaining1());  // 남은 시간
+            //subRemaining2.setText(detailItem.getRemaining2());
             fastPlatform.setText(detailItem. getContext1());
             fastPlatform2.setText(detailItem. getContext2());
             stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
