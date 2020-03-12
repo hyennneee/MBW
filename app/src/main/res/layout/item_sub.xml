@@ -46,7 +46,6 @@
         android:layout_marginStart="3dp"
         android:layout_marginTop="3dp"
         android:text=""
-        android:textColor="@android:color/darker_gray"
         android:textSize="0sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/subRemaining"

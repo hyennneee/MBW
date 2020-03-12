@@ -4,16 +4,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class Position {
     @SerializedName("SX")
-    private double SX;
+    private String SX;
 
     @SerializedName("SY")
-    private double SY;
+    private String SY;
 
     @SerializedName("EX")
-    private double EX;
+    private String EX;
 
     @SerializedName("EY")
-    private double EY;
+    private String EY;
 
     @SerializedName("SearchPathType")
     private int type;
@@ -21,7 +21,10 @@ public class Position {
     public Position(){
         this.type = 0;
     }
-    public Position(double SX, double SY, double EX, double EY) {
+    //default type = 0인거랑 입력 받는거 하나씩
+
+
+    public Position(String SX, String SY, String EX, String EY) {
         this.SX = SX;
         this.SY = SY;
         this.EX = EX;
@@ -29,7 +32,7 @@ public class Position {
         this.type = 0;
     }
 
-    public Position(double SX, double SY, double EX, double EY, int type) {
+    public Position(String SX, String SY, String EX, String EY, int type) {
         this.SX = SX;
         this.SY = SY;
         this.EX = EX;
@@ -37,35 +40,35 @@ public class Position {
         this.type = type;
     }
 
-    public double getSX() {
+    public String getSX() {
         return SX;
     }
 
-    public void setSX(double SX) {
+    public void setSX(String SX) {
         this.SX = SX;
     }
 
-    public double getSY() {
+    public String getSY() {
         return SY;
     }
 
-    public void setSY(double SY) {
+    public void setSY(String SY) {
         this.SY = SY;
     }
 
-    public double getEX() {
+    public String getEX() {
         return EX;
     }
 
-    public void setEX(double EX) {
+    public void setEX(String EX) {
         this.EX = EX;
     }
 
-    public double getEY() {
+    public String getEY() {
         return EY;
     }
 
-    public void setEY(double EY) {
+    public void setEY(String EY) {
         this.EY = EY;
     }
 

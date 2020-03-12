@@ -28,6 +28,15 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         this.mListener = onItemClickListener;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     @NonNull
     @Override
     public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

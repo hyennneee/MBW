@@ -55,6 +55,7 @@
         android:ems="10"
         android:onClick="onClickMain"
         android:text="현위치"
+        android:textColor="@android:color/black"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/view"
@@ -184,56 +185,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/exampleTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="276dp"
-        android:text=""
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="188dp"
+        app:layout_constraintBottom_toTopOf="@+id/deleteView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.0" />
+
 
     <TextView
-        android:id="@+id/exampleTV2"
-        android:layout_width="wrap_content"
-        android:layout_height="19dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/exampleTV" />
-<!--
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onExample"
-        android:text="DetailPathActivity"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
-
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="372dp"
-        android:onClick="onExample2"
-        android:text="좋은 경로 제보하기"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onExample3"
-        android:text="위험 지역 제보하기"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
--->
-    <TextView
+        android:id="@+id/textView6"
         android:layout_width="85dp"
         android:layout_height="19dp"
         android:layout_marginTop="640dp"
