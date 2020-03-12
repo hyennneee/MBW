@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
                     positions.add(new Position(startLng, startLat, endLng, endLat));
                     intent = new Intent(MainActivity.this, ShowPathActivity.class);
                     intent.putExtra("LOC_DATA", str);
+                    intent.putExtra("token", token);
+
                     startActivity(intent);
                 }
                 break;

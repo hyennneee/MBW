@@ -65,4 +65,5 @@ public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickLis
         intent.putExtra("DETAIL_PATH", detailPathData);
         startActivity(intent);
     }
+
 }

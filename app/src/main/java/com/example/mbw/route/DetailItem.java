@@ -47,6 +47,27 @@ public class DetailItem {
     private int transExit;
     private String fastPlatform; // 빠른 하차, 빠른 환승
 
+    //지하철 엘레베이터 이동경로
+    private String context1;
+
+    public String getContext1() {
+        return context1;
+    }
+
+    public void setContext1(String context1) {
+        this.context1 = context1;
+    }
+
+    public String getContext2() {
+        return context2;
+    }
+
+    public void setContext2(String context2) {
+        this.context2 = context2;
+    }
+
+    private String context2;
+
     // 시작점, 종점의 경우
     public DetailItem(LatLng start, int imageType, String spotName) {
         this.start = start;
@@ -81,7 +102,7 @@ public class DetailItem {
     // 지하철 환승
     public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum,
                       String direction1, String direction2, String remaining1, String remaining2, int time, int passedStop,
-                      int transTime, int transDistance, String fastPlatform) {
+                      String context1, String context2) {
         this.start = start;
         this.end = end;
         this.imageType = imageType;
@@ -98,12 +119,13 @@ public class DetailItem {
 
         this.time = time;
         this.passedStop = passedStop;
-
+/*
         // 환승도보 정보 (지하철 갈아 탈 때만 필요)
         this.transTime = transTime;
         this.transDistance = transDistance;
-
-        this.fastPlatform = fastPlatform;
+*/
+        this.context1 = context1;
+        this.context2 = context2;
     }
 
 

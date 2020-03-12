@@ -57,8 +57,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
     </LinearLayout>
-
-
+<!--
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".DetailPathActivity" />
+-->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
@@ -140,8 +148,20 @@
 
 
             </androidx.recyclerview.widget.RecyclerView>
+
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="onExample3"
+                android:text="위험 지역 제보 하기" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

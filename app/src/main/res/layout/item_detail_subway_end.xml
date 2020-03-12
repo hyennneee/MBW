@@ -130,7 +130,7 @@
             android:text="빠른 하차" />
 
         <TextView
-            android:id="@+id/fastPlatform"
+            android:id="@+id/contextInfo1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"

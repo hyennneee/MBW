@@ -19,6 +19,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mbw.AddPath.AddPathActivity;
 import com.example.mbw.MainActivity;
 import com.example.mbw.R;
 import com.example.mbw.network.RetrofitClient;
@@ -86,7 +87,10 @@ public class ShowPathActivity extends AppCompatActivity {
     private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1;//, totalWalk, cost, totalTime;
     private Intent searchIntent = null;
     Document doc;
-
+    String token;
+    double sx, sy, ex, ey;
+    TextView departureText, destinationText;
+    String departureName, destinationName;
 
     //variables to measure time
     Vector<String> arsIdInfo;
@@ -137,7 +141,24 @@ public class ShowPathActivity extends AppCompatActivity {
         routeHistory.add(strings[1]);
         service = RetrofitClient.getClient().create(ServiceApi.class);
         getLastPosition();
+        lastPos.setType(1);
         startSearchPath(lastPos);
+
+        token = getIntent().getStringExtra("token");
+        departureName = departure.getText().toString();
+        destinationName = destination.getText().toString();
+    }
+
+    public void onExample2(View v){
+        Intent intent = new Intent(ShowPathActivity.this, AddPathActivity.class);
+        intent.putExtra("token", token);
+        intent.putExtra("sx", sx);
+        intent.putExtra("sy", sy);
+        intent.putExtra("ex", ex);
+        intent.putExtra("ey", ey);
+        intent.putExtra("departureName", departureName);
+        intent.putExtra("destinationName", destinationName);
+        startActivity(intent);
     }
 
     public void onClickShowPath(View v) {
@@ -299,7 +320,7 @@ public class ShowPathActivity extends AppCompatActivity {
     }
 
     private void startSearchPath(Position data) {
-        double sx, sy, ex, ey;
+        //double sx, sy, ex, ey;
         int type;
         sx = data.getSX();
         sy = data.getSY();
@@ -537,7 +558,6 @@ public class ShowPathActivity extends AppCompatActivity {
                 rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;  // RSS URL 구성
             GetXMLTask task = new GetXMLTask(this);
             task.execute(rss);
-
     }
     private class GetXMLTask extends AsyncTask<String, Void, Document> {
         private Activity context;

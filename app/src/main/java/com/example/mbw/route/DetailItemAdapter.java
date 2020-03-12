@@ -1,5 +1,9 @@
 package com.example.mbw.route;
 
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +35,6 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
     private static final int LAYOUT_START = 0;
     private static final int LAYOUT_BUS = 1;
     private static final int LAYOUT_SUB = 2;
-    //private static final int LAYOUT_SUB_END = 3;
     private static final int LAYOUT_WALK = 3;
     private static final int LAYOUT_END = 4;
 
@@ -76,27 +79,28 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         View view =null;
         ViewHolder viewHolder = null;
-
+/*
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_start,parent,false);
         viewHolder = new ViewHolderStart(view);
-
+*/
         switch(viewType){
-            case 0 :
+            case LAYOUT_START :
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_start,parent,false);
                 viewHolder = new ViewHolderStart(view);
                 break;
-            case 1 :
+            case LAYOUT_BUS :
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_bus,parent,false);
                 viewHolder = new ViewHolderBus(view);
                 break;
-            case 2 :
+            case LAYOUT_SUB :
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_subway_transfer,parent,false);
                 viewHolder = new ViewHolderSub(view);
-            case 3 :
+                break;
+            case LAYOUT_WALK :
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_walk,parent,false);
                 viewHolder = new ViewHolderWalk(view);
                 break;
-            case 4 :
+            case LAYOUT_END :
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_detail_end,parent,false);
                 viewHolder = new ViewHolderEnd(view);
                 break;
@@ -192,14 +196,13 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView subRemaining1;
         TextView subRemaining2;
         TextView fastPlatform;
+        TextView fastPlatform2;
+
         TextView subTime;
-        TextView transExit;
-        LinearLayout subTransWalk;
+        TextView stationNum;
 
         ImageView endImage;
-        // 환승일 때만 보여주기
-        TextView walkTime;
-        TextView walkDistance;
+        View v;
 
         public ViewHolderSub(@NonNull final View itemView) {
             super(itemView);
@@ -211,72 +214,78 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             subDirection2 = itemView.findViewById(R.id.subDirection2);
             subRemaining1 = itemView.findViewById(R.id.subRemaining1);
             subRemaining2 = itemView.findViewById(R.id.subRemaining2);
-            transExit = itemView.findViewById(R.id.transExit);
-            fastPlatform = itemView.findViewById(R.id.fastPlatform);
+            stationNum = itemView.findViewById(R.id.stationNum);
+            fastPlatform = itemView.findViewById(R.id.contextInfo1);
+            fastPlatform2 = itemView.findViewById(R.id.contextInfo2);
             subTime = itemView.findViewById(R.id.subTime);
-            walkTime = itemView.findViewById(R.id.walkTime);
-            walkDistance = itemView.findViewById(R.id.walkDistance);
-
-            subTransWalk = itemView.findViewById(R.id.subTransWalk);
             endImage = itemView.findViewById(R.id.endImage);
+            v = itemView.findViewById(R.id.view5);
         }
 
         private void setSubDetails(DetailItem detailItem){
             subStation.setText(detailItem.getSpotName());
             endStop.setText(detailItem.getSpotName2()); // 도착역 이름
-            subMainDir.setText(detailItem.getWayNum()); // 방면
+            subMainDir.setText(detailItem.getWayNum()+" 방면"); // 방면
             subDirection1.setText(detailItem.getDirection1());  // 행
             subDirection2.setText(detailItem.getDirection2());
             subRemaining1.setText(detailItem.getRemaining1());  // 남은 시간
             subRemaining2.setText(detailItem.getRemaining2());
-            fastPlatform.setText(detailItem. getFastPlatform());
-            subTime.setText(detailItem.getTime());
+            fastPlatform.setText(detailItem. getContext1());
+            fastPlatform2.setText(detailItem. getContext2());
+            stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
+            subTime.setText(detailItem.getTime()+"분");
 
-            // case 나눠야 하는 것
-            // 1. 환승 / 출구   2. 지하철 이미지
-            // transExit : 0 - trans, 1 - exit
-            if(detailItem.getTransExit()==0){ // 환승일 경우
-                transExit.setText("빠른 환승");
-                subTransWalk.setVisibility(View.VISIBLE);
-                walkTime.setText("환승 도보" +detailItem.getTransTime()+detailItem.getTransDistance()+"m");
-            }
-            else {
-                transExit.setText("빠른 하차");
-                subTransWalk.setVisibility(View.GONE);
-            }
-
+            //ColorDrawable background = (ColorDrawable) v.getBackground();
             switch (detailItem.getImageType()){
                 case 1:
                     subImage.setImageResource(R.drawable.line1);
                     endImage.setColorFilter(R.color.line1);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line1));
+                    //background.setColor(itemView.getResources().getColor(R.color.line1));
+
                     break;
                 case 2:
                     subImage.setImageResource(R.drawable.line2);
                     endImage.setColorFilter(R.color.line2);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line2));
+                    //background.setColor(itemView.getResources().getColor(R.color.line2));
                     break;
                 case 3:
                     subImage.setImageResource(R.drawable.line3);
                     endImage.setColorFilter(R.color.line3);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line3));
+                    //background.setColor(itemView.getResources().getColor(R.color.line3));
+
                     break;
                 case 4:
                     subImage.setImageResource(R.drawable.line4);
                     endImage.setColorFilter(R.color.line4);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line4));
+                    //background.setColor(itemView.getResources().getColor(R.color.line4));
                     break;
                 case 5:
                     subImage.setImageResource(R.drawable.line5);
                     endImage.setColorFilter(R.color.line5);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line5));
+                    //background.setColor(itemView.getResources().getColor(R.color.line5));
                     break;
                 case 6:
                     subImage.setImageResource(R.drawable.line6);
                     endImage.setColorFilter(R.color.line6);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line6));
+                    //background.setColor(itemView.getResources().getColor(R.color.line6));
                     break;
                 case 7:
                     subImage.setImageResource(R.drawable.line7);
                     endImage.setColorFilter(R.color.line7);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line7));
+                    //background.setColor(itemView.getResources().getColor(R.color.line7));
                     break;
                 case 8:
                     subImage.setImageResource(R.drawable.line8);
                     endImage.setColorFilter(R.color.line8);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line8));
+                    //background.setColor(itemView.getResources().getColor(R.color.line8));
                     break;
             }
         }
@@ -319,6 +328,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
     // onBindViewHolder() - position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        Log.i("position", position+"");
         switch(getItemViewType(position)){
             case LAYOUT_START:
                 ((ViewHolderStart) holder).setStartDetails(DetailPath.get(position));

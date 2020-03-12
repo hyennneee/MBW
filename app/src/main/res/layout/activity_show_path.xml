@@ -215,16 +215,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
     <FrameLayout
         android:id="@+id/showPathframe"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/non_step_switch">
+
         <ImageView
             android:id="@+id/loading_image"
             android:layout_width="50dp"
@@ -234,5 +235,16 @@
             app:srcCompat="@drawable/loading"
             tools:visibility="visible" />
     </FrameLayout>
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onExample2"
+
+        android:text="좋은 경로 공유하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showPathframe" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
