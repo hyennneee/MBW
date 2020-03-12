@@ -2,11 +2,14 @@ package com.example.mbw;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -18,11 +21,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mbw.AddPath.ReportActivity;
+import com.example.mbw.Map.HttpHandler;
 import com.example.mbw.route.DetailItem;
 import com.example.mbw.route.DetailItemAdapter;
+import com.example.mbw.route.Item;
+import com.example.mbw.showPath.ShowPathActivity;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.skt.Tmap.TMapData;
@@ -34,11 +48,27 @@ import com.skt.Tmap.TMapView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 public class DetailPathActivity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback {
     private static final String TAG = "DetailPathActivity";
+    //private GoogleMap mMap;
+
+
+    private String url;
+    private List<LatLng> polyLineList;
 
 
     private CustomSheetBehavior mBottomSheetBehavior;
@@ -58,6 +88,22 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
     int totalWalkTime;
     String startPoint, endPoint;
     double startLati, startLongi, endLati, endLongi;
+/*
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        LatLng sydney = new LatLng(37.54636,126.96483);
+
+        mMap.setMinZoomPreference(12);
+
+        Intent intent = getIntent();
+        ArrayList<LatLng> polyLineList = intent.getParcelableArrayListExtra("polyLineList");
+
+        // Add a marker in Sydney and move the camera
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in seoul"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+    */
 
     @Override
     public void onLocationChange(Location location){
@@ -87,6 +133,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
 
         startLongi = Double.parseDouble(pathInfo[3]);
         startLati = Double.parseDouble(pathInfo[4]);
+
         endLongi = Double.parseDouble(pathInfo[5]);
         endLati = Double.parseDouble(pathInfo[6]);
         String jsonString = pathInfo[0];
@@ -101,31 +148,19 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         }
 
         Log.i("clicked path json", jsonObject.toString());
-        // RecyclerView 지정
-        // RecyclerView recyclerView = findViewById(R.id.detailPath_rv) ;
-        // recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
-
-        // Test => DetailItem 배열 넣어서 test 해보기
 
         // 리사이클러뷰에 LinearLayoutManager 객체 지정.
         RecyclerView recyclerView = findViewById(R.id.detailPath_rv) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
-
 
         // 리사이클러뷰에 DetailItemAdapter 객체 지정.
         detailItemList = new ArrayList<DetailItem>();    //mArrayList의 내용을 채워야돼
         LatLng start = new LatLng(startLongi, startLati);
         LatLng end = new LatLng(endLongi, endLati);
 
-
         detailItemList.add(new DetailItem(start, 0, startPoint)); // 시작점
-
         parseJson(obj);
-
         detailItemList.add(new DetailItem(end, 40, endPoint)); // 끝점
-
-        //detailItemList.add(new DetailItem(start, end, 3, 10, 320));
-
 
         DetailItemAdapter adapter = new DetailItemAdapter(detailItemList) ;
         recyclerView.setAdapter(adapter) ;
@@ -136,9 +171,11 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
         tMapView.setSKTMapApiKey("l7xxbcd1d4f9f0984e8b99466490a2b372b7");
         linearLayoutTmap.addView( tMapView );
 
+
+
         tMapView.setIconVisibility(true);//현재위치로 표시될 아이콘을 표시할지 여부를 설정
 
-        setGps();
+        //setGps();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -149,8 +186,9 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
             return;
         }
 
-        tMapView.setZoomLevel(18);
-        tMapView.setTrackingMode(true);
+        tMapView.setZoomLevel(16);
+        //tMapView.setTrackingMode(true);
+        tMapView.setCenterPoint(startLongi, startLati);
 
         //경로 부분
         TMapPolyLine polyLine = new TMapPolyLine();
@@ -169,7 +207,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 tMapView.setLocationPoint(longitude, latitude);
-                tMapView.setCenterPoint(longitude, latitude);
+                //tMapView.setCenterPoint(longitude, latitude);
             }
         }
 
@@ -229,8 +267,7 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
             totalWalkTime = obj.getInt("totalWalkTime");
             walkTimeTextView.setText("도보 "+totalWalkTime+"분");
             transitCount = obj.getInt("transitCount");
-            transitCntTextView.setText("환승 "+transitCount+"분");
-
+            transitCntTextView.setText("환승 "+transitCount+"회");
             JSONArray subPathArray = obj.getJSONArray("subPath");
             int subPathCnt = subPathArray.length();
             for(int i=0; i<subPathCnt; i++){
@@ -239,7 +276,42 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                 switch(trafficType){
                     case 1://지하철
                         Log.i("지하철", "1");
+                        int sectionTime1 = subObj.getInt("sectionTime");
+                        int stationCount1 = subObj.getInt("stationCount");
+                        JSONArray laneArray1 = subObj.getJSONArray("lane");
+                        JSONObject laneObj1 = laneArray1.getJSONObject(0);
+                        int subwayCode = laneObj1.getInt("subwayCode");
+                        String startName1 = subObj.getString("startName");
+                        LatLng start1 = new LatLng( subObj.getDouble("startY"), subObj.getDouble("startX"));
+                        String endName1 = subObj.getString("endName");
+                        LatLng end1 = new LatLng( subObj.getDouble("endY"), subObj.getDouble("endX"));
+                        String door = subObj.getString("door"); // ex. 1-1
 
+                        url = "https://maps.googleapis.com/maps/api/directions/json?origin=37.54554,126.9695013&destination=37.5455348,126.9366705&mode=transit&key=AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY";
+                        new GetPaths().execute();
+
+                        JSONObject passStopObj = subObj.getJSONObject("passStopList");
+                        JSONArray stationsArray = passStopObj.getJSONArray("stations");
+                        int stationsCnt = stationsArray.length();
+
+                        JSONObject secondObj = stationsArray.getJSONObject(1); // 다음역 Object
+                        String direction = secondObj.getString("stationName");
+
+                        JSONArray startElevatorArray = subObj.getJSONArray("startElevatorInfo");
+                        JSONObject startElevatorObj = startElevatorArray.getJSONObject(0);
+                        String startContent = startElevatorObj.getString("content");
+                        int category = startElevatorObj.getInt("categoryBool");
+                        if(category == 1){
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, null, null, sectionTime1,  stationCount1, startContent, null));
+                        }
+                        else if(category == 2){
+
+                            JSONArray endElevatorArray = subObj.getJSONArray("endElevatorInfo");
+                            JSONObject endElevatorObj = endElevatorArray.getJSONObject(0);
+                            String endContent = endElevatorObj.getString("content");
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, null, null, sectionTime1,  stationCount1, startContent, endContent));
+                            //url= "https://maps.googleapis.com/maps/api/directions/json?origin="+start1.latitude+","+start1.longitude+"&destination="+end1.latitude+","+end1.longitude+"&mode=transit&key=AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY";
+                        }
                         break;
 
                     case 2: //버스
@@ -250,43 +322,131 @@ public class DetailPathActivity extends AppCompatActivity implements TMapGpsMana
                         JSONObject laneObj = laneArray.getJSONObject(0);
                         String busNo = laneObj.getString("busNo");
                         int type = laneObj.getInt("type");
-                        //int laneArrayCnt = laneArray.length();
-                        /*
-                        for(int j=0; i<laneArrayCnt; i++){
-                            JSONObject nowObj = laneArray.getJSONObject(i);
-                            busNo = nowObj.getString("busNo");
-                            type = nowObj.getInt("type");
-                        }
-*/
                         String startName = subObj.getString("startName");
                         LatLng start = new LatLng( subObj.getDouble("startY"), subObj.getDouble("startX"));
                         String endName = subObj.getString("endName");
                         LatLng end = new LatLng( subObj.getDouble("endY"), subObj.getDouble("endX"));
                         int startID = subObj.getInt("startID");
                         int endID = subObj.getInt("endID");
-
-
-                        detailItemList.add(new DetailItem(start, end, 20, startName, endName, String.valueOf(startID), null, type, -1, busNo, null, null, null, sectionTime, stationCount));
-//public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum, String wayNum2, int busType1, int busType2,
-//                      String busNum1, String busNum2, String remaining1, String remaining2, int time, int passedStop)
-
+                            detailItemList.add(new DetailItem(start, end, 20, startName, endName, String.valueOf(startID), String.valueOf(endID), type, -1, busNo, null, null, null, sectionTime, stationCount));
                         break;
                     case 3: //도보
                         Log.i("도보", "3");
                         int distance = subObj.getInt("distance");
                         int sectionTime3 = subObj.getInt("sectionTime");
-                        detailItemList.add(new DetailItem(new LatLng(0,0), new LatLng(0,0), 30, sectionTime3, distance));
-
+                        if(sectionTime3!=0)
+                            detailItemList.add(new DetailItem(new LatLng(0,0), new LatLng(0,0), 30, sectionTime3, distance));
                         break;
-
-
                 }
             }
         }catch(JSONException e){
             e.printStackTrace();
         }
-
-
     }
+
+    private class GetPaths extends AsyncTask<Void, Void, Void> {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Showing progress dialog
+/*
+            pDialog = new ProgressDialog(MapsActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+  */
+        }
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            HttpHandler sh = new HttpHandler();
+
+            // Making a request to url and getting response
+            String jsonStr = sh.makeServiceCall(url);
+            Log.e(TAG, "Response from url: " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    // Getting JSON Array node
+                    JSONArray path = jsonObj.getJSONArray("routes");
+
+                    // looping through All Contacts
+                    for (int i = 0; i < path.length(); i++) {
+                        JSONObject route = path.getJSONObject(i);
+                        JSONObject poly = route.getJSONObject("overview_polyline");
+                        String polyline = poly.getString("points");
+                        polyLineList = decodePoly(polyline);
+                    }
+                } catch (final JSONException e) {
+                    Log.e(TAG, "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "Json parsing error: " + e.getMessage(),
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+                }
+            } else {
+                Log.e(TAG, "Couldn't get json from server.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                "Couldn't get json from server. Check LogCat for possible errors!",
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
+            }
+
+            Log.e(TAG, "polypoly : " + polyLineList);
+
+            return null;
+        }
+    }
+
+    private List decodePoly(String encoded) {
+
+        List poly = new ArrayList();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                    (((double) lng / 1E5)));
+            poly.add(p);
+        }
+        return poly;
+    }
+
+    public void onExample3(View v){
+        Intent intent = new Intent(DetailPathActivity.this, ReportActivity.class);
+        startActivity(intent);
+    }
+
+    // 실시간 도착정보 시간 불러오기
+
 
 }

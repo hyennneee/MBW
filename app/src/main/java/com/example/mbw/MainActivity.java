@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
         Intent intent = new Intent(MainActivity.this, ShowPathActivity.class);
         intent.putExtra("LOC_DATA", data);
+        intent.putExtra("token",token);
         startActivity(intent);
     }
 
@@ -224,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
     public void onClickMain(View v){
         ArrayList<PlaceDB> pdb;
         switch (v.getId()){
-           case R.id.toHome:
+            case R.id.toHome:
             case R.id.houseButton:
                 //집으로 누르면 목적지 집 위치로 바뀜
                 //null이면 집 저장해달라는 메세지 띄우기
@@ -373,23 +374,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                 // The user canceled the operation.
             }
         }
-    }
-
-
-    public void onExample(View v){
-        intent = new Intent(MainActivity.this, DetailPathActivity.class);
-        startActivity(intent);
-    }
-
-    public void onExample2(View v){
-        intent = new Intent(MainActivity.this, AddPathActivity.class);
-        intent.putExtra("token", token);
-        startActivity(intent);
-    }
-
-    public void onExample3(View v){
-        intent = new Intent(MainActivity.this, ReportActivity.class);
-        startActivity(intent);
     }
 
 

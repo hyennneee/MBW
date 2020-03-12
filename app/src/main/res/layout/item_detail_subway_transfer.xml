@@ -45,19 +45,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/subStation"
         app:layout_constraintTop_toBottomOf="@+id/subStation">
 
         <LinearLayout
             android:id="@+id/subFirst"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/subDirection1"
                 android:layout_width="wrap_content"
-                android:layout_height="17dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="4dp"
@@ -68,7 +69,7 @@
             <TextView
                 android:id="@+id/subRemaining1"
                 android:layout_width="wrap_content"
-                android:layout_height="17dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="4dp"
@@ -79,14 +80,14 @@
 
         <LinearLayout
             android:id="@+id/subSecond"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/subDirection2"
                 android:layout_width="wrap_content"
-                android:layout_height="17dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="4dp"
@@ -97,7 +98,7 @@
             <TextView
                 android:id="@+id/subRemaining2"
                 android:layout_width="wrap_content"
-                android:layout_height="17dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="4dp"
@@ -112,11 +113,11 @@
         android:id="@+id/fastInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@+id/subRemaining"
         app:layout_constraintTop_toBottomOf="@+id/subRemaining">
-
+        <!--
         <TextView
             android:id="@+id/transExit"
             android:layout_width="wrap_content"
@@ -127,9 +128,9 @@
             android:layout_weight="1"
             android:paddingRight="10dp"
             android:text="빠른 환승" />
-
+-->
         <TextView
-            android:id="@+id/fastPlatform"
+            android:id="@+id/contextInfo1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -158,7 +159,7 @@
             android:paddingRight="10dp"
             android:text="6분"
             android:textColor="#3F51B5"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/stationNum"
@@ -169,7 +170,7 @@
             android:layout_marginTop="5dp"
             android:text="4개 역 이동"
             android:textColor="#000000"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -189,7 +190,38 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/fastInfo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/subRemaining"
+        app:layout_constraintTop_toBottomOf="@+id/busDetail">
+        <!--
+                <TextView
+                    android:id="@+id/transExit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_weight="1"
+                    android:paddingRight="10dp"
+                    android:text="빠른 환승" />
+        -->
+        <TextView
+            android:id="@+id/contextInfo2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:text="4-2, 7-2" />
+    </LinearLayout>
 
+<!--
     <LinearLayout
         android:id="@+id/subTransWalk"
         android:layout_width="wrap_content"
@@ -226,13 +258,13 @@
             android:text="103m" />
 
     </LinearLayout>
+    -->
 
     <View
         android:id="@+id/view5"
-        android:layout_width="1dp"
+        android:layout_width="3dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
         android:background="@color/line6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -252,6 +284,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:background="@drawable/circle"
+        android:backgroundTint="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout4"
         app:layout_constraintStart_toStartOf="@+id/subImage" />
 
@@ -260,10 +293,10 @@
         android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/busDetail"
-        app:layout_constraintTop_toBottomOf="@+id/subTransWalk">
+        app:layout_constraintTop_toBottomOf="@+id/fastInfo2">
 
         <LinearLayout
             android:id="@+id/endDetail"

@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.example.mbw.DB.DBHelper;
 import com.example.mbw.DB.DBvalue;
 import com.example.mbw.DB.RouteDBHelper;
+import com.example.mbw.AddPath.AddPathActivity;
+import com.example.mbw.MainActivity;
 import com.example.mbw.R;
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
@@ -94,6 +96,10 @@ public class ShowPathActivity extends AppCompatActivity {
     DBHelper MyDB;
     RouteDBHelper routeDBHelper;
 
+    String token;
+    double sxD, syD, exD, eyD;
+    TextView departureText, destinationText;
+    String departureName, destinationName;
 
     //variables to measure time
     Vector<String> arsIdInfo;
@@ -143,7 +149,22 @@ public class ShowPathActivity extends AppCompatActivity {
         destination.setText(strings[1]);
         sx = strings[2]; sy = strings[3]; ex = strings[4]; ey = strings[5];
         service = RetrofitClient.getClient().create(ServiceApi.class);
-        startSearchPath(0);
+        startSearchPath(1);
+        token = getIntent().getStringExtra("token");
+        departureName = departure.getText().toString();
+        destinationName = destination.getText().toString();
+    }
+
+    public void onExample2(View v){
+        Intent intent = new Intent(ShowPathActivity.this, AddPathActivity.class);
+        intent.putExtra("token", token);
+        intent.putExtra("sx", sxD);
+        intent.putExtra("sy", syD);
+        intent.putExtra("ex", exD);
+        intent.putExtra("ey", eyD);
+        intent.putExtra("departureName", departureName);
+        intent.putExtra("destinationName", destinationName);
+        startActivity(intent);
     }
 
     public void onClickShowPath(View v) {
@@ -521,7 +542,6 @@ public class ShowPathActivity extends AppCompatActivity {
                 rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;  // RSS URL 구성
             GetXMLTask task = new GetXMLTask(this);
             task.execute(rss);
-
     }
     private class GetXMLTask extends AsyncTask<String, Void, Document> {
         private Activity context;

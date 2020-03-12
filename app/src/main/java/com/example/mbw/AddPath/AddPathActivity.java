@@ -74,6 +74,15 @@ public class AddPathActivity extends AppCompatActivity {
 
         service = RetrofitClient.getClient().create(ServiceApi.class);
         token = getIntent().getStringExtra("token");
+        startLongi = getIntent().getDoubleExtra("sx", 126.9614495);
+        startLati = getIntent().getDoubleExtra("sy", 37.545708);
+        endLongi = getIntent().getDoubleExtra("ex", 126.9614495);
+        endLati = getIntent().getDoubleExtra("ey", 37.545708);
+        startPoint = getIntent().getStringExtra("departureName");
+        endPoint = getIntent().getStringExtra("destinationName");
+
+        startTv.setText(startPoint);
+        endTv.setText(endPoint);
     }
 
     @Override
