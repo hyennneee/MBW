@@ -162,11 +162,10 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
 
     }
-    public void search() {
+    public void search() {  //검색기록
         mRecyclerView = (RecyclerView) findViewById(R.id.searchView);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-
         mArrayList = MyDB.getAllRoutes();
         mAdapter = new RecordAdapter(mArrayList, this);
         mRecyclerView.setAdapter(mAdapter);
