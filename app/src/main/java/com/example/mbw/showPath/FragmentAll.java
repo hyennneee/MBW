@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,6 +65,14 @@ public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickLis
         Intent intent = new Intent(getActivity(), DetailPathActivity.class);
         intent.putExtra("DETAIL_PATH", detailPathData);
         startActivity(intent);
+    }
+
+    public void onRemainingChanged(DiffUtil.DiffResult diffResult){
+        diffResult.dispatchUpdatesTo(mAdapter);
+    }
+
+    public RouteAdapter getAdapter(){
+        return this.mAdapter;
     }
 
 }
