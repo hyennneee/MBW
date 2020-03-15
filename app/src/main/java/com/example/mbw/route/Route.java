@@ -4,15 +4,20 @@ import java.util.ArrayList;
 
 public class Route {
     //승차 정류장, 하차 정류장 정보는 여기서 처리해야될듯
-    private int totalTime, walkingTime, cost, group;
+    private int id, totalTime, walkingTime, cost, group;
     private ArrayList<Item> itemList;
 
-    public Route(int totalTime, int walkingTime, int cost, int group, ArrayList<Item> itemList) {
+    public Route(int id, int totalTime, int walkingTime, int cost, int group, ArrayList<Item> itemList) {
+        this.id = id;
         this.totalTime = totalTime;
         this.walkingTime = walkingTime;
         this.cost = cost;
         this.group = group;
         this.itemList = itemList;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getTotalTime() {

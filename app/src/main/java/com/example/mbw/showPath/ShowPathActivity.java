@@ -3,6 +3,7 @@ package com.example.mbw.showPath;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DiffUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,6 +30,8 @@ import com.example.mbw.network.ServiceApi;
 import com.example.mbw.pathData.PathResponse;
 import com.example.mbw.route.Item;
 import com.example.mbw.route.Route;
+import com.example.mbw.route.RouteAdapter;
+import com.example.mbw.route.RouteDiffCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -149,7 +152,7 @@ public class ShowPathActivity extends AppCompatActivity {
         destination.setText(strings[1]);
         sx = strings[2]; sy = strings[3]; ex = strings[4]; ey = strings[5];
         service = RetrofitClient.getClient().create(ServiceApi.class);
-        startSearchPath(1);
+        startSearchPath(0);
         token = getIntent().getStringExtra("token");
         departureName = departure.getText().toString();
         destinationName = destination.getText().toString();
@@ -397,6 +400,7 @@ public class ShowPathActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... voids) {   //transport function
             //transport
             routeArrayList = new ArrayList<>();
+            int id = 0;
             arsIdInfo = new Vector<>();
             busInfo = new Vector<>();
             busRemaining = new Vector<>();
@@ -515,7 +519,7 @@ public class ShowPathActivity extends AppCompatActivity {
                         totalTime += totalWalk;
                         totalWalk *= 2; //도보 시간에 보통 사람들의 2배 가량 소요된다 가정
                         //Route: totalTime, walkingTime, cost
-                        Route route = new Route(totalTime, totalWalk, cost, group, itemArrayList);
+                        Route route = new Route(id++, totalTime, totalWalk, cost, group, itemArrayList);
                         routeArrayList.add(route);
                     }
                 }
@@ -543,15 +547,17 @@ public class ShowPathActivity extends AppCompatActivity {
             GetXMLTask task = new GetXMLTask(this);
             task.execute(rss);
     }
-    private class GetXMLTask extends AsyncTask<String, Void, Document> {
+    private class GetXMLTask extends AsyncTask<String, Void, Void> {
         private Activity context;
+        ArrayList<Route> oldRouteList;
+        ArrayList<Route> newRouteList;
 
         public GetXMLTask(Activity context) {
             this.context = context;
         }
 
         @Override
-        protected Document doInBackground(String... urls) {
+        protected Void doInBackground(String... urls) {
 
             URL url;
             try {
@@ -569,11 +575,11 @@ public class ShowPathActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Parsing Error",
                         Toast.LENGTH_SHORT).show();
             }
-            return doc;
+            setNewRemainingTime(doc);
+            return null;
         }
 
-        @Override
-        protected void onPostExecute(Document doc) {
+        protected void setNewRemainingTime(Document doc){
 
             NodeList nodeList = doc.getElementsByTagName("itemList");
             boolean found = false;
@@ -612,6 +618,9 @@ public class ShowPathActivity extends AppCompatActivity {
                 busRemaining.add("저상버스 정보가 없습니다");
             }
 
+            oldRouteList = new ArrayList<>();
+            oldRouteList.addAll(routeArrayList);
+            newRouteList = new ArrayList<>();
             //버스 정보 다 불러옴 -> 버스 개수만큼 setData
             if(numOfBus == numOfBusCalled) {
                 int index = 0;  //busStationInfo index 셈
@@ -631,8 +640,10 @@ public class ShowPathActivity extends AppCompatActivity {
                                         time += Integer.parseInt(str[0]);
                                     }
                                     item.setTime(time);
+                                    item.setRemainingTime("");
                                 }
                                 catch(NumberFormatException e) {    //문자일 경우
+                                    item.setTime(0);
                                     item.setRemainingTime(arrmsg);
                                 }
                             }
@@ -640,14 +651,27 @@ public class ShowPathActivity extends AppCompatActivity {
                         }
                     }
                 }
+                newRouteList.addAll(routeArrayList);
 
                 //subway는 맨 위에 있는 경우만 xml 불러오니까 busCalled == bus면 마지막 버스까지 다 불러온거
                 //원래 여기서 fragment 전환
-                getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();
+
+
+
                 //transaction.replace(R.id.showPathframe, fragmentAll);
             }
         }
-
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            /*RouteDiffCallback callback = new RouteDiffCallback(oldRouteList, newRouteList);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
+            fragmentAll.onRemainingChanged(diffResult);*/
+            RouteAdapter adapter = fragmentAll.getAdapter();
+            if(adapter != null)
+                adapter.stopTimer();
+            getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();
+            super.onPostExecute(aVoid);
+        }
     }
     private class GetSubXMLTask extends AsyncTask<String, Void, Document> {
         private Activity context;

@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mbw.R;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import android.os.Handler;
 
 public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -24,8 +22,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_FIN = 3;
     private View adapterView;
 
-    ArrayList<RecyclerView.ViewHolder> viewHoldersList;
-    ArrayList<Integer> positionList;
+    private ArrayList<RecyclerView.ViewHolder> viewHoldersList;
     private Handler handler = new Handler();
     private Runnable updateRemainingTimeRunnable = new Runnable() {
         @Override
@@ -49,18 +46,19 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ItemAdapter(ArrayList<Item> list) {
         this.data = list;
         viewHoldersList = new ArrayList<>();
-        positionList = new ArrayList<>();
         startUpdateTimer();
     }
 
-    private void startUpdateTimer() {
-        Timer tmr = new Timer();
+    public void startUpdateTimer() {
+        handler.post(updateRemainingTimeRunnable);
+        /*Timer tmr = new Timer();
         tmr.schedule(new TimerTask() {
             @Override
             public void run() {
                 handler.post(updateRemainingTimeRunnable);
             }
-        }, 1000, 1000);
+        }, 1000, 1000);    //delay: 1000, period 1000
+        */
     }
 
     @Override   //adapter는 아이템마다 viewholder를 만드는 방법을 정의해야 한다
@@ -115,18 +113,18 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         synchronized (viewHoldersList) {
             //중복되는 viewHolder는 저장하지 않게
-            for(int pos : positionList){
+            /*for(int pos : positionList){
                 if(pos == position) //이미 저장된 viewholder면 return
                     return;
             }
-            positionList.add(position);
-            viewHoldersList.add(viewHolder);
+            positionList.add(position);*/
+            if(position == 0)viewHoldersList.add(viewHolder);
         }
     }
 
     public class BusViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView stationName, busRemaining, stationNo, busNum, busOthers2, numOfOtherBus1, numOfOtherBus2;
+        public TextView stationName, busRemaining, stationNo, busNum, busOthers2, numOfOtherBus1, numOfOtherBus2;
         protected ImageView busType;
         private Item item;
 
@@ -141,26 +139,32 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.numOfOtherBus1 = view.findViewById(R.id.numOfOtherBus1);
             this.numOfOtherBus2 = view.findViewById(R.id.numOfOtherBus2);
         }
+
+        public void setBusTime(){
+            int total = item.getTime();
+            if(total == 0){   //받은 내용이 문자열
+                String getRemaining = item.getRemainingTime();
+                busRemaining.setText(getRemaining);
+            }
+            else{
+                int m, s;
+                m = total / 60;
+                s = total % 60;
+                String remaining = "" + m + "분";
+                if(s != 0)
+                    remaining += " " + s + "초";
+                busRemaining.setText(remaining);
+            }
+
+        }
+
         private void setBusDetails(Item item) {
             this.item = item;
             stationName.setText(item.getStationName());
             String mainBus = item.getBusNum().get(0);
             int size = item.getBusNum().size();
             if(item.isFirst()) {   //첫 번째가 버스
-                int total = item.getTime();
-                if(total == 0){   //받은 내용이 문자열
-                    String getRemaining = item.getRemainingTime();
-                    busRemaining.setText(getRemaining);
-                }
-                else{
-                    int m, s;
-                    m = total / 60;
-                    s = total % 60;
-                    String remaining = "" + m + "분";
-                    if(s != 0)
-                        remaining += " " + s + "초";
-                    busRemaining.setText(remaining);
-                }
+                setBusTime();
                 //busNum 2개 이상
                 if(size > 1){
                     String subBus = item.getBusNum().get(1);
@@ -219,7 +223,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         }
-
     }
 
     public class SubViewHolder extends RecyclerView.ViewHolder {
@@ -244,30 +247,35 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         //오디세이로부터 받아오긴하는데 안드에서 띄워줄 필요는 없는 정보는 어떻게 처리하지
         //일단 Route가 갖고있어야는되지 않나
+        public void setSubTime(){
+            subRemaining.setTextSize(13);
+            int total = item.getTime();
+            if(total == 0){   //받은 내용이 문자열
+                String getRemaining = item.getRemainingTime();
+                subRemaining.setText(getRemaining);
+            }
+            else{   //받은 내용이 시간 + 현위치
+                int m, s;
+                m = total / 60;
+                s = total % 60;
+                String remaining = "" + m + "분";
+                if(s != 0)
+                    remaining += " " + s + "초";
+                subRemaining.setText(remaining);
+                String station = item.getCurrStation();
+                subCurrSt.setTextSize(13);
+                subCurrSt.setText(station);
+            }
+
+        }
+
         private void setSubDetails(Item item) {
             this.item = item;
             subStation.setText(item.getStationName());
-            if(item.isFirst()) {
-                subRemaining.setTextSize(13);
-                int total = item.getTime();
-                if(total == 0){   //받은 내용이 문자열
-                    String getRemaining = item.getRemainingTime();
-                    subRemaining.setText(getRemaining);
-                }
-                else{   //받은 내용이 시간 + 현위치
-                    int m, s;
-                    m = total / 60;
-                    s = total % 60;
-                    String remaining = "" + m + "분";
-                    if(s != 0)
-                        remaining += " " + s + "초";
-                    subRemaining.setText(remaining);
-                    String station = item.getCurrStation();
-                    subCurrSt.setTextSize(13);
-                    subCurrSt.setText(station);
-                }
+            if(item.isFirst()) {    //남은 시간 표시
+                setSubTime();
             }
-            else {
+            else {  //남은 시간 표시 안 함
                 subRemaining.setTextSize(0);
                 subRemaining.setText("");
             }

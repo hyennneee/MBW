@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         userName.setText(name);
 */
 
+
         String info[] = getIntent().getStringArrayExtra("USER_INFO");
         token = info[0];
         userName.setText(info[1]);
