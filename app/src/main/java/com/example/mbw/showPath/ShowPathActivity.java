@@ -537,15 +537,15 @@ public class ShowPathActivity extends AppCompatActivity {
 
     private void getStationInfo(String arsID) {
         //busStationInfo
-            arsIdInfo.add(arsID);
-            //남은 시간, 저상버스 여부 : 사실 이건 맨 처음 버스에 대해서만 해도 되는데
-            String rss;
-            if (isFiltered)
-                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
-            else
-                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;  // RSS URL 구성
-            GetXMLTask task = new GetXMLTask(this);
-            task.execute(rss);
+        arsIdInfo.add(arsID);
+        //남은 시간, 저상버스 여부 : 사실 이건 맨 처음 버스에 대해서만 해도 되는데
+        String rss;
+        if (isFiltered)
+            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
+        else
+            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;  // RSS URL 구성
+        GetXMLTask task = new GetXMLTask(this);
+        task.execute(rss);
     }
     private class GetXMLTask extends AsyncTask<String, Void, Void> {
         private Activity context;
@@ -806,35 +806,34 @@ public class ShowPathActivity extends AppCompatActivity {
         }
 
     }
-        public void onFilterChecked(View v) {
+    public void onFilterChecked(View v) {
         boolean checked = ((Switch) v).isChecked();
-            numOfBusCalled = 0;
-            numOfCalled = numOfSubCalled;   //버스 정보만 다시 불러오면 되니까
-            busRemaining = new Vector<>();
-            String rss;
-            if(checked){
-                isFiltered = true;
-                for(int i = 0; i < arsIdInfo.size(); i++){
-                    String arsID = arsIdInfo.get(i);
-                    rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
+        numOfBusCalled = 0;
+        numOfCalled = numOfSubCalled;   //버스 정보만 다시 불러오면 되니까
+        busRemaining = new Vector<>();
+        String rss;
+        if(checked){
+            isFiltered = true;
+            for(int i = 0; i < arsIdInfo.size(); i++){
+                String arsID = arsIdInfo.get(i);
+                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
 
-                    GetXMLTask task = new GetXMLTask(this);
-                    task.execute(rss);
-
-                }
+                GetXMLTask task = new GetXMLTask(this);
+                task.execute(rss);
 
             }
-            else{
-                isFiltered = false;
-                for(int i = 0; i < arsIdInfo.size(); i++){
-                    String arsID = arsIdInfo.get(i);
-                    rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
 
-                    GetXMLTask task = new GetXMLTask(this);
-                    task.execute(rss);
+        }
+        else{
+            isFiltered = false;
+            for(int i = 0; i < arsIdInfo.size(); i++){
+                String arsID = arsIdInfo.get(i);
+                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
 
-                }
+                GetXMLTask task = new GetXMLTask(this);
+                task.execute(rss);
+
             }
         }
+    }
 }
-
