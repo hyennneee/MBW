@@ -171,13 +171,28 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/linearLayout11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="45dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/busDetail"
         app:layout_constraintTop_toBottomOf="@+id/busDetail">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/passListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@+id/busDetail"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout11">
 
         <LinearLayout
             android:id="@+id/endDetail"
@@ -204,8 +219,8 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="5dp"
-                android:text="03-235"
                 android:paddingRight="10dp"
+                android:text="03-235"
                 android:textSize="13sp" />
 
             <TextView
