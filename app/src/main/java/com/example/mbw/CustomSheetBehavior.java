@@ -37,7 +37,6 @@ public class CustomSheetBehavior
             {
                 switch (newState)
                 {
-
                     case BottomSheetBehavior.STATE_DRAGGING:
                     {
                         userIsChangingSheetState = true;

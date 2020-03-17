@@ -184,7 +184,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
         BusSubList= new ArrayList<transitMapData>();
         //passListView = findViewById(R.id.passListView);
 
-
         /*FragmenatAll에서 클릭된 경로 상세 정보*/
         String pathInfo[] = getIntent().getStringArrayExtra("DETAIL_PATH");
         startPoint = pathInfo[1];
@@ -343,6 +342,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         int subwayCode = laneObj1.getInt("subwayCode");
                         subwayCodeNo = laneObj1.getInt("publicCode");
 
+
                         String startName1 = subObj.getString("startName");
                         LatLng start1 = new LatLng( subObj.getDouble("startY"), subObj.getDouble("startX"));
                         String endName1 = subObj.getString("endName");
@@ -351,7 +351,16 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         wayCodeNo = subObj.getInt("wayCode");
                         ArrayList<String> passStopArray = new ArrayList<>();
 
+/*
                         executeSubXML(startName1);
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+
+ */
                         // map 표시 위해
                         BusSubList.add(new transitMapData(subwayCode,1, start1, end1));
 
@@ -372,6 +381,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         JSONObject startElevatorObj = startElevatorArray.getJSONObject(0);
                         String startContent = startElevatorObj.getString("content");
                         int category = startElevatorObj.getInt("categoryBool");
+
                         if(category == 1){
                             detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray));
                         }
@@ -538,7 +548,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
     private void executeSubXML(String subStation){
         String rss = "http://swopenapi.seoul.go.kr/api/subway/6c73727a4c70616e36336e6d707076/xml/realtimeStationArrival/1/10/" + subStation;  // RSS URL 구성
-        GetSubXMLTask subXMLTask = new GetSubXMLTask(DetailPathActivity.this);
+        GetSubXMLTask subXMLTask = new GetSubXMLTask(this);
         subXMLTask.execute(rss);
     }
 
@@ -627,7 +637,8 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                 arrvMsg1="운행종료";
                 arrvMsg2="운행종료";
             }
-
+            Log.i("arrvMsg1",arrvMsg1);
+            Log.i("arrvMsg2",arrvMsg2);
         }
     }
 
@@ -698,7 +709,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
                     arrvMsg1 = array[0];
                     arrvMsg2 = array2[0];
-                    //arrBusInfo.add(new ArrivalBusInfo(arrmsg1, busType1)); //모든 버스들에 대한 정보 들어있음
                     found = true;
                     break;
                 }
@@ -708,6 +718,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                 arrvMsg1 = "저상버스 정보가 없습니다";
                 arrvMsg2 = "저상버스 정보가 없습니다";
             }
+
         }
         @Override
         protected void onPostExecute(Void aVoid) {
