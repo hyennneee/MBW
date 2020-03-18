@@ -215,10 +215,12 @@
 
     <LinearLayout
         android:id="@+id/fastInfo2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="40dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/subRemaining"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
         <!--

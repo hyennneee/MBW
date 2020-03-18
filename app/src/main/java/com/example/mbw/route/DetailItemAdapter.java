@@ -141,8 +141,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView busNum;
         TextView stationId;
         TextView stationId2;
-        TextView busRemaining1;
-        TextView busRemaining2;
+        //TextView busRemaining1;
+        //TextView busRemaining2;
         TextView busTime;
         TextView stopNum;
         TextView endStop;
@@ -159,8 +159,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             busNum = itemView.findViewById(R.id.busNum);
             stationId = itemView.findViewById(R.id.stationId);
             stationId2 = itemView.findViewById(R.id.stationId2);
-            busRemaining1 = itemView.findViewById(R.id.busRemaining1);
-            busRemaining2 = itemView.findViewById(R.id.busRemaining2);
+            //busRemaining1 = itemView.findViewById(R.id.busRemaining1);
+            //busRemaining2 = itemView.findViewById(R.id.busRemaining2);
             busTime = itemView.findViewById(R.id.busTime);
             stopNum = itemView.findViewById(R.id.stopNum);
             //busImage = itemView.findViewById(R.id.busImage);
@@ -190,13 +190,20 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             busNum.setText(detailItem.getBusNum1());
             stationId.setText(detailItem.getWayNum());
             stationId2.setText(detailItem.getWayNum2());
-            busRemaining1.setText(detailItem.getRemaining1());
-            busRemaining2.setText(detailItem.getRemaining2());
+            //busRemaining1.setText(detailItem.getRemaining1());
+            //busRemaining2.setText(detailItem.getRemaining2());
 
-            busTime.setText(detailItem.getTime()+"분");
+            int hour = detailItem.getTime()/60;
+            int minute = detailItem.getTime()%60;
+            String timeInfo;
+            if(hour==0)
+                timeInfo = minute+"분";
+            else
+                timeInfo = hour+"시간 "+minute+"분";
+
+
+            busTime.setText(timeInfo);
             stopNum.setText(detailItem.getPassedStop()+"개 정류장 이동");
-
-            // busImage.setImageResource(R.drawable.bus);
 
             ArrayList<String> passStationList = detailItem.getPassStationArray();
 
@@ -289,8 +296,16 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             fastPlatform.setText(detailItem. getContext1());
             fastPlatform2.setText(detailItem. getContext2());
             stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
-            subTime.setText(detailItem.getTime()+"분");
-            //ArrayList<String> passStationList = detailItem.getPassStationArray();
+
+            int hour = detailItem.getTime()/60;
+            int minute = detailItem.getTime()%60;
+            String timeInfo;
+            if(hour==0)
+                timeInfo = minute+"분";
+            else
+                timeInfo = hour+"시간 "+minute+"분";
+
+            subTime.setText(timeInfo);
 
             ArrayList<String> passStationList = detailItem.getPassStationArray();
 

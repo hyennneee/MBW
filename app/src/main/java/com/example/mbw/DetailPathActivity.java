@@ -416,7 +416,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
                         JSONObject passStopObj2 = subObj.getJSONObject("passStopList"); //
                         JSONArray stationsArray2 = passStopObj2.getJSONArray("stations");
-                        arsId = passStopObj2.getString("busArsID"); // arsId 받아오기 -> arsID랑
+                        //arsId = passStopObj2.getString("busArsID"); // arsId 받아오기 -> arsID랑
 
                         //executeBusXML(arsId, busNo);
 
@@ -430,7 +430,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
                         int startID = subObj.getInt("startID");
                         int endID = subObj.getInt("endID");
-                        detailItemList.add(new DetailItem(start, end, 20, startName, endName, String.valueOf(startID), String.valueOf(endID), type, -1, busNo, null, null, null, sectionTime, stationCount));
+                        detailItemList.add(new DetailItem(start, end, 20, startName, endName, String.valueOf(startID), String.valueOf(endID), type, -1, busNo, null, null, null, sectionTime, stationCount, passStopArray2));
                         break;
 
                     case 3: //도보

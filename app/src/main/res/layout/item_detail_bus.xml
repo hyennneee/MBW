@@ -63,9 +63,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="4dp"
         android:layout_marginTop="4dp"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/busNum"
         app:layout_constraintTop_toBottomOf="@+id/stationId">
 
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@+id/busType"
-        app:layout_constraintTop_toBottomOf="@+id/subRemaining">
+        app:layout_constraintTop_toBottomOf="@+id/busNum">
 
         <TextView
             android:id="@+id/busTime"
@@ -110,7 +110,7 @@
             android:paddingRight="10dp"
             android:text="6분"
             android:textColor="#3F51B5"
-            android:textSize="13sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/stopNum"
@@ -121,7 +121,7 @@
             android:layout_marginTop="5dp"
             android:text="4개 정류장 이동"
             android:textColor="#000000"
-            android:textSize="12sp" />
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -136,7 +136,8 @@
             android:maxWidth="17dp"
             android:maxHeight="17dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/arrow_down" />
+            android:visibility="visible"
+            android:src="@drawable/downarrow" />
 
     </LinearLayout>
 
@@ -175,6 +176,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/busDetail"
         app:layout_constraintTop_toBottomOf="@+id/busDetail">
@@ -190,6 +192,7 @@
         android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/busDetail"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout11">
@@ -210,7 +213,8 @@
                 android:paddingRight="10dp"
                 android:text="효창공원앞역"
                 android:textColor="#000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/stationId2"

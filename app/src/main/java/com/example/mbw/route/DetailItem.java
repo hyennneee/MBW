@@ -91,7 +91,7 @@ public class DetailItem {
 
     // 버스의 경우
     public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum, String wayNum2, int busType1, int busType2,
-                      String busNum1, String busNum2, String remaining1, String remaining2, int time, int passedStop) {
+                      String busNum1, String busNum2, String remaining1, String remaining2, int time, int passedStop, ArrayList<String> passStationArray) {
         this.start = start;
         this.end = end;
         this.imageType = imageType;
@@ -111,6 +111,8 @@ public class DetailItem {
 
         this.time = time;
         this.passedStop = passedStop;
+        this.passStationArray = passStationArray;
+
     }
 
     // 지하철 환승
