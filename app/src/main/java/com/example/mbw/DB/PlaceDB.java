@@ -1,44 +1,57 @@
 package com.example.mbw.DB;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PlaceDB {
-    String name, place, x, y;
 
-    public PlaceDB(String name, String place, String x, String y) {
-        this.name = name;
-        this.place = place;
-        this.x = x;
-        this.y = y;
+    @SerializedName("category")
+    private Integer category;
+
+    @SerializedName("address")
+    private String address;
+
+    @SerializedName("X")
+    private String X;
+
+    @SerializedName("Y")
+    private String Y;
+
+    public PlaceDB(int name, String place, String x, String y) {
+        this.category = name;
+        this.address = place;
+        this.X = x;
+        this.Y = y;
     }
 
-    public String getName() {
-        return name;
+    public int getCategory() {
+        return category;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategory(int category) {
+        this.category = category;
     }
 
-    public String getPlace() {
-        return place;
+    public String getPlace() {  //getAddress
+        return address;
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void setPlace(String address) {
+        this.address = address;
     }
 
     public String getX() {
-        return x;
+        return X;
     }
 
     public void setX(String x) {
-        this.x = x;
+        X = x;
     }
 
     public String getY() {
-        return y;
+        return Y;
     }
 
     public void setY(String y) {
-        this.y = y;
+        Y = y;
     }
 }

@@ -33,7 +33,7 @@ public class RouteDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertRouteBM(DBvalue value) {
+    public boolean insertRouteBM(RouteDB value) {
         SQLiteDatabase db = this.getWritableDatabase();
         if(db != null) {
             String sql = "insert or replace into routesBM(departure, destination, sx, sy, ex, ey) values(?, ?, ?, ?, ?, ?)";
@@ -51,15 +51,15 @@ public class RouteDBHelper extends SQLiteOpenHelper {
                 new String[]{departure, destination});
     }
 
-    public ArrayList<DBvalue> getAllRoutesBM() {
+    public ArrayList<RouteDB> getAllRoutesBM() {
 
-        ArrayList<DBvalue> array_list = new ArrayList();
+        ArrayList<RouteDB> array_list = new ArrayList();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from routesBM", null);
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
-            array_list.add(new DBvalue(res.getString(res.getColumnIndex(COLUMN_DEPARTURE))
+            array_list.add(new RouteDB(res.getString(res.getColumnIndex(COLUMN_DEPARTURE))
                     ,res.getString(res.getColumnIndex(COLUMN_DESTINATION))
                     ,res.getString(res.getColumnIndex(COLUMN_SX)), res.getString(res.getColumnIndex(COLUMN_SY)), res.getString(res.getColumnIndex(COLUMN_EX)), res.getString(res.getColumnIndex(COLUMN_EY))));
             res.moveToNext();

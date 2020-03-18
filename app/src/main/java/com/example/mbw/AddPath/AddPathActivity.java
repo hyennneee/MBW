@@ -11,17 +11,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mbw.AddPath.AddItem;
-import com.example.mbw.DetailPathActivity;
 import com.example.mbw.MainActivity;
 import com.example.mbw.R;
-import com.example.mbw.accountActivity.SignInActivity;
-import com.example.mbw.accountData.SignInResponse;
 import com.example.mbw.addPathData.addPathData;
 import com.example.mbw.addPathData.addPathResponse;
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
-import com.example.mbw.route.DetailItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 

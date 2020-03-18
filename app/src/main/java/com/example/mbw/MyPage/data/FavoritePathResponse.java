@@ -1,11 +1,9 @@
-package com.example.mbw.pathData;
+package com.example.mbw.MyPage.data;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.gson.annotations.SerializedName;
 
-import retrofit2.http.Query;
-
-public class PathResponse {
+public class FavoritePathResponse {
     @SerializedName("statusCode")
     private int code;
 
@@ -13,7 +11,7 @@ public class PathResponse {
     private String message;
 
     @SerializedName("data")
-    private JsonElement data;
+    private JsonArray data;
 
     public int getCode() {
         return code;
@@ -23,7 +21,5 @@ public class PathResponse {
         return message;
     }
 
-    public JsonElement getData() {
-        return data;
-    }
+    public JsonArray getData(){return data;}
 }
