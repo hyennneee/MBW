@@ -40,7 +40,7 @@ public class AddPathActivity extends AppCompatActivity {
 
     private String startPoint= "숙명여자대학교 명신관";
     private String endPoint = "동대문디자인플라자";
-    // TODO : 앞에서 start, end 에 대한 latitude, longitude 받아오기
+
     ServiceApi service;
     JSONObject obj, tokenObj;
     private double startLongi = 126.9614495;
@@ -238,14 +238,18 @@ public class AddPathActivity extends AppCompatActivity {
                     if (code == 200) {   // 서버 전송 성공
                         JsonElement userData = result.getData();
                         try {
+
                             resultMessage = userData.getAsJsonObject().get("message").getAsString();
                             Log.i("resultMessage", resultMessage);
 
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Intent intent = new Intent(AddPathActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        Toast.makeText(getApplicationContext(),
+                                "경로 공유 성공.",
+                                Toast.LENGTH_LONG)
+                                .show();
+                        finish();
                     }
                 }
                 else {
@@ -276,7 +280,6 @@ public class AddPathActivity extends AppCompatActivity {
             Toast.makeText(AddPathActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show(); //오류메시지 출력
             Log.i("구체적 에러", result.getMessage());
         }
-
 
         Toast.makeText(AddPathActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show(); //오류메시지 출력
         Log.i("구체적 에러", result.getMessage());

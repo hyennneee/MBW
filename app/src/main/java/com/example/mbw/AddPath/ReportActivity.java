@@ -335,6 +335,11 @@ public class ReportActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        Toast.makeText(getApplicationContext(),
+                                "위험 지역 제보 성공",
+                                Toast.LENGTH_LONG)
+                                .show();
+                        //finish();
                         Intent intent = new Intent(ReportActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
