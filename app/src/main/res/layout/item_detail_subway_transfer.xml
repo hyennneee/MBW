@@ -111,10 +111,12 @@
 
     <LinearLayout
         android:id="@+id/fastInfo"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="40dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/subRemaining"
         app:layout_constraintTop_toBottomOf="@+id/subRemaining">
         <!--
@@ -161,6 +163,7 @@
             android:textColor="#3F51B5"
             android:textSize="15sp" />
 
+
         <TextView
             android:id="@+id/stationNum"
             android:layout_width="wrap_content"
@@ -172,10 +175,11 @@
             android:textColor="#000000"
             android:textSize="15sp" />
 
+
         <ImageButton
             android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="5dp"
@@ -185,19 +189,40 @@
             android:maxWidth="17dp"
             android:maxHeight="17dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/arrow_down" />
+            android:visibility="visible"
+            android:src="@drawable/downarrow" />
 
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fastInfo2"
+        android:id="@+id/linearLayout10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@+id/subRemaining"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@+id/busDetail"
         app:layout_constraintTop_toBottomOf="@+id/busDetail">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/passListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fastInfo2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/subRemaining"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
         <!--
                 <TextView
                     android:id="@+id/transExit"

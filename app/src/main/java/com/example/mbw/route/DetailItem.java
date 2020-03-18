@@ -2,6 +2,8 @@ package com.example.mbw.route;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 public class DetailItem {
 
     //TODO : 남은 시간 자동으로 감소하도록!!
@@ -50,6 +52,18 @@ public class DetailItem {
     //지하철 엘레베이터 이동경로
     private String context1;
 
+    private ArrayList<String> passStationArray;
+
+
+    public ArrayList<String> getPassStationArray() {
+        return passStationArray;
+    }
+
+    public void setPassStationArray(ArrayList<String> passStationArray) {
+        this.passStationArray = passStationArray;
+    }
+
+
     public String getContext1() {
         return context1;
     }
@@ -77,7 +91,7 @@ public class DetailItem {
 
     // 버스의 경우
     public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum, String wayNum2, int busType1, int busType2,
-                      String busNum1, String busNum2, String remaining1, String remaining2, int time, int passedStop) {
+                      String busNum1, String busNum2, String remaining1, String remaining2, int time, int passedStop, ArrayList<String> passStationArray) {
         this.start = start;
         this.end = end;
         this.imageType = imageType;
@@ -97,12 +111,14 @@ public class DetailItem {
 
         this.time = time;
         this.passedStop = passedStop;
+        this.passStationArray = passStationArray;
+
     }
 
     // 지하철 환승
     public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum,
                       String direction1, String direction2, String remaining1, String remaining2, int time, int passedStop,
-                      String context1, String context2) {
+                      String context1, String context2, ArrayList<String> passStationArray) {
         this.start = start;
         this.end = end;
         this.imageType = imageType;
@@ -126,6 +142,9 @@ public class DetailItem {
 */
         this.context1 = context1;
         this.context2 = context2;
+
+        this.passStationArray = passStationArray;
+
     }
 
 

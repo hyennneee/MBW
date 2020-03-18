@@ -1,5 +1,7 @@
 package com.example.mbw.route;
 
+import android.R.layout;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -7,17 +9,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.mbw.DetailPathActivity;
 import com.example.mbw.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 알아야 하는 것 : 1, 2, 3, 4, 5 의 갯수, 순서
@@ -132,11 +141,13 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView busNum;
         TextView stationId;
         TextView stationId2;
-        TextView busRemaining1;
-        TextView busRemaining2;
+        //TextView busRemaining1;
+        //TextView busRemaining2;
         TextView busTime;
         TextView stopNum;
         TextView endStop;
+        ImageButton downArrow;
+        RecyclerView passListView;
 
         //ImageView busImage;
         ImageView busType1; // 버스 하나만 보여준다고 가정
@@ -148,12 +159,29 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             busNum = itemView.findViewById(R.id.busNum);
             stationId = itemView.findViewById(R.id.stationId);
             stationId2 = itemView.findViewById(R.id.stationId2);
-            busRemaining1 = itemView.findViewById(R.id.busRemaining1);
-            busRemaining2 = itemView.findViewById(R.id.busRemaining2);
+            //busRemaining1 = itemView.findViewById(R.id.busRemaining1);
+            //busRemaining2 = itemView.findViewById(R.id.busRemaining2);
             busTime = itemView.findViewById(R.id.busTime);
             stopNum = itemView.findViewById(R.id.stopNum);
             //busImage = itemView.findViewById(R.id.busImage);
             busType1 = itemView.findViewById(R.id.busType);
+            downArrow =itemView.findViewById(R.id.imageButton);
+            passListView = itemView.findViewById(R.id.passListView);
+
+            downArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(passListView.getVisibility() != View.VISIBLE){
+                        passListView.setVisibility(View.VISIBLE);
+                        downArrow.setImageResource(R.drawable.uparrow);
+                    }
+                    else {
+                        passListView.setVisibility(View.GONE);
+                        downArrow.setImageResource(R.drawable.downarrow);
+                    }
+                }
+            });
+
         }
 
         private void setBusDetails(DetailItem detailItem){
@@ -162,13 +190,30 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             busNum.setText(detailItem.getBusNum1());
             stationId.setText(detailItem.getWayNum());
             stationId2.setText(detailItem.getWayNum2());
-            busRemaining1.setText(detailItem.getRemaining1());
-            busRemaining2.setText(detailItem.getRemaining2());
+            //busRemaining1.setText(detailItem.getRemaining1());
+            //busRemaining2.setText(detailItem.getRemaining2());
 
-            busTime.setText(detailItem.getTime()+"분");
+            int hour = detailItem.getTime()/60;
+            int minute = detailItem.getTime()%60;
+            String timeInfo;
+            if(hour==0)
+                timeInfo = minute+"분";
+            else
+                timeInfo = hour+"시간 "+minute+"분";
+
+
+            busTime.setText(timeInfo);
             stopNum.setText(detailItem.getPassedStop()+"개 정류장 이동");
 
-            // busImage.setImageResource(R.drawable.bus);
+            ArrayList<String> passStationList = detailItem.getPassStationArray();
+
+            // 리사이클러뷰에 LinearLayoutManager 객체 지정.
+            passListView.setLayoutManager(new LinearLayoutManager(itemView.getContext())) ;
+
+            // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
+            SimpleTextAdapter adapter = new SimpleTextAdapter(passStationList) ;
+            passListView.setAdapter(adapter) ;
+
 
             // 간선, 지선, 마을
             switch (detailItem.getBusType1()){
@@ -193,8 +238,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView subMainDir;
         //TextView subDirection1;
         //TextView subDirection2;
-        //TextView subRemaining1;
-        //TextView subRemaining2;
+        TextView subRemaining1;
+        TextView subRemaining2;
         TextView fastPlatform;
         TextView fastPlatform2;
 
@@ -204,6 +249,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         ImageView endImage;
         View v;
 
+        RecyclerView passListView;
+
         public ViewHolderSub(@NonNull final View itemView) {
             super(itemView);
             subImage = itemView.findViewById(R.id.subImage);
@@ -212,14 +259,30 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             subMainDir = itemView.findViewById(R.id.subMainDir);
             //subDirection1 = itemView.findViewById(R.id.subDirection1);
             //subDirection2 = itemView.findViewById(R.id.subDirection2);
-            //subRemaining1 = itemView.findViewById(R.id.subRemaining1);
-            //subRemaining2 = itemView.findViewById(R.id.subRemaining2);
+            subRemaining1 = itemView.findViewById(R.id.subRemaining1);
+            subRemaining2 = itemView.findViewById(R.id.subRemaining2);
             stationNum = itemView.findViewById(R.id.stationNum);
             fastPlatform = itemView.findViewById(R.id.contextInfo1);
             fastPlatform2 = itemView.findViewById(R.id.contextInfo2);
             subTime = itemView.findViewById(R.id.subTime);
             endImage = itemView.findViewById(R.id.endImage);
             v = itemView.findViewById(R.id.view5);
+            passListView = itemView.findViewById(R.id.passListView);
+            ImageButton downArrow = itemView.findViewById(R.id.imageButton);
+
+            downArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(passListView.getVisibility() != View.VISIBLE){
+                        passListView.setVisibility(View.VISIBLE);
+                        downArrow.setImageResource(R.drawable.uparrow);
+                    }
+                    else {
+                        passListView.setVisibility(View.GONE);
+                        downArrow.setImageResource(R.drawable.downarrow);
+                    }
+                }
+            });
         }
 
         private void setSubDetails(DetailItem detailItem){
@@ -228,12 +291,36 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             subMainDir.setText(detailItem.getWayNum()+" 방면"); // 방면
             //subDirection1.setText(detailItem.getDirection1());  // 행
             //subDirection2.setText(detailItem.getDirection2());
-            //subRemaining1.setText(detailItem.getRemaining1());  // 남은 시간
-            //subRemaining2.setText(detailItem.getRemaining2());
+            subRemaining1.setText(detailItem.getRemaining1());  // 남은 시간
+            subRemaining2.setText(detailItem.getRemaining2());
             fastPlatform.setText(detailItem. getContext1());
             fastPlatform2.setText(detailItem. getContext2());
             stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
-            subTime.setText(detailItem.getTime()+"분");
+
+            int hour = detailItem.getTime()/60;
+            int minute = detailItem.getTime()%60;
+            String timeInfo;
+            if(hour==0)
+                timeInfo = minute+"분";
+            else
+                timeInfo = hour+"시간 "+minute+"분";
+
+            subTime.setText(timeInfo);
+
+            ArrayList<String> passStationList = detailItem.getPassStationArray();
+
+            // 리사이클러뷰에 LinearLayoutManager 객체 지정.
+            passListView.setLayoutManager(new LinearLayoutManager(itemView.getContext())) ;
+
+            // 리사이클러뷰에 SimpleTextAdapter 객체 지정.
+            SimpleTextAdapter adapter = new SimpleTextAdapter(passStationList) ;
+            Log.i("ADAPTER stationLIst", passStationList.toString());
+            passListView.setAdapter(adapter) ;
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(itemView.getContext(), android.R.layout.simple_list_item_1, passStationList) ;
+
+            //passListView.setAdapter(adapter);
+            //String[] strData = passStationList.toArray(new String[passStationList.size()]);
+
 
             //ColorDrawable background = (ColorDrawable) v.getBackground();
             switch (detailItem.getImageType()){
@@ -289,6 +376,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
                     break;
             }
         }
+
+
     }
 
     // 뷰홀더 지정 3 : Walk
