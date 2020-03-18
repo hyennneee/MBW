@@ -8,34 +8,36 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.AlphabeticIndex;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbw.DB.DBHelper;
-import com.example.mbw.DB.DBvalue;
 import com.example.mbw.DB.PlaceDB;
 import com.example.mbw.DB.PlaceDBHelper;
 import com.example.mbw.DB.RecordAdapter;
+import com.example.mbw.DB.RouteDB;
 import com.example.mbw.DB.RouteDBHelper;
-import com.example.mbw.accountActivity.SignInActivity;
-import com.example.mbw.myPageFragment.FragmentPath;
-import com.example.mbw.pathData.Position;
-import com.example.mbw.AddPath.AddPathActivity;
-import com.example.mbw.AddPath.ReportActivity;
+import com.example.mbw.MyPage.FragmentPath;
+import com.example.mbw.MyPage.MyPageActivity;
+import com.example.mbw.MyPage.data.FavoritePathResponse;
+import com.example.mbw.MyPage.data.LocationResponse;
+import com.example.mbw.network.RetrofitClient;
+import com.example.mbw.network.ServiceApi;
+import com.example.mbw.route.Route;
 import com.example.mbw.showPath.ShowPathActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -47,13 +49,22 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity implements RecordAdapter.OnItemClickListener{
     Intent intent = null, searchIntent = null;
     TextView departure, destination;
@@ -62,15 +73,18 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
     //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
-    String token = null, sx = "0", sy = "0", ex = "0", ey = "0", currLocation;
+    public static String token = null;
+    String sx = "0", sy = "0", ex = "0", ey = "0", currLocation;
     PlaceDB homeDB, officeDB;
     // Set the fields to specify which types of place data to
     // return after the user has made a selection.
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
     DBHelper MyDB;
     RouteDBHelper routeDBHelper;
-    PlaceDBHelper placeDBHelper;
-    private ArrayList<DBvalue> mArrayList;
+    ServiceApi service;
+    boolean getData = false;
+    boolean isBookmark = false;
+    private ArrayList<RouteDB> mArrayList;
     private RecordAdapter mAdapter;
     static private RecyclerView mRecyclerView;
     private FusedLocationProviderClient fusedLocationClient;
@@ -78,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
+    private ArrayList<RouteDB> routeArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,23 +103,15 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         userName = findViewById(R.id.userName);
         Places.initialize(getApplicationContext(), getString(R.string.google_key));
 
-        //String info[] = getIntent().getStringArrayExtra("USER_INFO");
-        //token = info[0];
-        /*
-        token = getIntent().getStringExtra("token");
-        Log.i("token2", token);
-
-        String name = getIntent().getStringExtra("userName");
-        userName.setText(name);
-*/
-
+        service = RetrofitClient.getClient().create(ServiceApi.class);
 
         String info[] = getIntent().getStringArrayExtra("USER_INFO");
         token = info[0];
+
+        Log.i("Token", token);
         userName.setText(info[1]);
 
         MyDB = new DBHelper(this);
-        placeDBHelper = new PlaceDBHelper(this);
         routeDBHelper = new RouteDBHelper(this);
         search();
 
@@ -118,16 +125,10 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
         //x경도 y 위도 (127, 36)//126.9513153, 37.496374
 
         sx = "126.9625327"; sy = "37.5464301";  //ex="127.0043575"; ey="37.5672437";
-        /*String currentLoc = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
-        String sp[] = currentLoc.split(",");
-        departure.setText("현위치: " + sp[0]);
-        Intent intent = new Intent(MainActivity.this, ShowPathActivity.class);
-        String data[] = {departure.getText().toString(), "국립중앙의료원", sx, sy, ex, ey};
-        intent.putExtra("LOC_DATA", data);
-        startActivity(intent);*/
+
 
         //실제 디바이스 돌릴 때 들어갈 내용
-        /*fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -143,16 +144,13 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                         }
                     }
                 });
-                */
-
-
-
 
         toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
 
         profile = findViewById(R.id.profileView);
         swap = findViewById(R.id.swap);
+
         home = findViewById(R.id.houseButton);
         office = findViewById(R.id.officeButton);
         bookmark = findViewById(R.id.bookmarkButton);
@@ -163,24 +161,44 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
 
     }
+
+    static public String getToken(){
+        return token;
+    }
     public void search() {  //검색기록
         mRecyclerView = (RecyclerView) findViewById(R.id.searchView);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        mLinearLayoutManager.setReverseLayout(true);
+        mLinearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mArrayList = MyDB.getAllRoutes();
         mAdapter = new RecordAdapter(mArrayList, this);
         mRecyclerView.setAdapter(mAdapter);
     }
+
+    //경로 검색 기록 && 즐겨찾는 경로 클릭했을 때 발생하는 이벤트
     public void onItemClick(int position){
-        //아이템 클릭 이벤트 처리
-        //DB에서 해당 내용 삭제, 추가
-        //ShowPathActivity에 좌표, 출발지, 도착지 전달
-        DBvalue db = mArrayList.get(position);
-        String data[] = db.getValue().toArray(new String[0]);
+        RouteDB db;
+        String data[];
         String dept, dest;
-        dept = db.getDeparture();
-        dest = db.getDestination();
-        MyDB.deleteRoute(dept, dest);
+        //검색기록
+        if(!isBookmark) {
+            db = mArrayList.get(position);
+            data = db.getValue().toArray(new String[0]);
+            dept = db.getDeparture();
+            dest = db.getDestination();
+            MyDB.deleteRoute(dept, dest);
+        }
+        else {//즐겨찾기
+            db = routeArrayList.get(position);
+            data = db.getValue().toArray(new String[0]);
+            dept = db.getDeparture();
+            dest = db.getDestination();
+            MyDB.deleteRoute(dept, dest);
+        }
+
+
+        //검색 기록에 추가
         MyDB.insertRoute(db);
 
         Intent intent = new Intent(MainActivity.this, ShowPathActivity.class);
@@ -224,58 +242,21 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
     public void onClickMain(View v){
         ArrayList<PlaceDB> pdb;
+        GetLocationTask locationTask;
         switch (v.getId()){
             case R.id.toHome:
             case R.id.houseButton:
                 //집으로 누르면 목적지 집 위치로 바뀜
                 //null이면 집 저장해달라는 메세지 띄우기
-                pdb = placeDBHelper.getAllPlaces();
-                for(PlaceDB place : pdb){
-                    if(place.getName().equals("home"))
-                        homeDB = place;
-                    else
-                        officeDB = place;
-                }
-                if(homeDB == null)
-                    return;
-                else{
-                    String dest = homeDB.getPlace();
-                    String ex, ey;
-                    ex = homeDB.getX(); ey = homeDB.getY();
-                    DBvalue db = new DBvalue(currLocation, dest, sx, sy, ex, ey);
-                    MyDB.insertRoute(db);
-
-                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
-                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
-                    intent.putExtra("LOC_DATA", sendData);
-                    startActivity(intent);
-                }
+                locationTask = new GetLocationTask(MainActivity.this, token, 1);
+                locationTask.execute();
                 break;
             case R.id.toOffice:
             case R.id.officeButton:
                 //회사로 누르면 목적지 회사 위치로 바뀜
                 //null이면 회사 저장해달라는 메세지 띄우기
-                pdb = placeDBHelper.getAllPlaces();
-                for(PlaceDB place : pdb){
-                    if(place.getName().equals("home"))
-                        homeDB = place;
-                    else
-                        officeDB = place;
-                }
-                if(officeDB == null)
-                    return;
-                else{
-                    String dest = officeDB.getPlace();
-                    String ex, ey;
-                    ex = officeDB.getX(); ey = officeDB.getY();
-                    DBvalue db = new DBvalue(currLocation, dest, sx, sy, ex, ey);
-                    MyDB.insertRoute(db);
-
-                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
-                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
-                    intent.putExtra("LOC_DATA", sendData);
-                    startActivity(intent);
-                }
+                locationTask = new GetLocationTask(MainActivity.this, token, 2);
+                locationTask.execute();
                 break;
             case R.id.swap: //도착지 지정 안 된 상태에서 swap하면 안 됨
                 if(destination.getText().toString() != "") {
@@ -283,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     String deptTmp = departure.getText().toString();
                     String destTmp = destination.getText().toString();
                     departure.setText(destTmp);
+                    destination.setTextColor(Color.BLACK);
                     destination.setText(deptTmp);
 
                     //위도 경도도 바뀌게
@@ -301,9 +283,10 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                 break;
             case R.id.bookmarkButton:
                 //즐찾 버튼 누르면 즐찾해놓은 경로 띄우기
-                mArrayList = routeDBHelper.getAllRoutesBM();
-                mAdapter = new RecordAdapter(mArrayList, this);
-                mRecyclerView.setAdapter(mAdapter);
+                //getFavoritePath(token);
+                //mArrayList = routeDBHelper.getAllRoutesBM();
+                GetBookmarkTask bookmarkTask = new GetBookmarkTask(MainActivity.this, token);
+                bookmarkTask.execute();
                 break;
             case R.id.departureText:
                 FLAG = 1;
@@ -313,7 +296,200 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                 FLAG = 2;
                 searchPlace();
                 break;
+            case R.id.deleteAllButton:
+                MyDB.deleteAll();
+                search();
+                Toast.makeText(this, "모든 검색기록이 삭제되었습니다", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private class GetBookmarkTask extends AsyncTask<Void, Void, Void> {
+        private Activity context;
+        private  String token;
+
+        public GetBookmarkTask(Activity context, String token) {
+            this.context = context;
+            this.token = token;
+            routeArrayList = new ArrayList<>();
+            isBookmark = true;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            service.getFavoritePath(token).enqueue(new Callback<LocationResponse>() {
+                @Override
+                public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
+                    LocationResponse result = response.body();
+                    boolean success = response.isSuccessful();
+                    if(success) {
+                        int code = result.getCode();
+                        if (code == 200) {   //즐겨찾는 장소 조회 성공
+                            JsonArray data = result.getData();
+                            if(data != null) {
+                                try {
+                                    for (JsonElement jsonElement : data) {
+                                        JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                        String departure, destination, SX, SY, EX, EY;
+                                        departure = jsonObject.get("startAddress").getAsString();
+                                        destination = jsonObject.get("endAddress").getAsString();
+                                        SX = jsonObject.get("SX").getAsString();
+                                        SY = jsonObject.get("SY").getAsString();
+                                        EX = jsonObject.get("EX").getAsString();
+                                        EY = jsonObject.get("EY").getAsString();
+                                        RouteDB routeDB = new RouteDB(departure, destination, SX, SY, EX, EY);
+                                        routeArrayList.add(routeDB);
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                Toast.makeText(MainActivity.this, "에러 발생", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        getData = true;
+                    }
+                    else {
+                        try {
+                            setError(response);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        getData = true;
+                    }
+                }
+                @Override
+                public void onFailure(Call<LocationResponse> call, Throwable t) {
+                    getData = true;
+                    Toast.makeText(MainActivity.this, "통신 에러 발생", Toast.LENGTH_SHORT).show();
+                    Log.e("통신 에러 발생", t.getMessage());
+                }
+            });
+            while(true){
+                if(getData)
+                    break;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(routeArrayList.size() != 0) {
+                mAdapter = new RecordAdapter(routeArrayList, MainActivity.this);
+                mRecyclerView.setAdapter(mAdapter);
+                LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(MainActivity.this);
+                mRecyclerView.setLayoutManager(mLinearLayoutManager);
+                mAdapter = new RecordAdapter(routeArrayList, MainActivity.this);
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        }
+
+    }
+
+    private class GetLocationTask extends AsyncTask<Void, Void, Void> {
+        private Activity context;
+        private  String token;
+        private int category;
+
+        public GetLocationTask(Activity context, String token, int category) {
+            this.context = context;
+            this.token = token;
+            this.category = category;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            service.getLocation(token, category).enqueue(new Callback<LocationResponse>() {
+                @Override
+                public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
+                    LocationResponse result = response.body();
+                    boolean success = response.isSuccessful();
+                    if (success) {
+                        int code = result.getCode();
+                        if (code == 200) {   //즐겨찾는 장소 조회 성공
+                            JsonArray data = result.getData();
+                            try {
+                                JsonObject jsonObject = data.get(0).getAsJsonObject();
+                                String address = jsonObject.get("address").getAsString();
+                                int resultCategory = jsonObject.get("category").getAsInt();
+                                String X = jsonObject.get("X").getAsString();
+                                String Y = jsonObject.get("Y").getAsString();
+                                if(resultCategory == 1)  //집
+                                    homeDB = new PlaceDB(resultCategory, address, X, Y);
+                                else{   //회사
+                                    officeDB = new PlaceDB(resultCategory, address, X, Y);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    else {
+                        try {
+                            setError(response);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        //Toast.makeText(MainActivity.this, "저장된 주소가 없습니다", Toast.LENGTH_SHORT).show();
+                        //ToDo:
+                        //등록된 주소 없을 때
+                        //"주소를 등록해주세요"
+                        //카테고리에 따라 homeDB || officeDB = null;"
+                        //Toast.makeText(MainActivity.this, "통신 에러 발생", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<LocationResponse> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, "즐겨찾는 주소 통신 에러 발생", Toast.LENGTH_SHORT).show();
+                    Log.e("즐겨찾는 주소 통신 에러 발생", t.getMessage());
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (category == 1) {
+                if (homeDB != null){
+                    String dest = homeDB.getPlace();
+                    String ex, ey;
+                    ex = homeDB.getX();
+                    ey = homeDB.getY();
+                    //검색 기록에 추가
+                    RouteDB db = new RouteDB(currLocation, dest, sx, sy, ex, ey);
+                    MyDB.insertRoute(db);
+
+                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
+                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
+                    intent.putExtra("LOC_DATA", sendData);
+                    search();
+                    startActivity(intent);
+                }
+            }
+            else{
+                if(officeDB != null){
+                    String dest = officeDB.getPlace();
+                    String ex, ey;
+                    ex = officeDB.getX(); ey = officeDB.getY();
+                    RouteDB db = new RouteDB(currLocation, dest, sx, sy, ex, ey);
+                    MyDB.insertRoute(db);
+
+                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
+                    intent = new Intent(MainActivity.this, ShowPathActivity.class);
+                    intent.putExtra("LOC_DATA", sendData);
+                    startActivity(intent);
+                }
+            }
+        }
+
+    }
+
+    public void setError(Response<LocationResponse> response) throws IOException {
+        Gson gson = new Gson();
+
+        LocationResponse result = gson.fromJson(response.errorBody().string(), LocationResponse.class);
+        Toast.makeText(this, result.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     public void searchPlace(){
@@ -341,6 +517,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                 else if(FLAG == 2){
                     ex = lng;
                     ey = lat;
+                    destination.setTextColor(Color.BLACK);
                     destination.setText(place.getName());
                 }
 
@@ -360,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     arrayList.add(temp);
                 }
 
-                DBvalue db = new DBvalue(arrayList);
+                RouteDB db = new RouteDB(arrayList);
                 MyDB.insertRoute(db);
                 intent = new Intent(MainActivity.this, ShowPathActivity.class);
                 intent.putExtra("LOC_DATA", sendData);

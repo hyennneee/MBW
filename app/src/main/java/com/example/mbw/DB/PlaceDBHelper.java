@@ -6,8 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-public class PlaceDBHelper extends SQLiteOpenHelper {
+public class PlaceDBHelper {//extends SQLiteOpenHelper {
 
+    /*
     public static final String DATABASE_NAME = "PlaceBookmark.db";
     public static final String TABLE_NAME = "places";
     public static final String COLUMN_NAME = "name";
@@ -64,5 +65,7 @@ public class PlaceDBHelper extends SQLiteOpenHelper {
 
         return array_list;
     }
+
+     */
 }
 

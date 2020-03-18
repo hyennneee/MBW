@@ -13,21 +13,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.mbw.MainActivity;
 import com.example.mbw.R;
-import com.example.mbw.addPathData.addPathResponse;
 import com.example.mbw.problemArea.problemAreaData;
 import com.example.mbw.problemArea.problemAreaResponse;
 
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
-import com.example.mbw.problemArea.problemAreaResponse;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
 import org.json.JSONException;
 import org.json.JSONObject;

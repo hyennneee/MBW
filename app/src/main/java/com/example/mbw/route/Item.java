@@ -5,7 +5,7 @@ import java.util.Vector;
 public class Item {
     private String stationName, remainingTime, arsID, currStation;
     Vector<String> busNum;
-    private int subLine, busType, time = 0;   //time은 남은 시간이 문자로 들어올 때, 또는 받지 않았을 때 0임
+    private int subLine, busType, time = 0, publicCode;   //time은 남은 시간이 문자로 들어올 때, 또는 받지 않았을 때 0임
     boolean first;
     //오디세이 parameter: busID
     //공공데이터 포털 parameter: idx(=ord), localStationID(=stationID)
@@ -92,5 +92,13 @@ public class Item {
 
     public void setCurrStation(String currStation) {
         this.currStation = currStation;
+    }
+
+    public int getPublicCode() {
+        return publicCode;
+    }
+
+    public void setPublicCode(int publicCode) {
+        this.publicCode = publicCode;
     }
 }

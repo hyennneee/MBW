@@ -3,9 +3,9 @@ package com.example.mbw.route;
 import java.util.ArrayList;
 
 public class Route {
-    //승차 정류장, 하차 정류장 정보는 여기서 처리해야될듯
-    private int id, totalTime, walkingTime, cost, group;
+    private int id, totalTime, walkingTime, cost, group, myPathIdx = -1, likedNum;
     private ArrayList<Item> itemList;
+    boolean liked = false;
 
     public Route(int id, int totalTime, int walkingTime, int cost, int group, ArrayList<Item> itemList) {
         this.id = id;
@@ -58,5 +58,25 @@ public class Route {
 
     public void setItemList(ArrayList<Item> itemList) {
         this.itemList = itemList;
+    }
+
+    public void setMyPathIdx(int myPathIdx) {
+        this.myPathIdx = myPathIdx;
+    }
+
+    public int getMyPathIdx() {
+        return myPathIdx;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public void setLikedNum(int likedNum) {
+        this.likedNum = likedNum;
+    }
+
+    public int getLikedNum() {
+        return likedNum;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.mbw.myPageFragment;
+package com.example.mbw.MyPage;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

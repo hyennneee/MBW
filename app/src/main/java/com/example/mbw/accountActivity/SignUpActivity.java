@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.mbw.MainActivity;
 import com.example.mbw.R;
 import com.example.mbw.accountData.SignUpData;
 import com.example.mbw.accountData.SignUpResponse;
