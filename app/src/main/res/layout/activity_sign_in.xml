@@ -5,23 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <ImageView
         android:id="@+id/appName"
         android:layout_width="match_parent"
-        android:layout_height="165dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="80dp"
         android:gravity="center"
-        android:text="MBW"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-        android:textIsSelectable="false"
-        app:fontFamily="cursive"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/app_name" />
 
     <EditText
         android:id="@+id/signInEmail"
         android:layout_width="350dp"
         android:layout_height="45dp"
+        android:layout_marginTop="70dp"
         android:ems="10"
         android:gravity="center"
         android:hint="e-mail"
@@ -49,7 +48,8 @@
         android:layout_marginTop="10dp"
         android:background="#1ABC9C"
         android:onClick="onClickSignIn"
-        android:text="sign in"
+        android:text="로그인"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signInPassword" />
@@ -58,11 +58,11 @@
         android:id="@+id/signUpView"
         android:layout_width="350dp"
         android:layout_height="19dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="25dp"
         android:clickable="true"
         android:gravity="center"
         android:onClick="onClickCreateAccount"
-        android:text="CREATE NEW MBW ACCOUNT"
+        android:text="계정이 없으신가요?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signInButton" />

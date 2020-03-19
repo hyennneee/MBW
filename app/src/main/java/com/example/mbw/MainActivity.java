@@ -138,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                             sx = Double.toString(location.getLongitude());
                             sy = Double.toString(location.getLatitude());
                             currLocation = getCurrentAddress(new LatLng(Double.parseDouble(sy), Double.parseDouble(sx)));
-                            String sp[] = currLocation.split("국 ");
-                            currLocation = sp[1];
+                            String sp[] = currLocation.split("시");
+                            currLocation = "서울" + sp[1];
                             departure.setText(currLocation);
                         }
                     }
