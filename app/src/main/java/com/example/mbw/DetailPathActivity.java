@@ -320,7 +320,8 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
     private void parseJson(JSONObject obj) {
         try{
             totalTime = obj.getInt("totalTime");
-            timeTextView.setText(totalTime+"분");
+            int totalTwice = totalTime+totalWalkTime;
+            timeTextView.setText(totalTwice+"분");
             totalPay = obj.getInt("totalPay");
             payTextView.setText(totalPay+"원");
             totalWalkTime = obj.getInt("totalWalkTime");
@@ -380,6 +381,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         JSONArray startElevatorArray = subObj.getJSONArray("startElevatorInfo");
                         JSONObject problemObj = startElevatorArray.getJSONObject(0);
                         String problem = problemObj.getString("problem");
+                        Log.i("problem", problem);
                         JSONObject startElevatorObj = startElevatorArray.getJSONObject(1);
                         String startContent = startElevatorObj.getString("content");
                         int category = startElevatorObj.getInt("categoryBool");
