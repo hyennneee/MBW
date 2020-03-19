@@ -17,28 +17,27 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="17dp"
-        android:layout_marginLeft="17dp"
         android:text="효창공원앞역"
         android:textColor="@android:color/black"
         android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/subImage"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!--
+    view 길이 줄이려면 textSize 0sp, text=""
+    -->
+
 
     <TextView
         android:id="@+id/subMainDir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="7dp"
-        android:layout_marginLeft="7dp"
         android:text="삼각지역 방면"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@+id/subStation"
         app:layout_constraintStart_toEndOf="@+id/subStation" />
-
-    <!--
-    view 길이 줄이려면 textSize 0sp, text=""
-    -->
-
 
     <LinearLayout
         android:id="@+id/subRemaining"
@@ -110,15 +109,35 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fastInfo"
+        android:id="@+id/linearLayout12"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="40dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/subStation"
+        app:layout_constraintTop_toBottomOf="@+id/subStation">
+
+        <TextView
+            android:id="@+id/problemTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="#FF5722"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fastInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="40dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/subRemaining"
-        app:layout_constraintTop_toBottomOf="@+id/subRemaining">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout12">
         <!--
         <TextView
             android:id="@+id/transExit"
@@ -339,7 +358,8 @@
                 android:paddingRight="10dp"
                 android:text="효창공원앞역"
                 android:textColor="#000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView4"

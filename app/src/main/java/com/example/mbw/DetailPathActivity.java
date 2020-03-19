@@ -320,7 +320,8 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
     private void parseJson(JSONObject obj) {
         try{
             totalTime = obj.getInt("totalTime");
-            timeTextView.setText(totalTime+"분");
+            int totalTwice = totalTime+totalWalkTime;
+            timeTextView.setText(totalTwice+"분");
             totalPay = obj.getInt("totalPay");
             payTextView.setText(totalPay+"원");
             totalWalkTime = obj.getInt("totalWalkTime");
@@ -378,18 +379,21 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         String direction = secondObj.getString("stationName");
 
                         JSONArray startElevatorArray = subObj.getJSONArray("startElevatorInfo");
-                        JSONObject startElevatorObj = startElevatorArray.getJSONObject(0);
+                        JSONObject problemObj = startElevatorArray.getJSONObject(0);
+                        String problem = problemObj.getString("problem");
+                        Log.i("problem", problem);
+                        JSONObject startElevatorObj = startElevatorArray.getJSONObject(1);
                         String startContent = startElevatorObj.getString("content");
                         int category = startElevatorObj.getInt("categoryBool");
 
                         if(category == 1){
-                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray));
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem));
                         }
                         else if(category == 2){
                             JSONArray endElevatorArray = subObj.getJSONArray("endElevatorInfo");
                             JSONObject endElevatorObj = endElevatorArray.getJSONObject(0);
                             String endContent = endElevatorObj.getString("content");
-                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray));
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem));
                         }
 
                         break;

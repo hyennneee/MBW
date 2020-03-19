@@ -247,6 +247,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
         TextView stationNum;
 
         ImageView endImage;
+        TextView problemTextView;
         View v;
 
         RecyclerView passListView;
@@ -269,6 +270,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             v = itemView.findViewById(R.id.view5);
             passListView = itemView.findViewById(R.id.passListView);
             ImageButton downArrow = itemView.findViewById(R.id.imageButton);
+            problemTextView = itemView.findViewById(R.id.problemTextView);
 
             downArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -296,7 +298,11 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             fastPlatform.setText(detailItem. getContext1());
             fastPlatform2.setText(detailItem. getContext2());
             stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
-
+            String problem = detailItem.getProblem();
+            if(problem.equals("null"))
+                problemTextView.setVisibility(View.GONE);
+            else
+                problemTextView.setText(detailItem.getProblem());
             int hour = detailItem.getTime()/60;
             int minute = detailItem.getTime()%60;
             String timeInfo;

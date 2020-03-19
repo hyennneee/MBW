@@ -270,6 +270,7 @@ public class ReportActivity extends AppCompatActivity {
         nextStation = directionName.getText().toString();
         makeReportJSON(); // json 파일 만들기
         sendProblemArea(new problemAreaData(line, Name, transfer, nextStation, exitNo, problemType, problem));
+        finish();
     }
 
     public void makeReportJSON(){
