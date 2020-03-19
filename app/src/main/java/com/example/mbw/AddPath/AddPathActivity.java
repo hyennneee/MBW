@@ -246,7 +246,7 @@ public class AddPathActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         Toast.makeText(getApplicationContext(),
-                                "경로 공유 성공.",
+                                "경로 공유 성공",
                                 Toast.LENGTH_LONG)
                                 .show();
                         finish();
