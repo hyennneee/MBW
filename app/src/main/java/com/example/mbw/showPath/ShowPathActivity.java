@@ -3,7 +3,6 @@ package com.example.mbw.showPath;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DiffUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,10 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mbw.DB.DBHelper;
-import com.example.mbw.DB.DBvalue;
+import com.example.mbw.DB.RouteDB;
 import com.example.mbw.DB.RouteDBHelper;
 import com.example.mbw.AddPath.AddPathActivity;
 import com.example.mbw.MainActivity;
+import com.example.mbw.MyPage.data.PostResponse;
 import com.example.mbw.R;
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
@@ -31,7 +31,6 @@ import com.example.mbw.pathData.PathResponse;
 import com.example.mbw.route.Item;
 import com.example.mbw.route.Route;
 import com.example.mbw.route.RouteAdapter;
-import com.example.mbw.route.RouteDiffCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -41,10 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.odsay.odsayandroidsdk.API;
-import com.odsay.odsayandroidsdk.ODsayData;
 import com.odsay.odsayandroidsdk.ODsayService;
-import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,10 +71,10 @@ class BusInfo{
     }
 }
 class SubInfo{
-    int wayCode, subLine;
-    public SubInfo(int w, int s){
+    int wayCode, publicCode;
+    public SubInfo(int w, int p){
         wayCode = w;
-        subLine = s;
+        publicCode = p;
     }
 }
 
@@ -119,7 +115,6 @@ public class ShowPathActivity extends AppCompatActivity {
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
     static ArrayList<Route> routeArrayList;
     private String sx, sy, ex, ey;
-    final int forTest = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +140,6 @@ public class ShowPathActivity extends AppCompatActivity {
         MyDB = new DBHelper(this);
         routeDBHelper = new RouteDBHelper(this);
 
-        //이 부분 수정!!
         String[] strings;
         strings = getIntent().getStringArrayExtra("LOC_DATA");
         departure.setText(strings[0]);
@@ -153,7 +147,7 @@ public class ShowPathActivity extends AppCompatActivity {
         sx = strings[2]; sy = strings[3]; ex = strings[4]; ey = strings[5];
         service = RetrofitClient.getClient().create(ServiceApi.class);
         startSearchPath(0);
-        token = getIntent().getStringExtra("token");
+        token = MainActivity.getToken();
         departureName = departure.getText().toString();
         destinationName = destination.getText().toString();
     }
@@ -178,7 +172,7 @@ public class ShowPathActivity extends AppCompatActivity {
             case R.id.star:
                 //즐겨찾는 경로에 추가
                 if(!dept.isEmpty() && !dest.isEmpty()) {
-                    routeDBHelper.insertRouteBM(new DBvalue(dept, dest, sx, sy, ex, ey));
+                    addFavoritePath(new RouteDB(dept, dest, sx, sy, ex, ey));
                 }
                 break;
             case R.id.swap:
@@ -224,6 +218,36 @@ public class ShowPathActivity extends AppCompatActivity {
                 startActivityForResult(searchIntent, AUTOCOMPLETE_REQUEST_CODE);
                 break;
         }
+    }
+
+    public void addFavoritePath(RouteDB routeDB){
+        service.addFavoritePath("application/json", token, routeDB).enqueue(new Callback<PostResponse>() {
+            @Override
+            public void onResponse(Call<PostResponse> call, Response<PostResponse> response) {
+                PostResponse result = response.body();
+                boolean success = response.isSuccessful();
+                if(success) {
+                    int code = result.getCode();
+                    if (code == 200) {   //즐겨찾는 장소 등록 성공
+                        Toast.makeText(ShowPathActivity.this, "즐겨찾는 경로에 추가되었습니다", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    try {
+                        Gson gson = new Gson();
+                        result = gson.fromJson(response.errorBody().string(), PostResponse.class);
+                        Toast.makeText(ShowPathActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<PostResponse> call, Throwable t) {
+                Toast.makeText(ShowPathActivity.this, "통신 에러 발생", Toast.LENGTH_SHORT).show();
+                Log.e("통신 에러 발생", t.getMessage());
+            }
+        });
     }
 
     //google maps에 위치 검색
@@ -322,7 +346,8 @@ public class ShowPathActivity extends AppCompatActivity {
         bundle.putStringArray("PATH_INFO", pathDetail);
         fragmentAll.setArguments(bundle);
 
-        DBvalue db = new DBvalue(dept, dest, sx, sy, ex, ey);
+        //검색 기록에 추가
+        RouteDB db = new RouteDB(dept, dest, sx, sy, ex, ey);
         MyDB.insertRoute(db);
 
         Log.i(TAG, "sx: " + sx + ", sy: " + sy + ", ex: " + ex + ", ey: " + ey + ", type: " + type);
@@ -337,7 +362,7 @@ public class ShowPathActivity extends AppCompatActivity {
                     //transportation을 sub thread로 빼기
                     TransportAsyncTask transport = new TransportAsyncTask(pathResult);
                     transport.execute();
-                    transportation(pathResult);
+                    //transportation(pathResult);
                 } else {
                     try {
                         Gson gson = new Gson();
@@ -356,8 +381,6 @@ public class ShowPathActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     /*public void OdsayAPi(Double startlng, Double startlat, Double endlng, Double endlat) {
         //searchType = i; // 이동방법: 0 모두(all, subNbus) 1 지하철(sub) 2 버스(bus)
@@ -414,9 +437,10 @@ public class ShowPathActivity extends AppCompatActivity {
                 // pathArray 안의 경로 개수
                 pathArrayCount = pathArray.size();
                 //doInBackground
-                //a < pathArrayCount
+                //pathArrayCount
+
                 for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
-                    int totalWalk, cost, totalTime, group;
+                    int totalWalk, cost, totalTime, group, likedNum = 0, myPathIdx = 0;
                     JsonObject infoOBJ = pathArray.get(a).getAsJsonObject();
                     totalWalk = 0;
 
@@ -427,10 +451,15 @@ public class ShowPathActivity extends AppCompatActivity {
                     int pathType = infoOBJ.get("pathType").getAsInt();
                     if (searchType == 0 || searchType ==  pathType) {   //검색 타입과 일치하는 것만 출력
                         group = infoOBJ.get("group").getAsInt();
-                        if(group == 1)
-                            cost = infoOBJ.get("totalPay").getAsInt(); // 요금
+                        if(group == 1 || group == 5) {
+                            cost = infoOBJ.get("totalPay").getAsInt();
+                        }
                         else{
                             cost = 0;
+                            if(group == 2 || group == 3){  //좋아요 수 확인
+                                likedNum = infoOBJ.get("likeNum").getAsInt();
+                                myPathIdx = infoOBJ.get("myPathIdx").getAsInt();
+                            }
                         }
                         totalTime = infoOBJ.get("totalTime").getAsInt(); // 소요시간
                         String finalStation = infoOBJ.get("lastEndStation").getAsString(); // 도착 정거장
@@ -446,7 +475,7 @@ public class ShowPathActivity extends AppCompatActivity {
                         boolean is_first = true;
                         for (int b = 0; b < subPathArraycount; b++) {   //한 경로당
 
-                            int subLine, busType, wayCode;
+                            int subLine, busType, wayCode, publicCode = 0;
                             String stationName, arsID;
 
                             JsonObject subPathOBJ = subPathArray.get(b).getAsJsonObject();
@@ -459,12 +488,13 @@ public class ShowPathActivity extends AppCompatActivity {
                                 if (Type == 1) { // 지하철
                                     wayCode = subPathOBJ.get("wayCode").getAsInt(); //상행, 하행(1, 2)
                                     subLine = laneObj.get(0).getAsJsonObject().get("subwayCode").getAsInt(); // 지하철 정보(몇호선)
+                                    publicCode = laneObj.get(0).getAsJsonObject().get("publicCode").getAsInt();
                                     busNum.add("");
                                     busType = -1;
                                     if (is_first) {   //첫 타자면
                                         //첫 번째 지하철에 대해서만 xml호출할거임
                                         numOfSub++;
-                                        subInfo.add(new SubInfo(wayCode, subLine));
+                                        subInfo.add(new SubInfo(wayCode, publicCode));
                                         String subStation = stationName;
                                         String[] stationArray = {"아차산(어린이대공원후문)", "안암(고대병원앞)", "올림픽공원(한국체대)", "월드컵경기장(성산)", "대흥(서강대앞)", "공릉(서울산업대입구)" ,"총신대입구(이수)", "숭실대입구(살피재)", "군자(능동)", "천호(풍납토성)", "굽은다리(강동구민회관앞)", "남한산성입구(성남법원, 검찰청)", "오목교(목동운동장앞)", "몽촌토성(평화의문)", "신촌(경의.중앙선)", "증산(명지대앞)", "월곡(동덕여대)", "어린이대공원(세종대)", "상도(중앙대앞)", "신정(은행정)", "광나루(장신대)", "천호(풍납토성)", "새절(신사)", "상월곡(한국과학기술연구원)", "화랑대(서울여대입구)", "응암순환(상선)", "군자(능동)", "쌍용(나사렛대)"
                                         };
@@ -496,6 +526,8 @@ public class ShowPathActivity extends AppCompatActivity {
                                 //stationNo: layout에 띄워줄 정류장 번호, busID: 버스노선조회하면 나오는거(ex 500)
 
                                 Item item = new Item(stationName, busNum, arsID, subLine, busType, is_first);
+                                if(publicCode != 0)
+                                    item.setPublicCode(publicCode);
                                 itemArrayList.add((item));
                                 is_first = false;
                             } else {    //도보
@@ -520,6 +552,10 @@ public class ShowPathActivity extends AppCompatActivity {
                         totalWalk *= 2; //도보 시간에 보통 사람들의 2배 가량 소요된다 가정
                         //Route: totalTime, walkingTime, cost
                         Route route = new Route(id++, totalTime, totalWalk, cost, group, itemArrayList);
+                        if(group == 2 || group == 3){
+                            route.setLikedNum(likedNum);
+                            route.setMyPathIdx(myPathIdx);
+                        }
                         routeArrayList.add(route);
                     }
                 }
@@ -592,7 +628,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 Element rtNmElement = (Element) rtNmList.item(0);
                 rtNmList = rtNmElement.getChildNodes();
                 String rtNm = ((Node) rtNmList.item(0)).getNodeValue();
-                if(rtNm.equals(busNum)){
+                if(rtNm.contains(busNum)){
                     NodeList arrmsg1List = fstElmnt.getElementsByTagName("arrmsg1");
                     Element arrmsg1Element = (Element) arrmsg1List.item(0);
                     arrmsg1List = arrmsg1Element.getChildNodes();
@@ -632,6 +668,7 @@ public class ShowPathActivity extends AppCompatActivity {
                             item.setArsID(arsIdInfo.get(index));
                             if(item.isFirst()) {    //첫타자인 경우만
                                 String arrmsg = busRemaining.get(index);
+
                                 String str[] = arrmsg.split("분");
                                 try {   //남은 시간이 숫자일 경우
                                     int time = Integer.parseInt(str[0]) * 60;
@@ -654,10 +691,7 @@ public class ShowPathActivity extends AppCompatActivity {
                 newRouteList.addAll(routeArrayList);
 
                 //subway는 맨 위에 있는 경우만 xml 불러오니까 busCalled == bus면 마지막 버스까지 다 불러온거
-                //원래 여기서 fragment 전환
-
-
-
+                //여기서 fragment 전환
                 //transaction.replace(R.id.showPathframe, fragmentAll);
             }
         }
@@ -708,7 +742,8 @@ public class ShowPathActivity extends AppCompatActivity {
             NodeList nodeList = doc.getElementsByTagName("row");
 
             String wayCode;
-            int subLine = subInfo.get(numOfSubCalled).subLine;
+            int publicCode = subInfo.get(numOfSubCalled).publicCode;
+            int subLine = publicCode % 100;
             int tmpWayCode = subInfo.get(numOfSubCalled).wayCode;
 
             if(subLine == 2){
@@ -733,14 +768,14 @@ public class ShowPathActivity extends AppCompatActivity {
                 Element subwayIdElement = (Element) subwayIdList.item(0);
                 subwayIdList = subwayIdElement.getChildNodes();
                 String tmpId = ((Node) subwayIdList.item(0)).getNodeValue();
-                int subwayId = Integer.parseInt(tmpId) % 10;
+                int subwayId = Integer.parseInt(tmpId);
 
                 NodeList updnLineList = fstElmnt.getElementsByTagName("updnLine");
                 Element updnLineElement = (Element) updnLineList.item(0);
                 updnLineList = updnLineElement.getChildNodes();
                 String updnLine = ((Node) updnLineList.item(0)).getNodeValue();
 
-                if(subwayId == subLine && updnLine.equals(wayCode)){//arvlMsg3
+                if(subwayId == publicCode && updnLine.equals(wayCode)){//arvlMsg3
                     NodeList arvlMsg2List = fstElmnt.getElementsByTagName("arvlMsg2");
                     Element arvlMsg2Element = (Element) arvlMsg2List.item(0);
                     arvlMsg2List = arvlMsg2Element.getChildNodes();

@@ -40,13 +40,13 @@
         <activity android:name=".AddPath.AddBusActivity" />
         <activity android:name=".AddPath.AddSubActivity" />
         <activity android:name=".AddPath.ReportActivity" />
-        <activity android:name=".myPageFragment.FragmentPath" />
-        <activity android:name=".myPageFragment.FragmentPlace" />
-        <activity android:name=".myPageFragment.FragmentSetting" />
+        <activity android:name=".MyPage.FragmentPath" />
+        <activity android:name=".MyPage.FragmentPlace" />
+        <activity android:name=".MyPage.FragmentSetting" />
+        <activity android:name=".MyPage.MyPageActivity" />
         <activity android:name=".showPath.FragmentAll" />
         <activity android:name=".AddPath.AddPathActivity" />
         <activity android:name=".BookmarkActivity" />
-        <activity android:name=".MyPageActivity" />
         <activity android:name=".DetailPathActivity" />
         <activity android:name=".showPath.ShowPathActivity" />
         <activity android:name=".MainActivity" />

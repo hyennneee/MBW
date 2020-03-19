@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
+//검색기록 DB
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "SearchHistory.db";
@@ -33,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertRoute(DBvalue value) {
+    public boolean insertRoute(RouteDB value) {
         SQLiteDatabase db = this.getWritableDatabase();
         if(db != null) {
             String sql = "insert or replace into routes(departure, destination, sx, sy, ex, ey) values(?, ?, ?, ?, ?, ?)";
@@ -62,15 +63,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{departure, destination});
     }
 
-    public ArrayList<DBvalue> getAllRoutes() {
+    public ArrayList<RouteDB> getAllRoutes() {
 
-        ArrayList<DBvalue> array_list = new ArrayList();
+        ArrayList<RouteDB> array_list = new ArrayList();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from routes", null);
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
-            array_list.add(new DBvalue(res.getString(res.getColumnIndex(COLUMN_DEPARTURE))
+            array_list.add(new RouteDB(res.getString(res.getColumnIndex(COLUMN_DEPARTURE))
                     ,res.getString(res.getColumnIndex(COLUMN_DESTINATION))
                     ,res.getString(res.getColumnIndex(COLUMN_SX)), res.getString(res.getColumnIndex(COLUMN_SY)), res.getString(res.getColumnIndex(COLUMN_EX)), res.getString(res.getColumnIndex(COLUMN_EY))));
             res.moveToNext();
@@ -81,6 +82,10 @@ public class DBHelper extends SQLiteOpenHelper {
             + res.getString(res.getColumnIndex(CONTACT_COLUMN_BIRTH)));*/
 
         return array_list;
+    }
+    public void deleteAll(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+ TABLE_NAME);
     }
 }
 

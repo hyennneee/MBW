@@ -14,10 +14,10 @@ import com.example.mbw.R;
 import java.util.ArrayList;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordViewHolder> {
-    private ArrayList<DBvalue> recordList;
+    private ArrayList<RouteDB> recordList;
     private OnItemClickListener mListener;
 
-    public RecordAdapter(ArrayList<DBvalue> recordList, OnItemClickListener onItemClickListener) {
+    public RecordAdapter(ArrayList<RouteDB> recordList, OnItemClickListener onItemClickListener) {
         this.recordList = recordList;
         this.mListener = onItemClickListener;
     }
@@ -31,12 +31,12 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
 
     @Override
     public void onBindViewHolder(@NonNull RecordViewHolder recordViewHolder, int position) {
-        DBvalue route = recordList.get(position);
+        RouteDB route = recordList.get(position);
         //routeViewHolder가 Null이라고 함
         //ToDo: setText
         String dept, dest;
-        dept = route.departure;
-        dest = route.destination;
+        dept = route.getDeparture();
+        dest = route.getDestination();
         recordViewHolder.departure.setText(dept);
         recordViewHolder.destination.setText(dest);
     }
