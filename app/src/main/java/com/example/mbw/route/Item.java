@@ -11,7 +11,6 @@ public class Item {
     //공공데이터 포털 parameter: idx(=ord), localStationID(=stationID)
     //공통: 남은 시간, 역 이름; 지하철: 노선번호이미지, 버스: 버스번호, 버스타입, 저상여부, 정류장 번호
 
-
     public Item(String stationName, Vector<String> busNum, String arsID, int subLine, int busType, boolean first) {
         this.stationName = stationName;
         this.remainingTime = "";
