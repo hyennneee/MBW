@@ -270,7 +270,6 @@ public class ReportActivity extends AppCompatActivity {
         nextStation = directionName.getText().toString();
         makeReportJSON(); // json 파일 만들기
         sendProblemArea(new problemAreaData(line, Name, transfer, nextStation, exitNo, problemType, problem));
-        finish();
     }
 
     public void makeReportJSON(){
@@ -336,9 +335,8 @@ public class ReportActivity extends AppCompatActivity {
                                 "위험 지역 제보 성공",
                                 Toast.LENGTH_LONG)
                                 .show();
-                        //finish();
-                        Intent intent = new Intent(ReportActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        finish();
+
                     }
                 }
                 else {
