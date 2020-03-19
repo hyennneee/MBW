@@ -324,7 +324,17 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
             int totalTwice = totalTime+totalWalkTime;
             int walkTwice = totalWalkTime*2;
-            timeTextView.setText(totalTwice+"분");
+
+            int hour = totalTwice/60;
+            int minute = totalTwice%60;
+            String timeInfo;
+            if(hour==0)
+                timeInfo = minute+"분";
+            else
+                timeInfo = hour+"시간 "+minute+"분";
+
+
+            timeTextView.setText(timeInfo);
             totalPay = obj.getInt("totalPay");
             payTextView.setText(totalPay+"원");
             walkTimeTextView.setText("도보 "+walkTwice+"분");
@@ -354,16 +364,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         wayCodeNo = subObj.getInt("wayCode");
                         ArrayList<String> passStopArray = new ArrayList<>();
 
-/*
-                        executeSubXML(startName1);
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-
- */
                         // map 표시 위해
                         BusSubList.add(new transitMapData(subwayCode,1, start1, end1));
 
@@ -393,7 +393,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         }
                         else if(category == 2){
                             JSONArray endElevatorArray = subObj.getJSONArray("endElevatorInfo");
-                            JSONObject endElevatorObj = endElevatorArray.getJSONObject(0);
+                            JSONObject endElevatorObj = endElevatorArray.getJSONObject(1);
                             String endContent = endElevatorObj.getString("content");
                             detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem));
                         }
@@ -416,15 +416,12 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
                         ArrayList<String> passStopArray2 = new ArrayList<>();   //
 
-
                         // map 표시 위해
                         BusSubList.add(new transitMapData(-1,2, start, end));
 
                         JSONObject passStopObj2 = subObj.getJSONObject("passStopList"); //
                         JSONArray stationsArray2 = passStopObj2.getJSONArray("stations");
                         //arsId = passStopObj2.getString("busArsID"); // arsId 받아오기 -> arsID랑
-
-                        //executeBusXML(arsId, busNo);
 
                         int stationsCnt2 = stationsArray2.length();
                         for(int j=0; j<stationsCnt2; j++){
@@ -548,188 +545,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
     public void onExample3(View v){
         Intent intent = new Intent(DetailPathActivity.this, ReportActivity.class);
         startActivity(intent);
-    }
-
-    //
-
-    private void executeSubXML(String subStation){
-        String rss = "http://swopenapi.seoul.go.kr/api/subway/6c73727a4c70616e36336e6d707076/xml/realtimeStationArrival/1/10/" + subStation;  // RSS URL 구성
-        GetSubXMLTask subXMLTask = new GetSubXMLTask(this);
-        subXMLTask.execute(rss);
-    }
-
-    private class GetSubXMLTask extends AsyncTask<String, Void, Document> {
-        private Activity context;
-
-        public GetSubXMLTask(Activity context) {
-            this.context = context;
-        }
-
-        @Override
-        protected Document doInBackground(String... urls) {
-
-            URL url;
-            try {
-                url = new URL(urls[0]);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory
-                        .newInstance();
-                DocumentBuilder db;
-
-                db = dbf.newDocumentBuilder();
-                doc = db.parse(new InputSource(url.openStream()));
-                doc.getDocumentElement().normalize();
-
-            } catch (Exception e) {
-
-                Toast.makeText(getBaseContext(), "Parsing Error",
-                        Toast.LENGTH_SHORT).show();
-            }
-            return doc;
-        }
-
-        @Override
-        protected void onPostExecute(Document doc) {
-
-            // Download 된 XML 파일을 parsing하여 필요한 항목들로 출력  String을 만듬
-            NodeList nodeList = doc.getElementsByTagName("row");
-
-            String wayCode;
-
-            if(subwayCodeNo == 2){
-                if(wayCodeNo == 1)
-                    wayCode = "내선";
-                else
-                    wayCode = "외선";
-            }
-            else{
-                if(wayCodeNo == 1)
-                    wayCode = "상행";
-                else
-                    wayCode = "하행";
-            }
-
-            boolean found = false;
-            for(int i = 0; i < nodeList.getLength(); i++){
-                Node node = nodeList.item(i);
-                Element fstElmnt = (Element) node;
-
-                NodeList subwayIdList = fstElmnt.getElementsByTagName("subwayId");
-                Element subwayIdElement = (Element) subwayIdList.item(0);
-                subwayIdList = subwayIdElement.getChildNodes();
-                String tmpId = ((Node) subwayIdList.item(0)).getNodeValue();
-                int subwayId = Integer.parseInt(tmpId) % 10;
-
-                NodeList updnLineList = fstElmnt.getElementsByTagName("updnLine");
-                Element updnLineElement = (Element) updnLineList.item(0);
-                updnLineList = updnLineElement.getChildNodes();
-                String updnLine = ((Node) updnLineList.item(0)).getNodeValue();
-
-                if(subwayId == subwayCodeNo && updnLine.equals(wayCode)){//arvlMsg3
-                    NodeList arvlMsg2List = fstElmnt.getElementsByTagName("arvlMsg2");
-                    Element arvlMsg2Element = (Element) arvlMsg2List.item(0);
-                    arvlMsg2List = arvlMsg2Element.getChildNodes();
-                    arrvMsg1 = ((Node) arvlMsg2List.item(0)).getNodeValue();
-
-                    NodeList arvlMsg3List = fstElmnt.getElementsByTagName("arvlMsg3");
-                    Element arvlMsg3Element = (Element) arvlMsg3List.item(0);
-                    arvlMsg3List = arvlMsg3Element.getChildNodes();
-                    arrvMsg2 = ((Node) arvlMsg3List.item(0)).getNodeValue();
-
-                    found = true;
-                    break;
-                }
-            }
-            if(!found){
-                arrvMsg1="운행종료";
-                arrvMsg2="운행종료";
-            }
-            Log.i("arrvMsg1",arrvMsg1);
-            Log.i("arrvMsg2",arrvMsg2);
-        }
-    }
-
-
-    private void executeBusXML(String arsId, String busNo){
-        String rss;
-        if (isFiltered)
-            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsId;
-        else
-            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsId;  // RSS URL 구성
-        GetBusXMLTask task = new GetBusXMLTask(DetailPathActivity.this);
-        task.execute(rss);
-    }
-
-    private class GetBusXMLTask extends AsyncTask<String, Void, Void> {
-        private Activity context;
-        public GetBusXMLTask(Activity context) {
-            this.context = context;
-        }
-
-        @Override
-        protected Void doInBackground(String... urls) {
-
-            URL url;
-            try {
-                url = new URL(urls[0]);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory
-                        .newInstance();
-                DocumentBuilder db;
-
-                db = dbf.newDocumentBuilder();
-                doc = db.parse(new InputSource(url.openStream()));
-                doc.getDocumentElement().normalize();
-
-            } catch (Exception e) {
-
-                Toast.makeText(getBaseContext(), "Parsing Error",
-                        Toast.LENGTH_SHORT).show();
-            }
-            setNewRemainingTime(doc);
-            return null;
-        }
-
-        protected void setNewRemainingTime(Document doc){
-
-            NodeList nodeList = doc.getElementsByTagName("itemList");
-            boolean found = false;
-            for(int i = 0; i < nodeList.getLength(); i++){
-                Node node = nodeList.item(i);
-                Element fstElmnt = (Element) node;
-
-                NodeList rtNmList = fstElmnt.getElementsByTagName("rtNm");
-                Element rtNmElement = (Element) rtNmList.item(0);
-                rtNmList = rtNmElement.getChildNodes();
-                String rtNm = ((Node) rtNmList.item(0)).getNodeValue();
-                if(rtNm.equals(busNum)){
-                    NodeList arrmsg1List = fstElmnt.getElementsByTagName("arrmsg1");
-                    Element arrmsg1Element = (Element) arrmsg1List.item(0);
-                    arrmsg1List = arrmsg1Element.getChildNodes();
-                    arrvMsg1 = ((Node) arrmsg1List.item(0)).getNodeValue();
-
-                    NodeList arrmsg2List = fstElmnt.getElementsByTagName("arrmsg2");
-                    Element arrmsg2Element = (Element) arrmsg2List.item(0);
-                    arrmsg2List = arrmsg2Element.getChildNodes();
-                    arrvMsg2 = ((Node) arrmsg2List.item(0)).getNodeValue();
-                    String[] array = arrvMsg1.split("\\[");
-                    String[] array2 = arrvMsg2.split("\\[");
-
-                    arrvMsg1 = array[0];
-                    arrvMsg2 = array2[0];
-                    found = true;
-                    break;
-                }
-            }
-
-            if(!found){
-                arrvMsg1 = "저상버스 정보가 없습니다";
-                arrvMsg2 = "저상버스 정보가 없습니다";
-            }
-
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
     }
 
 }

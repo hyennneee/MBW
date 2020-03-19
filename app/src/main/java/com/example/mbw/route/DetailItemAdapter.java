@@ -299,10 +299,10 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             fastPlatform2.setText(detailItem. getContext2());
             stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
             String problem = detailItem.getProblem();
-            if(problem.equals("null"))
-                problemTextView.setVisibility(View.GONE);
-            else
-                problemTextView.setText(detailItem.getProblem());
+            if(problem.equals("null")){
+                problemTextView.setVisibility(View.GONE);}
+            else{
+                problemTextView.setText(detailItem.getProblem());}
             int hour = detailItem.getTime()/60;
             int minute = detailItem.getTime()%60;
             String timeInfo;
@@ -380,10 +380,23 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
                     v.setBackgroundColor(itemView.getResources().getColor(R.color.line8));
                     //background.setColor(itemView.getResources().getColor(R.color.line8));
                     break;
+                case 104:
+                    subImage.setImageResource(R.drawable.line_gyeongui);
+                    endImage.setColorFilter(R.color.line_gyeonui);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line_gyeonui));
+                    break;
+                case 100:
+                    subImage.setImageResource(R.drawable.line_bundang);
+                    endImage.setColorFilter(R.color.line_bundang);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line_bundang));
+                    break;
+                case 101:
+                    subImage.setImageResource(R.drawable.line_airport);
+                    endImage.setColorFilter(R.color.line_airport);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line_airport));
+                    break;
             }
         }
-
-
     }
 
     // 뷰홀더 지정 3 : Walk

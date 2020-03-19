@@ -851,7 +851,7 @@ public class ShowPathActivity extends AppCompatActivity {
             isFiltered = true;
             for(int i = 0; i < arsIdInfo.size(); i++){
                 String arsID = arsIdInfo.get(i);
-                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
+                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
 
                 GetXMLTask task = new GetXMLTask(this);
                 task.execute(rss);
@@ -863,7 +863,7 @@ public class ShowPathActivity extends AppCompatActivity {
             isFiltered = false;
             for(int i = 0; i < arsIdInfo.size(); i++){
                 String arsID = arsIdInfo.get(i);
-                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=A5%2BhqLkSjuKIqcYXSgmPaQ8lZU%2FU4ygMfBqxJ7rQG%2Fs4j1TV1troG0srDXSfN99HJOqX6Mmqdw3zmEdZLfODXQ%3D%3D&arsId=" + arsID;
+                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
 
                 GetXMLTask task = new GetXMLTask(this);
                 task.execute(rss);
