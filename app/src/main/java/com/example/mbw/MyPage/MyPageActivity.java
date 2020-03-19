@@ -3,6 +3,8 @@ package com.example.mbw.MyPage;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.mbw.DB.RecordAdapter;
 import com.example.mbw.DB.RouteDB;
+import com.example.mbw.DB.RouteDBHelper;
 import com.example.mbw.MainActivity;
 import com.example.mbw.MyPage.FragmentPath;
 import com.example.mbw.MyPage.FragmentPlace;
@@ -29,6 +32,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,17 +51,20 @@ public class MyPageActivity extends AppCompatActivity {
     public static String homeAddress = "", officeAddress = "";
     ServiceApi service;
     boolean home = false, office = false;
+    static ArrayList<RouteDB> ArrayListrouteDB;
+    boolean getData = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+
+        GetBookmarkTask bookmarkTask = new GetBookmarkTask(MainActivity.getToken());
+        bookmarkTask.execute();
+
         service = RetrofitClient.getClient().create(ServiceApi.class);
-
         token = MainActivity.getToken();
-
         fragmentManager = getSupportFragmentManager();
-
         fragmentPath = new FragmentPath();
         fragmentPlace = new FragmentPlace();
         fragmentSetting = new FragmentSetting();
@@ -74,14 +81,96 @@ public class MyPageActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("NAME");
         userName.setText(name);
 
-        transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.myPageFrame, fragmentPath).commitAllowingStateLoss();
 
         GetLocationTask locationTask;
         for(int i = 1; i <= 2; i++) {
             locationTask = new GetLocationTask(token, i);
             locationTask.execute();
         }
+    }
+
+    private class GetBookmarkTask extends AsyncTask<Void, Void, Void> {
+        private  String token;
+
+        public GetBookmarkTask(String token) {
+            this.token = token;
+            ArrayListrouteDB = new ArrayList<>();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            service.getFavoritePath(token).enqueue(new Callback<LocationResponse>() {
+                @Override
+                public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
+                    LocationResponse result = response.body();
+                    boolean success = response.isSuccessful();
+                    if(success) {
+                        int code = result.getCode();
+                        if (code == 200) {   //즐겨찾는 장소 조회 성공
+                            JsonArray data = result.getData();
+                            if(data != null) {
+                                try {
+                                    for (JsonElement jsonElement : data) {
+                                        JsonObject jsonObject = jsonElement.getAsJsonObject();
+                                        String departure, destination, SX, SY, EX, EY;
+                                        departure = jsonObject.get("startAddress").getAsString();
+                                        destination = jsonObject.get("endAddress").getAsString();
+                                        SX = jsonObject.get("SX").getAsString();
+                                        SY = jsonObject.get("SY").getAsString();
+                                        EX = jsonObject.get("EX").getAsString();
+                                        EY = jsonObject.get("EY").getAsString();
+                                        RouteDB routeDB = new RouteDB(departure, destination, SX, SY, EX, EY);
+                                        ArrayListrouteDB.add(routeDB);
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                Toast.makeText(MyPageActivity.this, "에러 발생", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        getData = true;
+                    }
+                    else {
+                        try {
+                            setError(response);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        getData = true;
+                    }
+                }
+                @Override
+                public void onFailure(Call<LocationResponse> call, Throwable t) {
+                    getData = true;
+                    Toast.makeText(MyPageActivity.this, "통신 에러 발생", Toast.LENGTH_SHORT).show();
+                    Log.e("통신 에러 발생", t.getMessage());
+                }
+            });
+            while(true){
+                if(getData)
+                    break;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            //Toast.makeText(getContext(), "" + ArrayListrouteDB.size(), Toast.LENGTH_SHORT).show();
+            if(ArrayListrouteDB.size() != 0) {
+                transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.myPageFrame, fragmentPath).commitAllowingStateLoss();
+            }
+        }
+    }
+
+    public void setError(Response<LocationResponse> response) throws IOException {
+        Gson gson = new Gson();
+
+        LocationResponse result = gson.fromJson(response.errorBody().string(), LocationResponse.class);
+        Toast.makeText(MyPageActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     private class GetLocationTask extends AsyncTask<Void, Void, Void> {

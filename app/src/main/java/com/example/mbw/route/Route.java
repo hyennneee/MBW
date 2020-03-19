@@ -3,21 +3,22 @@ package com.example.mbw.route;
 import java.util.ArrayList;
 
 public class Route {
-    private int id, totalTime, walkingTime, cost, group, myPathIdx = -1, likedNum;
+    private int totalTime, walkingTime, cost, group, myPathIdx = -1, likedNum;
     private ArrayList<Item> itemList;
     boolean liked = false;
 
-    public Route(int id, int totalTime, int walkingTime, int cost, int group, ArrayList<Item> itemList) {
-        this.id = id;
+    public Route(int totalTime, int totalWalk, int cost, int group, ArrayList<Item> itemArrayList){
         this.totalTime = totalTime;
-        this.walkingTime = walkingTime;
+        this.walkingTime = totalWalk;
+        this.cost = cost;
+        this.group = group;
+        this.itemList = itemArrayList;
+    }
+
+    public Route(int cost, int group, ArrayList<Item> itemList) {
         this.cost = cost;
         this.group = group;
         this.itemList = itemList;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getTotalTime() {

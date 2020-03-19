@@ -28,8 +28,9 @@ public class RouteDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return mOldRouteList.get(oldItemPosition).getId() == mNewRouteList.get(
-                newItemPosition).getId();
+        return false;
+        //return mOldRouteList.get(oldItemPosition).getId() == mNewRouteList.get(
+                //newItemPosition).getId();
     }
 
     @Override
