@@ -55,6 +55,10 @@ public class DetailItem {
     private ArrayList<String> passStationArray;
 
 
+
+    private String problem;
+
+
     public ArrayList<String> getPassStationArray() {
         return passStationArray;
     }
@@ -63,6 +67,13 @@ public class DetailItem {
         this.passStationArray = passStationArray;
     }
 
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
 
     public String getContext1() {
         return context1;
@@ -118,7 +129,7 @@ public class DetailItem {
     // 지하철 환승
     public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum,
                       String direction1, String direction2, String remaining1, String remaining2, int time, int passedStop,
-                      String context1, String context2, ArrayList<String> passStationArray) {
+                      String context1, String context2, ArrayList<String> passStationArray, String problem) {
         this.start = start;
         this.end = end;
         this.imageType = imageType;
@@ -144,6 +155,7 @@ public class DetailItem {
         this.context2 = context2;
 
         this.passStationArray = passStationArray;
+        this.problem = problem;
 
     }
 
