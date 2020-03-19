@@ -839,7 +839,6 @@ public class ShowPathActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
     public void onFilterChecked(View v) {
         boolean checked = ((Switch) v).isChecked();
