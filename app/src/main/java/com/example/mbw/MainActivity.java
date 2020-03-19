@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     }
                 });
 
-         
+
 
         toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
