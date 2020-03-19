@@ -12,11 +12,10 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:clickable="true"
         android:onClick="onClickMain"
-        app:layout_constraintStart_toStartOf="@+id/appName"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/profile" />
 
@@ -25,32 +24,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="15dp"
-        android:text="userName"
+        android:layout_marginTop="20dp"
+        android:text="이름"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toEndOf="@+id/profileView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <ImageView
         android:id="@+id/appName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="MBW"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textIsSelectable="false"
-        app:fontFamily="cursive"
+        android:layout_width="180dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/profileView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/app_name" />
 
 
     <TextView
         android:id="@+id/departureText"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="70dp"
         android:layout_marginBottom="5dp"
         android:clickable="true"
         android:ems="10"
@@ -99,9 +94,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="75dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:clickable="true"
         android:onClick="onClickMain"
         app:layout_constraintEnd_toEndOf="parent"
@@ -190,6 +184,7 @@
         android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="445dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/deleteView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

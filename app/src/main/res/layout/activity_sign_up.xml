@@ -6,22 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <ImageView
         android:id="@+id/appName"
         android:layout_width="match_parent"
-        android:layout_height="165dp"
-        android:gravity="center"
-        android:text="MBW"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-        android:textIsSelectable="false"
-        app:fontFamily="cursive"
+        android:layout_height="100dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/app_name" />
 
     <EditText
         android:id="@+id/userName"
         android:layout_width="350dp"
         android:layout_height="45dp"
+        android:layout_marginTop="70dp"
         android:ems="10"
         android:gravity="center"
         android:hint="user name"
@@ -73,7 +71,8 @@
         android:layout_height="48dp"
         android:layout_marginTop="52dp"
         android:background="#1ABC9C"
-        android:text="sign up"
+        android:text="회원가입"
+        android:textSize="18sp"
         android:onClick="onClickSignUp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
