@@ -78,6 +78,7 @@ public class AddBusActivity extends AppCompatActivity {
 
         adapter = new AddBusAdapter(busItemList) ;
         recyclerView.setAdapter(adapter);
+
     }
 
     // 버튼 클릭시, Adapter에서 현재 눌린 승, 하차 인덱스 가져오기
@@ -207,6 +208,9 @@ public class AddBusActivity extends AppCompatActivity {
 
                 Double x = stationArrayDetail.getDouble("x");
                 Double y = stationArrayDetail.getDouble("y");
+
+                Log.i("x = ", x.toString());
+                Log.i("y = ", y.toString());
 
                 AddBusItem item = new AddBusItem(stationId, stationName, arsId, false, false);
                 stationNameList.add(stationName);

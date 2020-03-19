@@ -155,10 +155,10 @@ public class ShowPathActivity extends AppCompatActivity {
     public void onExample2(View v){
         Intent intent = new Intent(ShowPathActivity.this, AddPathActivity.class);
         intent.putExtra("token", token);
-        intent.putExtra("sx", sxD);
-        intent.putExtra("sy", syD);
-        intent.putExtra("ex", exD);
-        intent.putExtra("ey", eyD);
+        intent.putExtra("sx", Double.parseDouble(sx));
+        intent.putExtra("sy", Double.parseDouble(sy));
+        intent.putExtra("ex", Double.parseDouble(ex));
+        intent.putExtra("ey", Double.parseDouble(ey));
         intent.putExtra("departureName", departureName);
         intent.putExtra("destinationName", destinationName);
         startActivity(intent);
