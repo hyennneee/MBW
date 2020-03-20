@@ -25,7 +25,7 @@
 
 
     <View
-        android:id="@+id/view3"
+        android:id="@+id/finalLine"
         android:layout_width="2dp"
         android:layout_height="4dp"
         android:layout_marginStart="19dp"

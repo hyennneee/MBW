@@ -67,16 +67,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         viewHoldersList = new ArrayList<>();
         positionList = new ArrayList<>();
         service = RetrofitClient.getClient().create(ServiceApi.class);
-        /*Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 1000ms
-            }
-        }, 1000);*/
 
         startUpdateTimer();
-
     }
     public void stopTimer(){
         if(tmr != null)
@@ -224,7 +216,6 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         private ImageView routeType, likeBtn;
         OnItemClickListener onItemClickListener;
         View v;
-        private boolean successLike = false;
 
         RouteViewHolder(View itemView, OnItemClickListener onItemClickListener) {    //layout에 보여주기
             super(itemView);

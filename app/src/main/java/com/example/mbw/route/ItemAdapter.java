@@ -1,4 +1,5 @@
 package com.example.mbw.route;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -241,7 +242,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             this.subStation = view.findViewById(R.id.subStation); //stationName
             this.subImage = view.findViewById(R.id.subImage);  //subwayCode
             this.subRemaining = view.findViewById(R.id.subRemaining);
-            this.subCurrSt = view.findViewById(R.id.subCurrSt);
+            //this.subCurrSt = view.findViewById(R.id.subCurrSt);
             subLine = view.findViewById(R.id.subwayLine);
             adapterView = view;
         }
@@ -262,9 +263,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if(s != 0)
                     remaining += " " + s + "초";
                 subRemaining.setText(remaining);
-                String station = item.getCurrStation();
+                /*String station = item.getCurrStation();
                 subCurrSt.setTextSize(13);
                 subCurrSt.setText(station);
+                 */
             }
 
         }
@@ -329,6 +331,10 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     subImage.setImageResource(R.drawable.line_gyeongui);
                     subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_gyeonui));
                     break;
+                case 113:
+                    subImage.setImageResource(R.drawable.line_ui);
+                    subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_ui));
+                    break;
                 default:
                     subImage.setImageResource(R.drawable.line_default);
                     subLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_default));
@@ -359,18 +365,64 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         protected TextView stationName;
+        protected View finalLine;
 
         public FinViewHolder(@NonNull View view) {//constructor임
             super(view);
             this.stationName = view.findViewById(R.id.finalStationText); //stationName
+            this.finalLine = view.findViewById(R.id.finalLine);
         }
         private void setFinDetails(Item item) {
             stationName.setText(item.getStationName());
-            if(item.getSubLine() == -1){    //버스
-
+            if(item.getBusType() == -1){    //지하철
+                switch (item.getSubLine()) {   //subwayCode
+                    case 1:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line1));
+                        break;
+                    case 2:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line2));
+                        break;
+                    case 3:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line3));
+                        break;
+                    case 4:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line4));
+                        break;
+                    case 5:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line5));
+                        break;
+                    case 6:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line6));
+                        break;
+                    case 7:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line7));
+                        break;
+                    case 8:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line8));
+                        break;
+                    case 9:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line9));
+                        break;
+                    case 100:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_bundang));
+                        break;
+                    case 101:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_airport));
+                        break;
+                    case 104:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_gyeonui));
+                        break;
+                    case 113:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_ui));
+                        break;
+                        //B3DE13
+                    default:
+                        finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_default));
+                        break;
+                }
             }
-            else{   //지하철
-
+            else{   //버스
+                finalLine.setBackgroundColor(Color.parseColor("#A9A9A9"));
             }
         }
     }

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -29,6 +28,7 @@ import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
 import com.example.mbw.pathData.PathResponse;
 import com.example.mbw.route.Item;
+import com.example.mbw.route.ItemAdapter;
 import com.example.mbw.route.Route;
 import com.example.mbw.route.RouteAdapter;
 import com.google.android.gms.common.api.Status;
@@ -40,7 +40,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.odsay.odsayandroidsdk.ODsayService;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,18 +62,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 class BusInfo{
-    String busNum;
-    int stationID;
-    public BusInfo(String b, int s){
-        busNum = b;
-        stationID = s;
-    }
-}
-class SubInfo{
-    int wayCode, publicCode;
-    public SubInfo(int w, int p){
-        wayCode = w;
-        publicCode = p;
+    int a, index;
+    String arsID, busNum;
+    public BusInfo(int i, int j, String arsID, String busNum){
+        this.a = i;
+        this.index = j;
+        this.arsID = arsID;
+        this.busNum = busNum;
     }
 }
 
@@ -101,20 +95,18 @@ public class ShowPathActivity extends AppCompatActivity {
     String departureName, destinationName;
 
     //variables to measure time
-    Vector<String> arsIdInfo;
-    Vector<BusInfo> busInfo;
-    Vector<String> busRemaining;
-    Vector<SubInfo> subInfo;
-    Vector<String> subRemainingInfo;
-    int numOfBus, numOfBusCalled, numOfSub, numOfSubCalled, numOfCalled, pathArrayCount;
     boolean isFiltered = false;
     ServiceApi service;
     static JsonArray pathArray;
     //public static JsonArray pathArray;
+    ArrayList<BusInfo> busInfoList;
 
     List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
     static ArrayList<Route> routeArrayList;
     private String sx, sy, ex, ey;
+    int bus_num = 0, sub_num = 0;
+    int bus_called = 0, sub_called = 0;
+    boolean bus_fin = false, sub_fin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,8 +343,6 @@ public class ShowPathActivity extends AppCompatActivity {
         MyDB.insertRoute(db);
 
         Log.i(TAG, "sx: " + sx + ", sy: " + sy + ", ex: " + ex + ", ey: " + ey + ", type: " + type);
-        //departure.setText("" + sx + ", " + sy);
-        //destination.setText("" + ex + ", " + ey + ", " + type);
         service.searchPath(sx, sy, ex, ey, type).enqueue(new Callback<PathResponse>() {
             @Override
             public void onResponse(Call<PathResponse> call, Response<PathResponse> response) {
@@ -382,19 +372,6 @@ public class ShowPathActivity extends AppCompatActivity {
         });
     }
 
-    /*public void OdsayAPi(Double startlng, Double startlat, Double endlng, Double endlat) {
-        //searchType = i; // 이동방법: 0 모두(all, subNbus) 1 지하철(sub) 2 버스(bus)
-        ODsayService odsayService;
-        odsayService = ODsayService.init(getApplicationContext(), getString(R.string.odsay_key));
-        odsayService.setReadTimeout(5000);
-        odsayService.setConnectionTimeout(5000);
-        // 서버 통신
-        odsayService.requestSearchPubTransPath(Double.toString(startlng), Double.toString(startlat), Double.toString(endlng), Double.toString(endlat), "1", "0", Integer.toString(searchType), onResultCallbackListener);
-    }*/
-
-
-    public void transportation(JsonElement jsonElement){
-    }
     // 이동방법 파싱
     public class TransportAsyncTask extends AsyncTask<Void, Void, Boolean>{
         JsonElement jsonElement;
@@ -407,6 +384,13 @@ public class ShowPathActivity extends AppCompatActivity {
             super.onPreExecute();
             Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
             progressBar.startAnimation(animation);
+
+            //변수 초기화
+            routeArrayList = new ArrayList<>();
+            busInfoList = new ArrayList<>();
+            sub_fin = false; bus_fin = false;
+            sub_num = 0; bus_num = 0;
+            bus_called = 0; sub_called = 0;
         }
 
         @Override
@@ -421,33 +405,23 @@ public class ShowPathActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... voids) {   //transport function
-            //transport
-            routeArrayList = new ArrayList<>();
-            int id = 0;
-            arsIdInfo = new Vector<>();
-            busInfo = new Vector<>();
-            busRemaining = new Vector<>();
-            subInfo = new Vector<>();
-            subRemainingInfo = new Vector<>();
-            numOfBus = numOfBusCalled = numOfSub = numOfSubCalled = numOfCalled = 0;
             try {
+                if(searchType == 1)
+                    bus_fin = true;
+                else if(searchType == 2)
+                    sub_fin = true;
+
                 JsonObject result = jsonElement.getAsJsonObject();
                 pathArray = result.get("path").getAsJsonArray();
 
                 // pathArray 안의 경로 개수
-                pathArrayCount = pathArray.size();
-                //doInBackground
-                //pathArrayCount
+                int pathArrayCount = pathArray.size();
 
                 for (int a = 0; a < pathArrayCount; a++) { //경로 개수만큼
                     int totalWalk, cost, totalTime, group, likedNum = 0, myPathIdx = 0;
                     JsonObject infoOBJ = pathArray.get(a).getAsJsonObject();
                     totalWalk = 0;
 
-                    //한 경로에 대해 한 itemArrayList 가짐
-                    ArrayList<Item> itemArrayList = new ArrayList<Item>();
-
-// 경로 타입 1 지하철 2 버스 3 지하철 + 버스
                     int pathType = infoOBJ.get("pathType").getAsInt();
                     if (searchType == 0 || searchType ==  pathType) {   //검색 타입과 일치하는 것만 출력
                         group = infoOBJ.get("group").getAsInt();
@@ -463,9 +437,8 @@ public class ShowPathActivity extends AppCompatActivity {
                         }
                         totalTime = infoOBJ.get("totalTime").getAsInt(); // 소요시간
                         String finalStation = infoOBJ.get("lastEndStation").getAsString(); // 도착 정거장
-                        //한 세부 경로에 대해서만 필요
+                        //한 세부 경로에 대해 대중교통 몇 번 이용
                         int bus = infoOBJ.get("busTransitCount").getAsInt();
-                        numOfBus += bus;
                         int sub = infoOBJ.get("subwayTransitCount").getAsInt();
                         int total = bus + sub;
 
@@ -473,153 +446,157 @@ public class ShowPathActivity extends AppCompatActivity {
                         JsonArray subPathArray = infoOBJ.get("subPath").getAsJsonArray();
                         int subPathArraycount = subPathArray.size();
                         boolean is_first = true;
-                        for (int b = 0; b < subPathArraycount; b++) {   //한 경로당
+                        int index = 0;
+                        //한 경로에 대해 한 itemArrayList 가짐
+                        ArrayList<Item> itemArrayList = new ArrayList<>();
+                        Route route = new Route(cost, group, itemArrayList);
+                        routeArrayList.add(route);
 
-                            int subLine, busType, wayCode, publicCode = 0;
-                            String stationName, arsID;
-
+                        for (int b = 0; b < subPathArraycount; b++) {   //세부 경로
                             JsonObject subPathOBJ = subPathArray.get(b).getAsJsonObject();
-                            int Type = subPathOBJ.get("trafficType").getAsInt(); // 이동방법
-                            if (Type == 1 || Type == 2) {   //1: 지하철, 2: 버스, 3: 도보
+                            int trafficType = subPathOBJ.get("trafficType").getAsInt(); // 이동방법
+                            if (trafficType == 1 || trafficType == 2) {   //1: 지하철, 2: 버스, 3: 도보
+                                Item item;
                                 Vector<String> busNum = new Vector<>();
+                                int subLine, busType, wayCode;
+                                String stationName;
                                 stationName = subPathOBJ.get("startName").getAsString(); // 출발지
                                 JsonArray laneObj = subPathOBJ.get("lane").getAsJsonArray();
-                                arsID = "";
-                                if (Type == 1) { // 지하철
+
+                                if (trafficType == 1) { // 지하철
                                     wayCode = subPathOBJ.get("wayCode").getAsInt(); //상행, 하행(1, 2)
                                     subLine = laneObj.get(0).getAsJsonObject().get("subwayCode").getAsInt(); // 지하철 정보(몇호선)
-                                    publicCode = laneObj.get(0).getAsJsonObject().get("publicCode").getAsInt();
-                                    busNum.add("");
-                                    busType = -1;
+                                    busType = -1;   //지하철이라는 뜻
+
+                                    item = new Item(stationName, busNum, "", subLine, busType, is_first);
+                                    itemArrayList.add(item);
+
+                                    if(!stationName.endsWith("역"))
+                                        stationName += "역";
                                     if (is_first) {   //첫 타자면
-                                        //첫 번째 지하철에 대해서만 xml호출할거임
-                                        numOfSub++;
-                                        subInfo.add(new SubInfo(wayCode, publicCode));
+                                        sub_num++;
+                                        is_first = false;
+                                        int publicCode = laneObj.get(0).getAsJsonObject().get("publicCode").getAsInt(); //공공데이터포털
+                                        item.setPublicCode(publicCode);
+                                        //첫 번째 지하철에 대해서만 xml 호출할 것
                                         String subStation = stationName;
                                         String[] stationArray = {"아차산(어린이대공원후문)", "안암(고대병원앞)", "올림픽공원(한국체대)", "월드컵경기장(성산)", "대흥(서강대앞)", "공릉(서울산업대입구)" ,"총신대입구(이수)", "숭실대입구(살피재)", "군자(능동)", "천호(풍납토성)", "굽은다리(강동구민회관앞)", "남한산성입구(성남법원, 검찰청)", "오목교(목동운동장앞)", "몽촌토성(평화의문)", "신촌(경의.중앙선)", "증산(명지대앞)", "월곡(동덕여대)", "어린이대공원(세종대)", "상도(중앙대앞)", "신정(은행정)", "광나루(장신대)", "천호(풍납토성)", "새절(신사)", "상월곡(한국과학기술연구원)", "화랑대(서울여대입구)", "응암순환(상선)", "군자(능동)", "쌍용(나사렛대)"
                                         };
                                         for(int i = 0; i < stationArray.length; i++){
                                             if(stationArray[i].contains(stationName))
-                                                subStation = stationArray[i];
+                                                subStation  = stationArray[i];
                                         }
-                                        executeSubXML(subStation);
+                                        getSubInfo(a, index, subStation , wayCode, subLine, publicCode);    //어떤 역, 상행/ 하행, 몇호선, 공공데이터포털
                                     }
-                                    if(!stationName.endsWith("역"))
-                                        stationName += "역";
-                                } else { // 버스
-                                    //arsID 필요하기 때문에 버스 전체 개수 필요
-                                    //numOfBus++;
-
-                                    //여러개일 수도 있음
-                                    for(int i = 0; i < laneObj.size(); i++) {
+                                }
+                                else { // 버스
+                                    subLine = 0;    //버스라는 뜻
+                                    //busNum 여러개일 수도
+                                    for(int i = 0; i < laneObj.size(); i++)
                                         busNum.add(laneObj.get(i).getAsJsonObject().get("busNo").getAsString()); // 버스번호정보
-                                    }
-                                    int startID = subPathOBJ.get("startID").getAsInt(); // 버스정류소번호 -> 버스정류장 세부정보 조회에 사용
-                                    busInfo.add(new BusInfo(busNum.get(0), startID));
                                     busType = laneObj.get(0).getAsJsonObject().get("type").getAsInt();
                                     //OdsayAPi(startID);
                                     //OdsayApi(stationID)에서 getStation하기 전에 밑에 코드 실행되는듯
-                                    subLine = 0;
-                                    arsID = subPathOBJ.get("busArsID").getAsString();
-                                    getStationInfo(arsID);
+                                    String arsID = subPathOBJ.get("busArsID").getAsString();
+                                    item = new Item(stationName, busNum, arsID, subLine, busType, is_first);
+                                    itemArrayList.add(item);
+                                    if(is_first) {
+                                        bus_num++;
+                                        is_first = false;
+                                        getBusInfo(a, index, arsID, busNum.get(0));
+                                        busInfoList.add(new BusInfo(a, index, arsID, busNum.get(0)));
+                                    }
                                 }
-                                //stationNo: layout에 띄워줄 정류장 번호, busID: 버스노선조회하면 나오는거(ex 500)
-
-                                Item item = new Item(stationName, busNum, arsID, subLine, busType, is_first);
-                                if(publicCode != 0)
-                                    item.setPublicCode(publicCode);
-                                itemArrayList.add((item));
-                                is_first = false;
+                                //stationNo: layout에 띄워줄 정류장 번호
+                                index++;
                             } else {    //도보
                                 totalWalk += subPathOBJ.get("sectionTime").getAsInt();
                             }
-                        }
+                        }   //세부 정로 다 돌았음
+                        //도착지 정보
                         int subLine = -1, busType = 0;
                         if (itemArrayList.get(total - 1).getSubLine() == 0){  //마지막 수단 == 버스
                             finalStation += "정류장";
                             busType = 1;
                         }
-                        else{
+                        else{   //마지막 수단 == 지하철
                             if(!finalStation.endsWith("역"))
                                 finalStation += "역";
                             subLine = itemArrayList.get(total - 1).getSubLine();
                         }
                         Vector<String> tmpBusNum = new Vector<>();
-                        tmpBusNum.add("");
                         Item lastItem = new Item(finalStation, tmpBusNum, "", subLine, busType, false);
                         itemArrayList.add(lastItem);
                         totalTime += totalWalk;
                         totalWalk *= 2; //도보 시간에 보통 사람들의 2배 가량 소요된다 가정
-                        //Route: totalTime, walkingTime, cost
-                        Route route = new Route(totalTime, totalWalk, cost, group, itemArrayList);
+                        route.setTotalTime(totalTime);
+                        route.setWalkingTime(totalWalk);
+
                         if(group == 2 || group == 3){
                             route.setLikedNum(likedNum);
                             route.setMyPathIdx(myPathIdx);
                         }
-                        routeArrayList.add(route);
                     }
                 }
+
+                //모든 경로 다 돌았음
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            /*while(true){
+                if(bus_fin)
+                    break;
+            }*/
             return null;
         }
     }
-    private void executeSubXML(String subStation){
-        String rss = "http://swopenapi.seoul.go.kr/api/subway/6c73727a4c70616e36336e6d707076/xml/realtimeStationArrival/1/6/" + subStation;  // RSS URL 구성
-        GetSubXMLTask subXMLTask = new GetSubXMLTask(ShowPathActivity.this);
-        subXMLTask.execute(rss);
-    }
 
-    private void getStationInfo(String arsID) {
-        //busStationInfo
-        arsIdInfo.add(arsID);
-        //남은 시간, 저상버스 여부 : 사실 이건 맨 처음 버스에 대해서만 해도 되는데
+    private void getBusInfo(int a, int index, String arsID, String busNum) {
         String rss;
         if (isFiltered)
             rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
         else
             rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;  // RSS URL 구성
-        GetXMLTask task = new GetXMLTask(this);
+        GetXMLTask task = new GetXMLTask(routeArrayList.get(a).getItemList().get(index), busNum);
         task.execute(rss);
     }
     private class GetXMLTask extends AsyncTask<String, Void, Void> {
-        private Activity context;
-        ArrayList<Route> oldRouteList;
-        ArrayList<Route> newRouteList;
+        Item item;
+        String busNum;
 
-        public GetXMLTask(Activity context) {
-            this.context = context;
+        public GetXMLTask(Item item, String busNum) {
+            this.item = item;
+            this.busNum = busNum;
         }
 
         @Override
         protected Void doInBackground(String... urls) {
-
             URL url;
-            try {
-                url = new URL(urls[0]);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory
-                        .newInstance();
-                DocumentBuilder db;
+            bus_called++;
+            if(!busNum.equals("")) {
+                try {
+                    url = new URL(urls[0]);
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory
+                            .newInstance();
+                    DocumentBuilder db;
 
-                db = dbf.newDocumentBuilder();
-                doc = db.parse(new InputSource(url.openStream()));
-                doc.getDocumentElement().normalize();
-
-            } catch (Exception e) {
-
-                Toast.makeText(getBaseContext(), "Parsing Error",
-                        Toast.LENGTH_SHORT).show();
+                    db = dbf.newDocumentBuilder();
+                    doc = db.parse(new InputSource(url.openStream()));
+                    doc.getDocumentElement().normalize();
+                    busRemaining(doc, item, busNum);
+                } catch (Exception e) {
+                    Toast.makeText(getBaseContext(), "Parsing Error", Toast.LENGTH_SHORT).show();
+                }
+                return null;
             }
-            setNewRemainingTime(doc);
-            return null;
+            else
+                return null;
         }
 
-        protected void setNewRemainingTime(Document doc){
-
+        protected boolean busRemaining(Document doc, Item item, String busNum){
             NodeList nodeList = doc.getElementsByTagName("itemList");
             boolean found = false;
-            String busNum = busInfo.get(numOfBusCalled).busNum;
+            String arrmsg = "";
             for(int i = 0; i < nodeList.getLength(); i++){
                 Node node = nodeList.item(i);
                 Element fstElmnt = (Element) node;
@@ -628,124 +605,111 @@ public class ShowPathActivity extends AppCompatActivity {
                 Element rtNmElement = (Element) rtNmList.item(0);
                 rtNmList = rtNmElement.getChildNodes();
                 String rtNm = ((Node) rtNmList.item(0)).getNodeValue();
-                if(rtNm.contains(busNum)){
+
+                if(rtNm.contains(busNum)){  //해당 버스 찾음
                     NodeList arrmsg1List = fstElmnt.getElementsByTagName("arrmsg1");
                     Element arrmsg1Element = (Element) arrmsg1List.item(0);
                     arrmsg1List = arrmsg1Element.getChildNodes();
                     String arrmsg1 = ((Node) arrmsg1List.item(0)).getNodeValue();
 
-                    NodeList arrmsg2List = fstElmnt.getElementsByTagName("arrmsg2");
-                    Element arrmsg2Element = (Element) arrmsg2List.item(0);
-                    arrmsg2List = arrmsg2Element.getChildNodes();
-                    String arrmsg2 = ((Node) arrmsg2List.item(0)).getNodeValue();
                     String[] array = arrmsg1.split("\\[");
-                    arrmsg1 = array[0];
-
-                    busRemaining.add(arrmsg1);
-                    //arrBusInfo.add(new ArrivalBusInfo(arrmsg1, busType1)); //모든 버스들에 대한 정보 들어있음
+                    arrmsg = array[0];
                     found = true;
                     break;
                 }
             }
-            numOfBusCalled++;
-            numOfCalled++;
 
             if(!found){
-                busRemaining.add("저상버스 정보가 없습니다");
+                arrmsg = "저상버스 정보가 없습니다";
             }
+            setRemainingTime(item, arrmsg);
+            return true;
+        }
 
-            oldRouteList = new ArrayList<>();
-            oldRouteList.addAll(routeArrayList);
-            newRouteList = new ArrayList<>();
-            //버스 정보 다 불러옴 -> 버스 개수만큼 setData
-            if(numOfBus == numOfBusCalled) {
-                int index = 0;  //busStationInfo index 셈
-                for (int i = 0; i < pathArrayCount; i++) {
-                    ArrayList<Item> items = routeArrayList.get(i).getItemList();
-                    for(int j = 0; j < items.size(); j++) {
-                        Item item = items.get(j);
-                        if (item.getSubLine() == 0) {   //버스
-                            item.setArsID(arsIdInfo.get(index));
-                            if(item.isFirst()) {    //첫타자인 경우만
-                                String arrmsg = busRemaining.get(index);
-
-                                String str[] = arrmsg.split("분");
-                                try {   //남은 시간이 숫자일 경우
-                                    int time = Integer.parseInt(str[0]) * 60;
-                                    if (Integer.parseInt(str[0]) < 10){  //10분 미만
-                                        str = str[1].split("초");
-                                        time += Integer.parseInt(str[0]);
-                                    }
-                                    item.setTime(time);
-                                    item.setRemainingTime("");
-                                }
-                                catch(NumberFormatException e) {    //문자일 경우
-                                    item.setTime(0);
-                                    item.setRemainingTime(arrmsg);
-                                }
-                            }
-                            index++;
-                        }
-                    }
+        public void setRemainingTime(Item item, String arrmsg){
+            String str[] = arrmsg.split("분");
+            try {   //남은 시간이 숫자일 경우
+                int time = Integer.parseInt(str[0]) * 60;
+                if (Integer.parseInt(str[0]) < 10){  //10분 미만
+                    str = str[1].split("초");
+                    time += Integer.parseInt(str[0]);
                 }
-                newRouteList.addAll(routeArrayList);
-
-                //subway는 맨 위에 있는 경우만 xml 불러오니까 busCalled == bus면 마지막 버스까지 다 불러온거
-                //여기서 fragment 전환
-                //transaction.replace(R.id.showPathframe, fragmentAll);
+                item.setTime(time);
+                item.setRemainingTime("");
+            }
+            catch(NumberFormatException e) {    //문자일 경우
+                item.setTime(0);
+                item.setRemainingTime(arrmsg);
             }
         }
+
         @Override
         protected void onPostExecute(Void aVoid) {
-            /*RouteDiffCallback callback = new RouteDiffCallback(oldRouteList, newRouteList);
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
-            fragmentAll.onRemainingChanged(diffResult);*/
-            RouteAdapter adapter = fragmentAll.getAdapter();
-            if(adapter != null)
-                adapter.stopTimer();
-            getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();
-            super.onPostExecute(aVoid);
+            if(bus_called == bus_num)
+                bus_fin = true;
+            if(sub_fin && bus_fin){
+                RouteAdapter adapter = fragmentAll.getAdapter();
+                if (adapter != null)
+                    adapter.stopTimer();
+                getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();
+            }
         }
     }
-    private class GetSubXMLTask extends AsyncTask<String, Void, Document> {
-        private Activity context;
 
-        public GetSubXMLTask(Activity context) {
-            this.context = context;
+    //지하철 정보
+    private void getSubInfo(int a, int index, String subStation, int wayCode, int subLine, int publicCode){
+        String rss = "http://swopenapi.seoul.go.kr/api/subway/6c73727a4c70616e36336e6d707076/xml/realtimeStationArrival/1/6/" + subStation;  // RSS URL 구성
+        Item item = routeArrayList.get(a).getItemList().get(index);
+        GetSubXMLTask subXMLTask = new GetSubXMLTask(item, wayCode, subLine, publicCode);
+        subXMLTask.execute(rss);
+    }
+
+    private class GetSubXMLTask extends AsyncTask<String, Void, Void> {
+        Item item;
+        int wayCode, subLine, publicCode;
+
+        public GetSubXMLTask(Item item, int wayCode, int subLine, int publicCode) {
+            this.item = item;
+            this.wayCode = wayCode;
+            this.subLine = subLine;
+            this.publicCode = publicCode;
         }
 
         @Override
-        protected Document doInBackground(String... urls) {
+        protected Void doInBackground(String... urls) {
+            sub_called++;
 
             URL url;
-            try {
-                url = new URL(urls[0]);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory
-                        .newInstance();
-                DocumentBuilder db;
+            /*if(subLine != -1) {
+                try {
+                    url = new URL(urls[0]);
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder db;
 
-                db = dbf.newDocumentBuilder();
-                doc = db.parse(new InputSource(url.openStream()));
-                doc.getDocumentElement().normalize();
+                    db = dbf.newDocumentBuilder();
+                    doc = db.parse(new InputSource(url.openStream()));
+                    doc.getDocumentElement().normalize();
+                    subRemaining(doc, item, wayCode, subLine, publicCode);
 
-            } catch (Exception e) {
-
-                Toast.makeText(getBaseContext(), "Parsing Error",
-                        Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(getBaseContext(), "Parsing Error",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return null;
             }
-            return doc;
+            else
+                return null;
+           */
+            subRemaining(item, wayCode, subLine, publicCode);
+            return null;
         }
 
-        @Override
-        protected void onPostExecute(Document doc) {
 
+        public boolean subRemaining(Item item, int tmpWayCode, int subLine, int publicCode){  //첫 번째 파라미터 원래 Document doc
+            /*
             NodeList nodeList = doc.getElementsByTagName("row");
 
             String wayCode;
-            int publicCode = subInfo.get(numOfSubCalled).publicCode;
-            int subLine = publicCode % 100;
-            int tmpWayCode = subInfo.get(numOfSubCalled).wayCode;
-
             if(subLine == 2){
                 if(tmpWayCode == 1)
                     wayCode = "내선";
@@ -781,78 +745,61 @@ public class ShowPathActivity extends AppCompatActivity {
                     arvlMsg2List = arvlMsg2Element.getChildNodes();
                     String arvlMsg2 = ((Node) arvlMsg2List.item(0)).getNodeValue();
 
-                    /*NodeList arvlMsg3List = fstElmnt.getElementsByTagName("arvlMsg3");
-                    Element arvlMsg3Element = (Element) arvlMsg3List.item(0);
-                    arvlMsg3List = arvlMsg3Element.getChildNodes();
-                    String arvlMsg3 = ((Node) arvlMsg3List.item(0)).getNodeValue();*/
-
                     found = true;
-                    subRemainingInfo.add(arvlMsg2);// + ", " + arvlMsg3);
+                    setRemainingTime(arvlMsg2, item);
                     break;
                 }
             }
 
             if(!found){
-                subRemainingInfo.add("운행종료");
+                item.setTime(0);
+                item.setRemainingTime("운행종료");
             }
 
-            numOfSubCalled++;
-            numOfCalled++;
+            */
+            setRemainingTime("3분 48초 후 ", item);
+            return true;
+        }
 
-            //자하철로만 이루어져 있을 때 어떻게 할거임
-            if(numOfSub == numOfSubCalled) {
-                int index = 0;  //전체 지하철 수
-                for (int i = 0; i < pathArrayCount; i++) {  //전체 경로 개수
-                    ArrayList<Item> items = routeArrayList.get(i).getItemList();
-                    if(items.get(0).getBusType() == -1){    //지하철
-                        Item item = items.get(0);
-                        if(item.isFirst()) {
-                            String arrmsg = subRemainingInfo.get(index++);
-                            String min[] = arrmsg.split("분 ");
-                            try {   //남은 시간이 숫자일 경우
-                                int time = Integer.parseInt(min[0]) * 60;
-                                String sec[] = min[1].split("초 후 ");
-                                String station;
-                                //초가 있을 경우
-                                if(sec.length != 1){
-                                    time += Integer.parseInt(sec[0]);
-                                    station = sec[1];
-                                }
-                                //초가 없을 경우
-                                else{
-                                    String tmp[];
-                                    tmp = sec[0].split("\\(");
-                                    station = "(" + tmp[1];
-                                }
-                                item.setCurrStation(station);
-                                item.setTime(time);
-                            } catch (NumberFormatException e) {    //문자일 경우
-                                item.setRemainingTime(arrmsg);
-                            }
-                        }
-                    }
+        public void setRemainingTime(String arrmsg, Item item){
+            String min[] = arrmsg.split("분 ");
+            try {   //남은 시간이 숫자일 경우
+                int time = Integer.parseInt(min[0]) * 60;
+                String sec[] = min[1].split("초 후 ");
+                //초가 있을 경우
+                if(sec.length == 2){
+                    time += Integer.parseInt(sec[0]);
                 }
+                item.setTime(time);
+            } catch (NumberFormatException e) {    //문자일 경우
+                item.setRemainingTime(arrmsg);
+            }
+        }
 
-                if(numOfBus == numOfBusCalled) {
-                    getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();  //transaction = getSupportFragmentManager().beginTransaction()
-                    //transaction.replace(R.id.showPathframe, fragmentAll);//.commitAllowingStateLoss();
-                }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(sub_called == sub_num)
+                sub_fin = true;
+            if(sub_fin && bus_fin){
+                getSupportFragmentManager().beginTransaction().detach(fragmentAll).attach(fragmentAll).commit();  //transaction = getSupportFragmentManager().beginTransaction()
             }
         }
     }
     public void onFilterChecked(View v) {
         boolean checked = ((Switch) v).isChecked();
-        numOfBusCalled = 0;
-        numOfCalled = numOfSubCalled;   //버스 정보만 다시 불러오면 되니까
-        busRemaining = new Vector<>();
+        bus_called = 0;
         String rss;
         if(checked){
             isFiltered = true;
-            for(int i = 0; i < arsIdInfo.size(); i++){
-                String arsID = arsIdInfo.get(i);
+            for(int i = 0; i < busInfoList.size(); i++){
+                BusInfo busInfo = busInfoList.get(i);
+                String arsID = busInfo.arsID;
                 rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
 
-                GetXMLTask task = new GetXMLTask(this);
+                int x, y;
+                x = busInfo.a; y = busInfo.index;
+                Item item = routeArrayList.get(x).getItemList().get(y);
+                GetXMLTask task = new GetXMLTask(item, busInfo.busNum);
                 task.execute(rss);
 
             }
@@ -860,13 +807,16 @@ public class ShowPathActivity extends AppCompatActivity {
         }
         else{
             isFiltered = false;
-            for(int i = 0; i < arsIdInfo.size(); i++){
-                String arsID = arsIdInfo.get(i);
+            for(int i = 0; i < busInfoList.size(); i++){
+                BusInfo busInfo = busInfoList.get(i);
+                String arsID = busInfo.arsID;
                 rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
 
-                GetXMLTask task = new GetXMLTask(this);
+                int x, y;
+                x = busInfo.a; y = busInfo.index;
+                Item item = routeArrayList.get(x).getItemList().get(y);
+                GetXMLTask task = new GetXMLTask(item, busInfo.busNum);
                 task.execute(rss);
-
             }
         }
     }

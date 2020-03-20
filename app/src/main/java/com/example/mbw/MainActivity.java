@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
 
         //실제 디바이스 돌릴 때 들어갈 내용
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        /*fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                         }
                     }
                 });
+
+         */
 
 
 
