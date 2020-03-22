@@ -80,8 +80,8 @@ public class ShowPathActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private FragmentTransaction transaction;
-    private TextView all, bus, sub, busNsub;
-    private View first, second, third, fourth;
+    private TextView all, bus, sub;
+    private View first, second, third;
 
     private int searchType = 0, FLAG = 0, AUTOCOMPLETE_REQUEST_CODE = 1;//, totalWalk, cost, totalTime;
     private Intent searchIntent = null;
@@ -120,12 +120,10 @@ public class ShowPathActivity extends AppCompatActivity {
         all = findViewById(R.id.showAll);
         bus = findViewById(R.id.showBus);
         sub = findViewById(R.id.showSub);
-        busNsub = findViewById(R.id.showBusNSub);
 
         first = findViewById(R.id.allLine);
         second = findViewById(R.id.busLine);
         third = findViewById(R.id.subLine);
-        fourth = findViewById(R.id.busNSubLine);
 
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
@@ -176,12 +174,10 @@ public class ShowPathActivity extends AppCompatActivity {
                 all.setTextColor(Color.parseColor("#1ABC9C"));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                busNsub.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                 first.setBackgroundColor(Color.parseColor("#1abc9c"));
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 //transaction.replace(R.id.showPathframe, fragmentAll);//.commitAllowingStateLoss();
                 departure.setText(dept);
                 destination.setText(dest);
@@ -284,12 +280,10 @@ public class ShowPathActivity extends AppCompatActivity {
                 all.setTextColor(Color.parseColor("#1ABC9C"));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                busNsub.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                 first.setBackgroundColor(Color.parseColor("#1abc9c"));
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 startSearchPath(searchType);
                 break;
             case R.id.showBus:
@@ -298,12 +292,10 @@ public class ShowPathActivity extends AppCompatActivity {
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(Color.parseColor("#1abc9c"));
                 sub.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                busNsub.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                 first.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 second.setBackgroundColor(Color.parseColor("#1abc9c"));
                 third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 startSearchPath(searchType);
                 break;
             case R.id.showSub:
@@ -311,12 +303,10 @@ public class ShowPathActivity extends AppCompatActivity {
                 all.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 bus.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 sub.setTextColor(Color.parseColor("#1abc9c"));
-                busNsub.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                 first.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 third.setBackgroundColor(Color.parseColor("#1abc9c"));
-                fourth.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 startSearchPath(searchType);
                 break;
         }
@@ -543,10 +533,6 @@ public class ShowPathActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            /*while(true){
-                if(bus_fin)
-                    break;
-            }*/
             return null;
         }
     }

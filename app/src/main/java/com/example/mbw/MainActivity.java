@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
 
         //실제 디바이스 돌릴 때 들어갈 내용
-        /*fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     }
                 });
 
-         */
+
 
 
 
@@ -454,6 +454,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            String dept = departure.getText().toString();
             if (category == 1) {
                 if (homeDB != null){
                     String dest = homeDB.getPlace();
@@ -461,10 +462,10 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     ex = homeDB.getX();
                     ey = homeDB.getY();
                     //검색 기록에 추가
-                    RouteDB db = new RouteDB(currLocation, dest, sx, sy, ex, ey);
+                    RouteDB db = new RouteDB(dept, dest, sx, sy, ex, ey);
                     MyDB.insertRoute(db);
 
-                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
+                    String sendData[] = {dept, dest, sx, sy, ex, ey};
                     intent = new Intent(MainActivity.this, ShowPathActivity.class);
                     intent.putExtra("LOC_DATA", sendData);
                     search();
@@ -476,10 +477,10 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                     String dest = officeDB.getPlace();
                     String ex, ey;
                     ex = officeDB.getX(); ey = officeDB.getY();
-                    RouteDB db = new RouteDB(currLocation, dest, sx, sy, ex, ey);
+                    RouteDB db = new RouteDB(dept, dest, sx, sy, ex, ey);
                     MyDB.insertRoute(db);
 
-                    String sendData[] = {currLocation, dest, sx, sy, ex, ey};
+                    String sendData[] = {dept, dest, sx, sy, ex, ey};
                     intent = new Intent(MainActivity.this, ShowPathActivity.class);
                     intent.putExtra("LOC_DATA", sendData);
                     startActivity(intent);

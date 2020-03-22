@@ -104,14 +104,10 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     /*public void setTime(int time, String state, RouteViewHolder routeViewHolder){
         ItemAdapter adapter = (ItemAdapter) routeViewHolder.rvItem.getAdapter();
         (ItemAdapter.BusViewHolder) adapter.getItemViewHolder();
-
         ((ItemAdapter.BusViewHolder) holder).updateTimeRemaining();
         if(time != 0){  //남은 시간이 숫자
-
-
         }
         else{   //남은 시간이 문자
-
         }
     }*/
 

@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".showPath.ShowPathActivity">
 
-    <!--<ProgressBar
-        android:id="@+id/progress_loader"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="200dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
     <ImageView
         android:id="@+id/goBackButton"
         android:layout_width="30dp"
@@ -111,8 +99,7 @@
         android:id="@+id/showAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
@@ -125,8 +112,7 @@
         android:id="@+id/showBus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="33dp"
-        android:layout_marginLeft="33dp"
+        android:layout_marginStart="70dp"
         android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
@@ -138,8 +124,7 @@
         android:id="@+id/showSub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="33dp"
-        android:layout_marginLeft="33dp"
+        android:layout_marginStart="70dp"
         android:layout_marginTop="90dp"
         android:clickable="true"
         android:onClick="showPathFragmentHandler"
@@ -147,24 +132,9 @@
         app:layout_constraintStart_toEndOf="@+id/showBus"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/showBusNSub"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="33dp"
-        android:layout_marginLeft="33dp"
-        android:layout_marginTop="90dp"
-        android:clickable="true"
-        android:onClick="showPathFragmentHandler"
-        android:text="버스+지하철"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/showSub"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <View
         android:id="@+id/allLine"
-        android:layout_width="60dp"
+        android:layout_width="100dp"
         android:layout_height="1dp"
         android:layout_marginTop="120dp"
         android:background="@color/colorMajor"
@@ -173,7 +143,7 @@
 
     <View
         android:id="@+id/busLine"
-        android:layout_width="60dp"
+        android:layout_width="100dp"
         android:layout_height="1dp"
         android:layout_marginTop="120dp"
         android:background="@android:color/darker_gray"
@@ -182,24 +152,12 @@
 
     <View
         android:id="@+id/subLine"
-        android:layout_width="70dp"
+        android:layout_width="100dp"
         android:layout_height="1dp"
         android:layout_marginTop="120dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintStart_toEndOf="@+id/busLine"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/busNSubLine"
-        android:layout_width="100dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="120dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/subLine"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <Switch
         android:id="@+id/non_step_switch"
