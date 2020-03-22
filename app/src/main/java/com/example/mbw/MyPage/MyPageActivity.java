@@ -3,8 +3,6 @@ package com.example.mbw.MyPage;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -15,13 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mbw.DB.RecordAdapter;
 import com.example.mbw.DB.RouteDB;
-import com.example.mbw.DB.RouteDBHelper;
 import com.example.mbw.MainActivity;
-import com.example.mbw.MyPage.FragmentPath;
-import com.example.mbw.MyPage.FragmentPlace;
-import com.example.mbw.MyPage.FragmentSetting;
 import com.example.mbw.MyPage.data.LocationResponse;
 import com.example.mbw.R;
 import com.example.mbw.network.RetrofitClient;
@@ -42,45 +35,52 @@ public class MyPageActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private FragmentPath fragmentPath;
     private FragmentPlace fragmentPlace;
-    private FragmentSetting fragmentSetting;
     private FragmentTransaction transaction;
-    private FrameLayout fragment;
-    private TextView path, place, setting, userName;
-    private View first, second, third;
+    private TextView path, place, userName;
+    private View first, second;
     private String token;
     public static String homeAddress = "", officeAddress = "";
     ServiceApi service;
     boolean home = false, office = false;
     static ArrayList<RouteDB> ArrayListrouteDB;
     boolean getData = false;
+    int test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
+    }
 
-        GetBookmarkTask bookmarkTask = new GetBookmarkTask(MainActivity.getToken());
-        bookmarkTask.execute();
+    @Override
+    public void onStart(){
+        super.onStart();
 
         service = RetrofitClient.getClient().create(ServiceApi.class);
         token = MainActivity.getToken();
         fragmentManager = getSupportFragmentManager();
         fragmentPath = new FragmentPath();
         fragmentPlace = new FragmentPlace();
-        fragmentSetting = new FragmentSetting();
 
         path = findViewById(R.id.pathView);
         place = findViewById(R.id.placeView);
-        setting = findViewById(R.id.settingView);
 
         first = findViewById(R.id.firstLine);
         second = findViewById(R.id.secondLine);
-        third = findViewById(R.id.thirdLine);
 
         userName = findViewById(R.id.userNameTV);
+        getData = false;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        test = 0;
         String name = getIntent().getStringExtra("NAME");
         userName.setText(name);
 
+        GetBookmarkTask bookmarkTask = new GetBookmarkTask(MainActivity.getToken());
+        bookmarkTask.execute();
 
         GetLocationTask locationTask;
         for(int i = 1; i <= 2; i++) {
@@ -106,7 +106,7 @@ public class MyPageActivity extends AppCompatActivity {
                     boolean success = response.isSuccessful();
                     if(success) {
                         int code = result.getCode();
-                        if (code == 200) {   //즐겨찾는 장소 조회 성공
+                        if (code == 200) {   //즐겨찾는 경로 조회 성공
                             JsonArray data = result.getData();
                             if(data != null) {
                                 try {
@@ -132,6 +132,7 @@ public class MyPageActivity extends AppCompatActivity {
                             }
                         }
                         getData = true;
+                        //Log.i("background", "" + test);
                     }
                     else {
                         try {
@@ -150,18 +151,21 @@ public class MyPageActivity extends AppCompatActivity {
                 }
             });
             while(true){
+                //test++;
                 if(getData)
                     break;
+                if(test == 1)
+                    Log.i("background", "" + getData);
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //Toast.makeText(getContext(), "" + ArrayListrouteDB.size(), Toast.LENGTH_SHORT).show();
+            Log.i("onpost", "성공");
             if(ArrayListrouteDB.size() != 0) {
                 transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.myPageFrame, fragmentPath).commitAllowingStateLoss();
+                transaction.replace(R.id.myPageFrame, fragmentPath).commit();
             }
         }
     }
@@ -261,11 +265,9 @@ public class MyPageActivity extends AppCompatActivity {
                 transaction.replace(R.id.myPageFrame, fragmentPath).commitAllowingStateLoss();
                 path.setTextColor(Color.parseColor("#1abc9c"));
                 place.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                setting.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                 first.setBackgroundColor(Color.parseColor("#1abc9c"));
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 break;
             case R.id.placeView:
                 if(home && office) {
@@ -273,29 +275,17 @@ public class MyPageActivity extends AppCompatActivity {
 
                     path.setTextColor(getResources().getColor(android.R.color.darker_gray));
                     place.setTextColor(Color.parseColor("#1abc9c"));
-                    setting.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                     first.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                     second.setBackgroundColor(Color.parseColor("#1abc9c"));
-                    third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 }
                 break;
-            /*case R.id.settingView:
-                transaction.replace(R.id.myPageFrame, fragmentSetting).commitAllowingStateLoss();
-                path.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                place.setTextColor(getResources().getColor(android.R.color.darker_gray));
-                setting.setTextColor(Color.parseColor("#1abc9c"));
 
-                first.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-                third.setBackgroundColor(Color.parseColor("#1abc9c"));
-                break;
-
-             */
         }
     }
 
     public void onClickBack(View v){
+        //fragmentManager.beginTransaction().remove(fragmentPath).commit();
         finish();
     }
 }

@@ -245,8 +245,12 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
                 }
             });
 
-            //rvItem.setOnClickListener(this);
-            //itemView.setOnClickListener(this);
+            /*itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    mListener.onItemClick(getAdapterPosition());
+                }
+            });*/
         }
         /*
         *

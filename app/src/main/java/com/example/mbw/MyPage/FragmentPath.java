@@ -47,6 +47,7 @@ public class FragmentPath extends Fragment implements RecordAdapter.OnItemClickL
         service = RetrofitClient.getClient().create(ServiceApi.class);
         return inflater.inflate(R.layout.fragment_path, container, false);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
@@ -62,7 +63,6 @@ public class FragmentPath extends Fragment implements RecordAdapter.OnItemClickL
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         //routeDB = new RouteDBHelper(view.getContext());
         //ArrayListrouteDB = routeDB.getAllRoutesBM();
-
     }
 
 
