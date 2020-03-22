@@ -59,6 +59,17 @@ public class DetailItem {
     private String problem;
 
 
+    private String problem2;
+
+    public String getProblem2() {
+        return problem2;
+    }
+
+    public void setProblem2(String problem2) {
+        this.problem2 = problem2;
+    }
+
+
     public ArrayList<String> getPassStationArray() {
         return passStationArray;
     }
@@ -156,6 +167,41 @@ public class DetailItem {
 
         this.passStationArray = passStationArray;
         this.problem = problem;
+
+    }
+
+
+    // 지하철 환승
+    public DetailItem(LatLng start, LatLng end, int imageType, String spotName, String spotName2, String wayNum,
+                      String direction1, String direction2, String remaining1, String remaining2, int time, int passedStop,
+                      String context1, String context2, ArrayList<String> passStationArray, String problem, String problem2) {
+        this.start = start;
+        this.end = end;
+        this.imageType = imageType;
+        this.spotName = spotName;
+        this.spotName2 = spotName2;
+        this.wayNum = wayNum;
+
+        //only for subway
+        this.direction1 = direction1;
+        this.direction2 = direction2;
+
+        this.remaining1 = remaining1;
+        this.remaining2 = remaining2;
+
+        this.time = time;
+        this.passedStop = passedStop;
+/*
+        // 환승도보 정보 (지하철 갈아 탈 때만 필요)
+        this.transTime = transTime;
+        this.transDistance = transDistance;
+*/
+        this.context1 = context1;
+        this.context2 = context2;
+
+        this.passStationArray = passStationArray;
+        this.problem = problem;
+        this.problem2 = problem2;
 
     }
 

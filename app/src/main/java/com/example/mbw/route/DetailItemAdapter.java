@@ -248,6 +248,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
 
         ImageView endImage;
         TextView problemTextView;
+        TextView problemTextView2;
+
         View v;
 
         RecyclerView passListView;
@@ -271,6 +273,7 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             passListView = itemView.findViewById(R.id.passListView);
             ImageButton downArrow = itemView.findViewById(R.id.imageButton);
             problemTextView = itemView.findViewById(R.id.problemTextView);
+            problemTextView2 = itemView.findViewById(R.id.problemTextView2);
 
             downArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -299,13 +302,22 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             fastPlatform2.setText(detailItem. getContext2());
             stationNum.setText(detailItem.getPassedStop()+"개 역 이동");
             String problem = detailItem.getProblem();
+            String problem2 = detailItem.getProblem2();
+
             if(problem.equals("null")){
                 problemTextView.setVisibility(View.GONE);}
             else{
                 problemTextView.setText(detailItem.getProblem());}
+
+            if(problem2.equals("null")){
+                problemTextView2.setVisibility(View.GONE);}
+            else{
+                problemTextView2.setText(detailItem.getProblem2());}
+
             int hour = detailItem.getTime()/60;
             int minute = detailItem.getTime()%60;
             String timeInfo;
+
             if(hour==0)
                 timeInfo = minute+"분";
             else
@@ -322,13 +334,8 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
             SimpleTextAdapter adapter = new SimpleTextAdapter(passStationList) ;
             Log.i("ADAPTER stationLIst", passStationList.toString());
             passListView.setAdapter(adapter) ;
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(itemView.getContext(), android.R.layout.simple_list_item_1, passStationList) ;
-
-            //passListView.setAdapter(adapter);
-            //String[] strData = passStationList.toArray(new String[passStationList.size()]);
 
 
-            //ColorDrawable background = (ColorDrawable) v.getBackground();
             switch (detailItem.getImageType()){
                 case 1:
                     subImage.setImageResource(R.drawable.line1);

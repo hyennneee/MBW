@@ -158,7 +158,8 @@
             android:layout_marginLeft="4dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
-            android:text="4-2, 7-2" />
+            android:text="4-2, 7-2"
+            android:textSize="13sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -208,8 +209,8 @@
             android:maxWidth="17dp"
             android:maxHeight="17dp"
             android:scaleType="fitCenter"
-            android:visibility="visible"
-            android:src="@drawable/downarrow" />
+            android:src="@drawable/downarrow"
+            android:visibility="visible" />
 
 
     </LinearLayout>
@@ -233,6 +234,27 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout13"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="40dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/subStation"
+        app:layout_constraintTop_toBottomOf="@+id/busDetail">
+
+        <TextView
+            android:id="@+id/problemTextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="#FF5722"
+            android:visibility="visible" />
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/fastInfo2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -241,7 +263,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/subRemaining"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout13">
         <!--
                 <TextView
                     android:id="@+id/transExit"
@@ -262,7 +284,8 @@
             android:layout_marginLeft="4dp"
             android:layout_marginTop="4dp"
             android:layout_weight="1"
-            android:text="4-2, 7-2" />
+            android:text="4-2, 7-2"
+            android:textSize="13sp" />
     </LinearLayout>
 
 <!--
