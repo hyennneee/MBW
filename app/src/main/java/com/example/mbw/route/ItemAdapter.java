@@ -345,8 +345,11 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void updateTimeRemaining() {
             int time = item.getTime() - 1;
             if (time > 0 && time < 600) {
-                if(time < 84)
+                if(time < 84) {
+                    item.setTime(0);
+                    item.setRemainingTime("곧 도착");
                     subRemaining.setText("곧 도착");
+                }
                 else {
                     item.setTime(time);
                     int min = time / 60;
