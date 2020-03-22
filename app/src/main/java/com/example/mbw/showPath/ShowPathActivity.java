@@ -415,7 +415,7 @@ public class ShowPathActivity extends AppCompatActivity {
                     int pathType = infoOBJ.get("pathType").getAsInt();
                     if (searchType == 0 || searchType ==  pathType) {   //검색 타입과 일치하는 것만 출력
                         group = infoOBJ.get("group").getAsInt();
-                        if(group == 1 || group == 5) {
+                        if(group == 1 || group == 4 || group == 5) {
                             cost = infoOBJ.get("totalPay").getAsInt();
                         }
                         else{
@@ -606,7 +606,10 @@ public class ShowPathActivity extends AppCompatActivity {
             }
 
             if(!found){
-                arrmsg = "저상버스 정보가 없습니다";
+                if(isFiltered)
+                    arrmsg = "저상버스 정보가 없습니다";
+                else
+                    arrmsg = "운행종료";
             }
             setRemainingTime(item, arrmsg);
             return true;
