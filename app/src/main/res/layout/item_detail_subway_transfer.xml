@@ -237,12 +237,12 @@
         android:id="@+id/linearLayout13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="40dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/subStation"
-        app:layout_constraintTop_toBottomOf="@+id/busDetail">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
 
         <TextView
             android:id="@+id/problemTextView2"

@@ -387,8 +387,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         Log.i("problem", problem);
                         JSONObject startElevatorObj = startElevatorArray.getJSONObject(1);
                         String startContent = startElevatorObj.getString("content");
-                        int category = startElevatorObj.getInt("categoryBool");
-
 
                         if(subObj.has("endElevatorInfo")){
                             try {
@@ -404,9 +402,12 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
                             } catch (JSONException e) {
                                 Log.i("catch","catch");
-                                detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, null));
+                                //detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, null));
                             }
                         }
+                        else
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, "null"));
+
 
 
 /*
@@ -422,8 +423,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                             String endContent = endElevatorObj.getString("content");
                             detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem, problem2));
                         }
-
-
 */
 
 
