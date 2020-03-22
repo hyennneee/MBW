@@ -395,6 +395,16 @@ public class DetailItemAdapter extends RecyclerView.Adapter<ViewHolder>{
                     endImage.setColorFilter(R.color.line_airport);
                     v.setBackgroundColor(itemView.getResources().getColor(R.color.line_airport));
                     break;
+                case 113:
+                    subImage.setImageResource(R.drawable.line_ui);
+                    endImage.setColorFilter(R.color.line_ui);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line_ui));
+                    break;
+                default:
+                    subImage.setImageResource(R.drawable.line_default);
+                    endImage.setColorFilter(R.color.line_default);
+                    v.setBackgroundColor(itemView.getResources().getColor(R.color.line_default));
+                    break;
             }
         }
     }
