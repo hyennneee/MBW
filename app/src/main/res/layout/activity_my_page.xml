@@ -43,7 +43,7 @@
     <TextView
         android:id="@+id/pathView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="180dp"
         android:clickable="true"
@@ -56,13 +56,13 @@
     <TextView
         android:id="@+id/placeView"
         android:layout_width="wrap_content"
-        android:layout_height="19dp"
-        android:layout_marginStart="48dp"
+        android:layout_height="30dp"
         android:layout_marginTop="41dp"
         android:clickable="true"
         android:onClick="myPageFragmentHandler"
         android:text="집·회사"
-        app:layout_constraintStart_toEndOf="@+id/pathView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userNameTV" />
 
     <TextView
