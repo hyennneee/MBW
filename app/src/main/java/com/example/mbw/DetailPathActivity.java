@@ -381,6 +381,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         String direction = secondObj.getString("stationName");
 
                         JSONArray startElevatorArray = subObj.getJSONArray("startElevatorInfo");
+
                         JSONObject problemObj = startElevatorArray.getJSONObject(0);
                         String problem = problemObj.getString("problem");
                         Log.i("problem", problem);
@@ -388,15 +389,43 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         String startContent = startElevatorObj.getString("content");
                         int category = startElevatorObj.getInt("categoryBool");
 
+
+                        if(subObj.has("endElevatorInfo")){
+                            try {
+                                Log.i("try","try");
+                                JSONArray endElevatorArray = subObj.getJSONArray("endElevatorInfo");
+                                JSONObject problemObj2 = endElevatorArray.getJSONObject(0);
+                                String problem2 = problemObj2.getString("problem");
+                                Log.i("problem",problem2);
+
+                                JSONObject endElevatorObj = endElevatorArray.getJSONObject(1);
+                                String endContent = endElevatorObj.getString("content");
+                                detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem, problem2));
+
+                            } catch (JSONException e) {
+                                Log.i("catch","catch");
+                                detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, null));
+                            }
+                        }
+
+
+/*
                         if(category == 1){
-                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem));
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, "null"));
                         }
                         else if(category == 2){
                             JSONArray endElevatorArray = subObj.getJSONArray("endElevatorInfo");
+                            JSONObject problemObj2 = endElevatorArray.getJSONObject(0);
+                            String problem2 = problemObj2.getString("problem");
+
                             JSONObject endElevatorObj = endElevatorArray.getJSONObject(1);
                             String endContent = endElevatorObj.getString("content");
-                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem));
+                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem, problem2));
                         }
+
+
+*/
+
 
                         break;
 
