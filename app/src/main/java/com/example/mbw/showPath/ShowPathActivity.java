@@ -599,7 +599,12 @@ public class ShowPathActivity extends AppCompatActivity {
                     String arrmsg1 = ((Node) arrmsg1List.item(0)).getNodeValue();
 
                     String[] array = arrmsg1.split("\\[");
-                    arrmsg = array[0];
+                    if(array[0].equals("")){    //막차
+                        String[] tmpArray = array[0].split("] ");
+                        arrmsg = tmpArray[1];
+                    }
+                    else
+                        arrmsg = array[0];
                     found = true;
                     break;
                 }
@@ -619,14 +624,13 @@ public class ShowPathActivity extends AppCompatActivity {
             String str[] = arrmsg.split("분");
             try {   //남은 시간이 숫자일 경우
                 int time = Integer.parseInt(str[0]) * 60;
-                if (Integer.parseInt(str[0]) < 10){  //10분 미만
+                if (Integer.parseInt(str[0]) < 10) {  //10분 미만
                     str = str[1].split("초");
                     time += Integer.parseInt(str[0]);
                 }
                 item.setTime(time);
                 item.setRemainingTime("");
-            }
-            catch(NumberFormatException e) {    //문자일 경우
+            } catch (NumberFormatException e) {    //문자일 경우
                 item.setTime(0);
                 item.setRemainingTime(arrmsg);
             }
