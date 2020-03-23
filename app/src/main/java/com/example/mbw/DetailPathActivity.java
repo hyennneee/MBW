@@ -330,12 +330,19 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
             String timeInfo;
             if(hour==0)
                 timeInfo = minute+"분";
-            else
-                timeInfo = hour+"시간 "+minute+"분";
+            else{
+                if(minute==0)
+                    timeInfo=  hour+"시간 ";
+                else
+                    timeInfo = hour+"시간 "+minute+"분";}
 
 
             timeTextView.setText(timeInfo);
-            totalPay = obj.getInt("totalPay");
+            if(obj.isNull("totalPay"))
+                totalPay = 1300;
+            else
+                totalPay = obj.getInt("totalPay");
+
             payTextView.setText(totalPay+"원");
             walkTimeTextView.setText("도보 "+walkTwice+"분");
             transitCount = obj.getInt("transitCount");
@@ -354,7 +361,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         JSONObject laneObj1 = laneArray1.getJSONObject(0);
                         int subwayCode = laneObj1.getInt("subwayCode");
                         subwayCodeNo = laneObj1.getInt("publicCode");
-
 
                         String startName1 = subObj.getString("startName");
                         LatLng start1 = new LatLng( subObj.getDouble("startY"), subObj.getDouble("startX"));
@@ -407,24 +413,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                         }
                         else
                             detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, "null"));
-
-
-
-/*
-                        if(category == 1){
-                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, "null"));
-                        }
-                        else if(category == 2){
-                            JSONArray endElevatorArray = subObj.getJSONArray("endElevatorInfo");
-                            JSONObject problemObj2 = endElevatorArray.getJSONObject(0);
-                            String problem2 = problemObj2.getString("problem");
-
-                            JSONObject endElevatorObj = endElevatorArray.getJSONObject(1);
-                            String endContent = endElevatorObj.getString("content");
-                            detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, endContent, passStopArray, problem, problem2));
-                        }
-*/
-
 
                         break;
 
