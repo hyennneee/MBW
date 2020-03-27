@@ -523,7 +523,7 @@ public class ShowPathActivity extends AppCompatActivity {
                         String multipleStr = String.format("%.2f", 4.3 / speed);
                         float multiple = Float.parseFloat(multipleStr);
                         int newWalkingTime = Math.round(multiple * totalWalk);
-
+                        totalTime -= totalWalk;
                         totalTime += newWalkingTime;
                         route.setTotalTime(totalTime);
                         route.setWalkingTime(newWalkingTime);
