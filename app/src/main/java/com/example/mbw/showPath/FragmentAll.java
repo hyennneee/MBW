@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mbw.DB.SpeedDBHelper;
 import com.example.mbw.DetailPathActivity;
 import com.example.mbw.TestActivity;
 import com.example.mbw.route.RouteAdapter;
@@ -27,6 +28,7 @@ import static com.example.mbw.showPath.ShowPathActivity.routeArrayList;
 public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickListener{
    static  private RouteAdapter mAdapter;
     static private RecyclerView mRecyclerView;
+    SpeedDBHelper speedDBHelper;
 
     //1-지하철, 2-버스, 3-버스+지하철
     //api에서 받아온 결과를 어떻게 arrayList에 넣지?
@@ -40,6 +42,7 @@ public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickLis
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        speedDBHelper = new SpeedDBHelper(getContext());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_sub_item);
         mAdapter = new RouteAdapter( routeArrayList, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -55,12 +58,14 @@ public class FragmentAll extends Fragment implements RouteAdapter.OnItemClickLis
         //아이템 클릭 이벤트 처리
         String tmp[] = getArguments().getStringArray("PATH_INFO");
         JsonObject jsonData = ShowPathActivity.pathArray.get(position).getAsJsonObject();
-        String detailPathData[] = new String[7];
+        String detailPathData[] = new String[8];
         detailPathData[0] = jsonData.toString();
         int i = 1;
         for( String data : tmp ) {
             detailPathData[i++] = data;
         }
+        String speed = speedDBHelper.getSpeed();
+        detailPathData[7] = speed;
 
         Intent intent = new Intent(getActivity(), DetailPathActivity.class);
         intent.putExtra("DETAIL_PATH", detailPathData);
