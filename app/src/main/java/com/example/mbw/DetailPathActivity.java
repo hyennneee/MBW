@@ -43,33 +43,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.skt.Tmap.TMapData;
-import com.skt.Tmap.TMapGpsManager;
-import com.skt.Tmap.TMapPoint;
-import com.skt.Tmap.TMapPolyLine;
-import com.skt.Tmap.TMapView;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+
 
 public class DetailPathActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "DetailPathActivity";
@@ -108,6 +94,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
     int wayCodeNo;
     String busNum;
     String arrvMsg1, arrvMsg2;
+    float multiple;
 
 
     public Bitmap resizeBitmap(String drawableName, int width, int height){
@@ -196,6 +183,11 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
         endLongi = Double.parseDouble(pathInfo[5]);
         endLati = Double.parseDouble(pathInfo[6]);
+
+        Double speed = Double.parseDouble(pathInfo[7]);
+        String multipleStr = String.format("%.2f", 4.3 / speed);
+        multiple = Float.parseFloat(multipleStr);
+
         String jsonString = pathInfo[0];
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);
@@ -320,11 +312,13 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
             totalTime = obj.getInt("totalTime");
             totalWalkTime = obj.getInt("totalWalkTime");
 
-            int totalTwice = totalTime+totalWalkTime;
-            int walkTwice = totalWalkTime*2;
+            totalTime -= totalWalkTime;
+            totalTime += totalWalkTime*multiple;
 
-            int hour = totalTwice/60;
-            int minute = totalTwice%60;
+            totalWalkTime = Math.round(multiple * totalWalkTime);
+
+            int hour = totalTime/60;
+            int minute = totalTime%60;
             String timeInfo;
             if(hour==0)
                 timeInfo = minute+"분";
@@ -342,7 +336,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                 totalPay = obj.getInt("totalPay");
 
             payTextView.setText(totalPay+"원");
-            walkTimeTextView.setText("도보 "+walkTwice+"분");
+            walkTimeTextView.setText("도보 "+totalWalkTime+"분");
             transitCount = obj.getInt("transitCount");
             transitCntTextView.setText("환승 "+transitCount+"회");
             JSONArray subPathArray = obj.getJSONArray("subPath");
@@ -406,7 +400,6 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
 
                             } catch (JSONException e) {
                                 Log.i("catch","catch");
-                                //detailItemList.add(new DetailItem(start1, end1, subwayCode, startName1, endName1, direction, null, null, arrvMsg1, arrvMsg2, sectionTime1,  stationCount1, startContent, null, passStopArray, problem, null));
                             }
                         }
                         else
@@ -453,7 +446,7 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                     case 3: //도보
                         Log.i("도보", "3");
                         int distance = subObj.getInt("distance");
-                        int sectionTime3 = subObj.getInt("sectionTime");
+                        int sectionTime3 = Math.round(subObj.getInt("sectionTime")*multiple);
                         if(sectionTime3!=0)
                             detailItemList.add(new DetailItem(new LatLng(0,0), new LatLng(0,0), 30, sectionTime3, distance));
                         break;
