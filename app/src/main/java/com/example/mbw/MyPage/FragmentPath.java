@@ -23,17 +23,6 @@ import com.example.mbw.MyPage.data.LocationResponse;
 import com.example.mbw.R;
 import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FragmentPath extends Fragment implements RecordAdapter.OnItemClickListener {
     static  private RecordAdapter mAdapter;

@@ -35,9 +35,10 @@ public class MyPageActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private FragmentPath fragmentPath;
     private FragmentPlace fragmentPlace;
+    private FragmentWalking fragmentWalking;
     private FragmentTransaction transaction;
-    private TextView path, place, userName;
-    private View first, second;
+    private TextView path, place, walkingSpeed, userName;
+    private View first, second, third;
     private String token;
     public static String homeAddress = "", officeAddress = "";
     ServiceApi service;
@@ -61,12 +62,15 @@ public class MyPageActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentPath = new FragmentPath();
         fragmentPlace = new FragmentPlace();
+        fragmentWalking = new FragmentWalking();
 
         path = findViewById(R.id.pathView);
         place = findViewById(R.id.placeView);
+        walkingSpeed = findViewById(R.id.walkingSpeed);
 
         first = findViewById(R.id.firstLine);
         second = findViewById(R.id.secondLine);
+        third = findViewById(R.id.thirdLine);
 
         userName = findViewById(R.id.userNameTV);
         getData = false;
@@ -265,9 +269,11 @@ public class MyPageActivity extends AppCompatActivity {
                 transaction.replace(R.id.myPageFrame, fragmentPath).commitAllowingStateLoss();
                 path.setTextColor(Color.parseColor("#1abc9c"));
                 place.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                walkingSpeed.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                 first.setBackgroundColor(Color.parseColor("#1abc9c"));
                 second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 break;
             case R.id.placeView:
                 if(home && office) {
@@ -275,10 +281,23 @@ public class MyPageActivity extends AppCompatActivity {
 
                     path.setTextColor(getResources().getColor(android.R.color.darker_gray));
                     place.setTextColor(Color.parseColor("#1abc9c"));
+                    walkingSpeed.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
                     first.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                     second.setBackgroundColor(Color.parseColor("#1abc9c"));
+                    third.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
                 }
+                break;
+            case R.id.walkingSpeed:
+                transaction.replace(R.id.myPageFrame, fragmentWalking).commitAllowingStateLoss();
+
+                path.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                place.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                walkingSpeed.setTextColor(Color.parseColor("#1abc9c"));
+
+                first.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                second.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+                third.setBackgroundColor(Color.parseColor("#1abc9c"));
                 break;
 
         }

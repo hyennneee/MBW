@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
 
         sx = "126.9625327"; sy = "37.5464301";  //ex="127.0043575"; ey="37.5672437";
 
-
+/*
         //실제 디바이스 돌릴 때 들어갈 내용
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                         }
                     }
                 });
-
+*/
 
 
 

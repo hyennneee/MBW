@@ -21,6 +21,7 @@ import com.example.mbw.DB.DBHelper;
 import com.example.mbw.DB.RouteDB;
 import com.example.mbw.DB.RouteDBHelper;
 import com.example.mbw.AddPath.AddPathActivity;
+import com.example.mbw.DB.SpeedDBHelper;
 import com.example.mbw.MainActivity;
 import com.example.mbw.MyPage.data.PostResponse;
 import com.example.mbw.R;
@@ -88,10 +89,9 @@ public class ShowPathActivity extends AppCompatActivity {
     Document doc;
     DBHelper MyDB;
     RouteDBHelper routeDBHelper;
+    SpeedDBHelper speedDBHelper;
 
     String token;
-    double sxD, syD, exD, eyD;
-    TextView departureText, destinationText;
     String departureName, destinationName;
 
     //variables to measure time
@@ -129,6 +129,7 @@ public class ShowPathActivity extends AppCompatActivity {
         transaction = fragmentManager.beginTransaction();
         MyDB = new DBHelper(this);
         routeDBHelper = new RouteDBHelper(this);
+        speedDBHelper = new SpeedDBHelper(this);
 
         String[] strings;
         strings = getIntent().getStringArrayExtra("LOC_DATA");
@@ -517,10 +518,15 @@ public class ShowPathActivity extends AppCompatActivity {
                         Vector<String> tmpBusNum = new Vector<>();
                         Item lastItem = new Item(finalStation, tmpBusNum, "", subLine, busType, false);
                         itemArrayList.add(lastItem);
-                        totalTime += totalWalk;
-                        totalWalk *= 2; //도보 시간에 보통 사람들의 2배 가량 소요된다 가정
+
+                        Double speed = Double.parseDouble(speedDBHelper.getSpeed());
+                        String multipleStr = String.format("%.2f", 4.3 / speed);
+                        float multiple = Float.parseFloat(multipleStr);
+                        int newWalkingTime = Math.round(multiple * totalWalk);
+                        totalTime -= totalWalk;
+                        totalTime += newWalkingTime;
                         route.setTotalTime(totalTime);
-                        route.setWalkingTime(totalWalk);
+                        route.setWalkingTime(newWalkingTime);
 
                         if(group == 2 || group == 3){
                             route.setLikedNum(likedNum);
@@ -599,7 +605,12 @@ public class ShowPathActivity extends AppCompatActivity {
                     String arrmsg1 = ((Node) arrmsg1List.item(0)).getNodeValue();
 
                     String[] array = arrmsg1.split("\\[");
-                    arrmsg = array[0];
+                    if(array[0].equals("")){    //막차
+                        String[] tmpArray = array[0].split("] ");
+                        arrmsg = tmpArray[1];
+                    }
+                    else
+                        arrmsg = array[0];
                     found = true;
                     break;
                 }
@@ -619,14 +630,13 @@ public class ShowPathActivity extends AppCompatActivity {
             String str[] = arrmsg.split("분");
             try {   //남은 시간이 숫자일 경우
                 int time = Integer.parseInt(str[0]) * 60;
-                if (Integer.parseInt(str[0]) < 10){  //10분 미만
+                if (Integer.parseInt(str[0]) < 10) {  //10분 미만
                     str = str[1].split("초");
                     time += Integer.parseInt(str[0]);
                 }
                 item.setTime(time);
                 item.setRemainingTime("");
-            }
-            catch(NumberFormatException e) {    //문자일 경우
+            } catch (NumberFormatException e) {    //문자일 경우
                 item.setTime(0);
                 item.setRemainingTime(arrmsg);
             }
@@ -668,8 +678,9 @@ public class ShowPathActivity extends AppCompatActivity {
         protected Void doInBackground(String... urls) {
             sub_called++;
 
+            /*
             URL url;
-            /*if(subLine != -1) {
+            if(subLine != -1) {
                 try {
                     url = new URL(urls[0]);
                     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -688,15 +699,17 @@ public class ShowPathActivity extends AppCompatActivity {
             }
             else
                 return null;
-           */
+
+             */
+
             subRemaining(item, wayCode, subLine, publicCode);
             return null;
         }
 
 
         public boolean subRemaining(Item item, int tmpWayCode, int subLine, int publicCode){  //첫 번째 파라미터 원래 Document doc
-            /*
-            NodeList nodeList = doc.getElementsByTagName("row");
+
+            /*NodeList nodeList = doc.getElementsByTagName("row");
 
             String wayCode;
             if(subLine == 2){
@@ -745,7 +758,9 @@ public class ShowPathActivity extends AppCompatActivity {
                 item.setRemainingTime("운행종료");
             }
 
-            */
+
+             */
+
             setRemainingTime("3분 48초 후 ", item);
             return true;
         }
