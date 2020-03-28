@@ -291,31 +291,29 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
                 1, // 통지사이의 최소 변경거리 (m)
                 mLocationListener);
     }
-/*
-    // 도보 경로 표시 위해서 (from Tmap)
-    class PathAsync extends AsyncTask<TMapPolyLine, Void, TMapPolyLine> {
-        @Override
-        protected TMapPolyLine doInBackground(TMapPolyLine... tMapPolyLines) {
-            TMapPolyLine tMapPolyLine = tMapPolyLines[0];
-            try {
-               // tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, tMapPointStart, tMapPointEnd);
-                //tMapPolyLine.setLineColor(Color.GRAY);
-                //tMapPolyLine.setLineWidth(5);
-
-            }catch(Exception e) {
-                e.printStackTrace();
-                Log.e("error",e.getMessage());
+    /*
+        // 도보 경로 표시 위해서 (from Tmap)
+        class PathAsync extends AsyncTask<TMapPolyLine, Void, TMapPolyLine> {
+            @Override
+            protected TMapPolyLine doInBackground(TMapPolyLine... tMapPolyLines) {
+                TMapPolyLine tMapPolyLine = tMapPolyLines[0];
+                try {
+                   // tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, tMapPointStart, tMapPointEnd);
+                    //tMapPolyLine.setLineColor(Color.GRAY);
+                    //tMapPolyLine.setLineWidth(5);
+                }catch(Exception e) {
+                    e.printStackTrace();
+                    Log.e("error",e.getMessage());
+                }
+                return tMapPolyLine;
             }
-            return tMapPolyLine;
+            @Override
+            protected void onPostExecute(TMapPolyLine tMapPolyLine) {
+                super.onPostExecute(tMapPolyLine);
+                //tMapView.addTMapPolyLine("Line1", tMapPolyLine);
+            }
         }
-
-        @Override
-        protected void onPostExecute(TMapPolyLine tMapPolyLine) {
-            super.onPostExecute(tMapPolyLine);
-            //tMapView.addTMapPolyLine("Line1", tMapPolyLine);
-        }
-    }
-*/
+    */
     /*JSONObject parsing 해서 보여주기*/
     private void parseJson(JSONObject obj) {
         try{
