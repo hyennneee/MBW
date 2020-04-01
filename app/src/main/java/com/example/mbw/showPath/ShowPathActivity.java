@@ -606,7 +606,7 @@ public class ShowPathActivity extends AppCompatActivity {
 
                     String[] array = arrmsg1.split("\\[");
                     if(array[0].equals("")){    //막차
-                        String[] tmpArray = array[0].split("] ");
+                        String[] tmpArray = arrmsg1.split("] ");
                         arrmsg = tmpArray[1];
                     }
                     else

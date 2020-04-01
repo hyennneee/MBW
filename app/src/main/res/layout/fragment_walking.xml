@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:ems="3"
-        android:hint="2.1"
         android:clickable="true"
         android:focusableInTouchMode="true"
         android:inputType="numberDecimal"
