@@ -605,8 +605,8 @@ public class ShowPathActivity extends AppCompatActivity {
                     String arrmsg1 = ((Node) arrmsg1List.item(0)).getNodeValue();
 
                     String[] array = arrmsg1.split("\\[");
-                    if(array[0].equals("")){    //막차
-                        String[] tmpArray = array[0].split("] ");
+                    if(array[0].equals("")){    //[막차] 1분31초후[1번째 전]
+                        String[] tmpArray = arrmsg1.split("] ");
                         arrmsg = tmpArray[1];
                     }
                     else
