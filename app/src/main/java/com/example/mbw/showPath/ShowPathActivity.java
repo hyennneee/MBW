@@ -29,7 +29,6 @@ import com.example.mbw.network.RetrofitClient;
 import com.example.mbw.network.ServiceApi;
 import com.example.mbw.pathData.PathResponse;
 import com.example.mbw.route.Item;
-import com.example.mbw.route.ItemAdapter;
 import com.example.mbw.route.Route;
 import com.example.mbw.route.RouteAdapter;
 import com.google.android.gms.common.api.Status;
@@ -457,7 +456,7 @@ public class ShowPathActivity extends AppCompatActivity {
                                 if (trafficType == 1) { // 지하철
                                     wayCode = subPathOBJ.get("wayCode").getAsInt(); //상행, 하행(1, 2)
                                     subLine = laneObj.get(0).getAsJsonObject().get("subwayCode").getAsInt(); // 지하철 정보(몇호선)
-                                    busType = -1;   //지하철이라는 뜻
+                                    busType = -1;   //지하철
 
                                     item = new Item(stationName, busNum, "", subLine, busType, is_first);
                                     itemArrayList.add(item);
@@ -481,7 +480,7 @@ public class ShowPathActivity extends AppCompatActivity {
                                     }
                                 }
                                 else { // 버스
-                                    subLine = 0;    //버스라는 뜻
+                                    subLine = 0;    //버스
                                     //busNum 여러개일 수도
                                     for(int i = 0; i < laneObj.size(); i++)
                                         busNum.add(laneObj.get(i).getAsJsonObject().get("busNo").getAsString()); // 버스번호정보
@@ -546,9 +545,9 @@ public class ShowPathActivity extends AppCompatActivity {
     private void getBusInfo(int a, int index, String arsID, String busNum) {
         String rss;
         if (isFiltered)
-            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
+            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getLowStationByUid?ServiceKey&arsId=" + arsID;
         else
-            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;  // RSS URL 구성
+            rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey&arsId=" + arsID;  // RSS URL 구성
         GetXMLTask task = new GetXMLTask(routeArrayList.get(a).getItemList().get(index), busNum);
         task.execute(rss);
     }
@@ -678,7 +677,6 @@ public class ShowPathActivity extends AppCompatActivity {
         protected Void doInBackground(String... urls) {
             sub_called++;
 
-            /*
             URL url;
             if(subLine != -1) {
                 try {
@@ -695,21 +693,16 @@ public class ShowPathActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Parsing Error",
                             Toast.LENGTH_SHORT).show();
                 }
-                return null;
             }
-            else
-                return null;
 
-             */
-
-            subRemaining(item, wayCode, subLine, publicCode);
+            subRemaining(doc, item, wayCode, subLine, publicCode);
             return null;
         }
 
 
-        public boolean subRemaining(Item item, int tmpWayCode, int subLine, int publicCode){  //첫 번째 파라미터 원래 Document doc
+        public boolean subRemaining(Document doc, Item item, int tmpWayCode, int subLine, int publicCode){
 
-            /*NodeList nodeList = doc.getElementsByTagName("row");
+            NodeList nodeList = doc.getElementsByTagName("row");
 
             String wayCode;
             if(subLine == 2){
@@ -758,10 +751,6 @@ public class ShowPathActivity extends AppCompatActivity {
                 item.setRemainingTime("운행종료");
             }
 
-
-             */
-
-            setRemainingTime("3분 48초 후 ", item);
             return true;
         }
 
@@ -814,7 +803,7 @@ public class ShowPathActivity extends AppCompatActivity {
             for(int i = 0; i < busInfoList.size(); i++){
                 BusInfo busInfo = busInfoList.get(i);
                 String arsID = busInfo.arsID;
-                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey=6qStrxuINKmwimpKepusWn2D0%2B%2FV%2FKifMCu5X8Po12nfWFFuC9vIK0Rrpv4EtwERm7%2FM9eZeGaOSvXvxabBsYg%3D%3D&arsId=" + arsID;
+                rss = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?ServiceKey&arsId=" + arsID;
 
                 int x, y;
                 x = busInfo.a; y = busInfo.index;
