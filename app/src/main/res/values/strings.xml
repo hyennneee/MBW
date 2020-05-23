@@ -12,6 +12,7 @@
     <string name="problem2">역 안에 승강기가 하나도 없어요.</string>
     <string name="problem3">이동 경로 중 승강기가 없어요.</string>
     <string name="problem4">승강기가 존재하지만, 이동이 어려워요.</string>
+    
     <string name="subway_key">7465716e4d70616e3533556c696957</string>
     <string name="base_url">http://13.209.30.169:3100/</string>
     <string name="title_activity_detail_maps">Map</string>
