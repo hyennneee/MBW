@@ -125,10 +125,10 @@ public class DetailPathActivity extends FragmentActivity implements OnMapReadyCa
             double nowEndLongi = nowItem.getEnd().longitude;
 
             if(nowMode == 1) { //지하철
-                url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + nowStartLati + "," + nowStartLongi + "&destination=" + nowEndLati + "," + nowEndLongi + "&mode=transit&transit_mode=subway&key=AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY";
+                url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + nowStartLati + "," + nowStartLongi + "&destination=" + nowEndLati + "," + nowEndLongi + "&mode=transit&transit_mode=subway&key="+getString(R.string.google_key);
             }
             else { //버스
-                url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + nowStartLati + "," + nowStartLongi + "&destination=" + nowEndLongi + "," + nowEndLati + "&mode=transit&transit_mode=bus&key=AIzaSyB9Mr6iX5Dm-Xck6i_LKLhbVvZVcQ8dFyY";
+                url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + nowStartLati + "," + nowStartLongi + "&destination=" + nowEndLongi + "," + nowEndLati + "&mode=transit&transit_mode=bus&key="+getString(R.string.google_key);
             }
 
             new GetPaths().execute();
