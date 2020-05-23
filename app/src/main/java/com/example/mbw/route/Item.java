@@ -7,9 +7,6 @@ public class Item {
     Vector<String> busNum;
     private int subLine, busType, time = 0, publicCode;   //time은 남은 시간이 문자로 들어올 때, 또는 받지 않았을 때 0임
     boolean first;
-    //오디세이 parameter: busID
-    //공공데이터 포털 parameter: idx(=ord), localStationID(=stationID)
-    //공통: 남은 시간, 역 이름; 지하철: 노선번호이미지, 버스: 버스번호, 버스타입, 저상여부, 정류장 번호
 
     public Item(String stationName, Vector<String> busNum, String arsID, int subLine, int busType, boolean first) {
         this.stationName = stationName;
@@ -41,10 +38,6 @@ public class Item {
         return subLine;
     }
 
-    public void setSubLine(int subLine) {
-        this.subLine = subLine;
-    }
-
     public Vector<String> getBusNum() {
         return busNum;
     }
@@ -65,16 +58,8 @@ public class Item {
         return arsID;
     }
 
-    public void setArsID(String arsID) {
-        this.arsID = arsID;
-    }
-
     public boolean isFirst() {
         return first;
-    }
-
-    public void setFirst(boolean first) {
-        this.first = first;
     }
 
     public void setTime(int time) {
@@ -83,18 +68,6 @@ public class Item {
 
     public int getTime() {
         return time;
-    }
-
-    public String getCurrStation() {
-        return currStation;
-    }
-
-    public void setCurrStation(String currStation) {
-        this.currStation = currStation;
-    }
-
-    public int getPublicCode() {
-        return publicCode;
     }
 
     public void setPublicCode(int publicCode) {

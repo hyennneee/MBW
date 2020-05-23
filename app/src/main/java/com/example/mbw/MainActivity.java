@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
     TextView toHome, toOffice, userName;
     ImageView profile, swap, home, office, bookmark;
     int AUTOCOMPLETE_REQUEST_CODE = 1, FLAG = 0;
-    //double longitude[] = new double[2], latitude[] = new double[2];
     private LocationManager locationManager;
     public static String token = null;
     String sx = "0", sy = "0", ex = "0", ey = "0", currLocation;
@@ -121,13 +120,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
             return;
         }
 
-        //에뮬레이터 돌릴 때 들어갈 내용
-        //x경도 y 위도 (127, 36)//126.9513153, 37.496374
-
-        sx = "126.9625327"; sy = "37.5464301";  //ex="127.0043575"; ey="37.5672437";
-
-/*
-        //실제 디바이스 돌릴 때 들어갈 내용
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -144,10 +136,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                         }
                     }
                 });
-*/
-
-
-
 
         toHome = findViewById(R.id.toHome);
         toOffice = findViewById(R.id.toOffice);
@@ -287,8 +275,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                 break;
             case R.id.bookmarkButton:
                 //즐찾 버튼 누르면 즐찾해놓은 경로 띄우기
-                //getFavoritePath(token);
-                //mArrayList = routeDBHelper.getAllRoutesBM();
                 GetBookmarkTask bookmarkTask = new GetBookmarkTask(MainActivity.this, token);
                 bookmarkTask.execute();
                 break;
@@ -435,12 +421,6 @@ public class MainActivity extends AppCompatActivity implements RecordAdapter.OnI
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        //Toast.makeText(MainActivity.this, "저장된 주소가 없습니다", Toast.LENGTH_SHORT).show();
-                        //ToDo:
-                        //등록된 주소 없을 때
-                        //"주소를 등록해주세요"
-                        //카테고리에 따라 homeDB || officeDB = null;"
-                        //Toast.makeText(MainActivity.this, "통신 에러 발생", Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override

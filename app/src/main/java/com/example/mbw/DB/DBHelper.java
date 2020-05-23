@@ -42,17 +42,6 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(sql, params);
         }
 
-        //db.execSQL("INSERT INTO routes VALUES( null, '" +departure+ "','" + destination+"', sx, 'sy', 'ex', 'ey')");
-
-
-        /*ContentValues contentValues = new ContentValues();
-
-        contentValues.put("name", name);
-        contentValues.put("tel", tel);
-        contentValues.put("birth", birth);
-         db.insert(CONTACT_TABLE_NAME, null, contentValues);*/
-
-
         return true;
     }
 
@@ -76,10 +65,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     ,res.getString(res.getColumnIndex(COLUMN_SX)), res.getString(res.getColumnIndex(COLUMN_SY)), res.getString(res.getColumnIndex(COLUMN_EX)), res.getString(res.getColumnIndex(COLUMN_EY))));
             res.moveToNext();
         }
-            /*array_list.add(res.getString(res.getColumnIndex(CONTACT_COLUMN_ID)) + "\n  "
-            + res.getString(res.getColumnIndex(CONTACT_COLUMN_NAME)) + "\n  "
-            + res.getString(res.getColumnIndex(CONTACT_COLUMN_TEL)) + "\n  "
-            + res.getString(res.getColumnIndex(CONTACT_COLUMN_BIRTH)));*/
 
         return array_list;
     }
