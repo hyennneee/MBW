@@ -37,7 +37,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-//Item => Route, SubItem=> Item
 public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
 
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
@@ -101,35 +100,16 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         return new RouteViewHolder(view, mListener);
     }
 
-    /*public void setTime(int time, String state, RouteViewHolder routeViewHolder){
-        ItemAdapter adapter = (ItemAdapter) routeViewHolder.rvItem.getAdapter();
-        (ItemAdapter.BusViewHolder) adapter.getItemViewHolder();
-        ((ItemAdapter.BusViewHolder) holder).updateTimeRemaining();
-        if(time != 0){  //남은 시간이 숫자
-        }
-        else{   //남은 시간이 문자
-        }
-    }*/
-
     @Override
     public void onBindViewHolder(@NonNull RouteViewHolder routeViewHolder, int position, List<Object> payloads) {
         if (payloads.isEmpty()) {
             super.onBindViewHolder(routeViewHolder, position, payloads);
-        } else {
-            Bundle bundle = (Bundle) payloads.get(0);
-            if (bundle.size() != 0) {
-                //ToDo: position == 0의 item의 시간을 update
-                int time = bundle.getInt("time");
-                String state = bundle.getString("currState");
-                //setTime(time, state, routeViewHolder);
-            }
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RouteViewHolder routeViewHolder, int position) {
         Route route = routeList.get(position);
-        //routeViewHolder가 Null이라고 함
         int time, h, m;
         time = route.getTotalTime();
         String total = "";
@@ -244,22 +224,8 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
                     mListener.onItemClick(getAdapterPosition());
                 }
             });
-
-            /*itemView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    mListener.onItemClick(getAdapterPosition());
-                }
-            });*/
         }
-        /*
-        *
-        @Override
-        public void onClick(View view){
-            onItemClickListener.onItemClick(getAdapterPosition());
-        }*/
 
-        //MainActivity.getToken();
         public void pressLike(View v, String token, LikeNum likeNum, int position) {
 
             service.setLikeNum("application/json", token, likeNum).enqueue(new Callback<PostResponse>() {

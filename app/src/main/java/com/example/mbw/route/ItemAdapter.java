@@ -52,14 +52,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void startUpdateTimer() {
         handler.post(updateRemainingTimeRunnable);
-        /*Timer tmr = new Timer();
-        tmr.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(updateRemainingTimeRunnable);
-            }
-        }, 1000, 1000);    //delay: 1000, period 1000
-        */
     }
 
     @Override   //adapter는 아이템마다 viewholder를 만드는 방법을 정의해야 한다
@@ -113,12 +105,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((FinViewHolder) viewHolder).setFinDetails(data.get(position));
         }
         synchronized (viewHoldersList) {
-            //중복되는 viewHolder는 저장하지 않게
-            /*for(int pos : positionList){
-                if(pos == position) //이미 저장된 viewholder면 return
-                    return;
-            }
-            positionList.add(position);*/
             if(position == 0)viewHoldersList.add(viewHolder);
         }
     }
@@ -234,10 +220,7 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         protected View subLine;
         private Item item;
 
-        public SubViewHolder(@NonNull View view) {//constructor임
-            //findViewById로 변수 정의
-            //대충 이해가 갔는데 유동적으로 어떻게 표시하는지 모르겠음
-            //긍까 지하철이랑 버스랑 어떻게 될지 모르는 상황. view 틀을 어떻게 만들어두고 어떻게 띄우지?
+        public SubViewHolder(@NonNull View view) {//constructor
             super(view);
             this.subStation = view.findViewById(R.id.subStation); //stationName
             this.subImage = view.findViewById(R.id.subImage);  //subwayCode
@@ -246,8 +229,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             subLine = view.findViewById(R.id.subwayLine);
             adapterView = view;
         }
-        //오디세이로부터 받아오긴하는데 안드에서 띄워줄 필요는 없는 정보는 어떻게 처리하지
-        //일단 Route가 갖고있어야는되지 않나
         public void setSubTime(){
             subRemaining.setTextSize(13);
             int total = item.getTime();
@@ -263,10 +244,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 if(s != 0)
                     remaining += " " + s + "초";
                 subRemaining.setText(remaining);
-                /*String station = item.getCurrStation();
-                subCurrSt.setTextSize(13);
-                subCurrSt.setText(station);
-                 */
             }
 
         }
@@ -418,7 +395,6 @@ public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     case 113:
                         finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_ui));
                         break;
-                        //B3DE13
                     default:
                         finalLine.setBackgroundColor(adapterView.getResources().getColor(R.color.line_default));
                         break;
